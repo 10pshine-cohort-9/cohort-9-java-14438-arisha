@@ -31,9 +31,20 @@ public class ContactEmail {
     }
 
     public ContactEmail(String emailAddress, String label, Contact contact) {
-        this.emailAddress = emailAddress;
-        this.label = label;
-        this.contact = contact;
+
+    if (emailAddress == null || emailAddress.isBlank()) {
+        throw new IllegalArgumentException("Email address is required");
+    }
+    if (label == null || label.isBlank()) {
+        throw new IllegalArgumentException("Label is required");
+    }
+    if (contact == null) {
+        throw new IllegalArgumentException("Contact is required");
+    }
+
+    this.emailAddress = emailAddress;
+    this.label = label;
+    this.contact = contact;
     }
 
     public Integer getId() {
@@ -49,6 +60,9 @@ public class ContactEmail {
     }
 
     public void setEmailAddress(String emailAddress) {
+        if (emailAddress == null || emailAddress.isBlank()) {
+        throw new IllegalArgumentException("Email address is required");
+        }
         this.emailAddress = emailAddress;
     }
 
@@ -57,6 +71,9 @@ public class ContactEmail {
     }
 
     public void setLabel(String label) {
+        if (label == null || label.isBlank()) {
+        throw new IllegalArgumentException("Label is required");
+        }
         this.label = label;
     }
 
@@ -65,6 +82,9 @@ public class ContactEmail {
     }
 
     public void setContact(Contact contact) {
+        if (contact == null) {
+        throw new IllegalArgumentException("Contact is required");
+        }
         this.contact = contact;
     }
     
