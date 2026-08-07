@@ -31,6 +31,15 @@ public class ContactPhone {
     }
 
     public ContactPhone(String phoneNumber, String label, Contact contact) {
+        if (phoneNumber == null || phoneNumber.isBlank()) {
+            throw new IllegalArgumentException("Phone number is required");
+        }
+        if (label == null || label.isBlank()) {
+            throw new IllegalArgumentException("Label is required");
+        }
+        if (contact == null) {
+            throw new IllegalArgumentException("Contact is required");
+        }
         this.phoneNumber = phoneNumber;
         this.label = label;
         this.contact = contact;
@@ -49,6 +58,9 @@ public class ContactPhone {
     }
 
     public void setPhoneNumber(String phoneNumber) {
+        if (phoneNumber == null || phoneNumber.isBlank()) {
+            throw new IllegalArgumentException("Phone number is required");
+        }
         this.phoneNumber = phoneNumber;
     }
 
@@ -57,6 +69,9 @@ public class ContactPhone {
     }
 
     public void setLabel(String label) {
+        if (label == null || label.isBlank()) {
+            throw new IllegalArgumentException("Label is required");
+        }
         this.label = label;
     }
 
@@ -65,6 +80,9 @@ public class ContactPhone {
     }
 
     public void setContact(Contact contact) {
+        if (contact == null) {
+            throw new IllegalArgumentException("Contact is required");
+        }
         this.contact = contact;
     }
     
