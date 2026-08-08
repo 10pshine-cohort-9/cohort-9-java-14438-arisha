@@ -16,6 +16,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.never;
 
 @ExtendWith(MockitoExtension.class)
 public class AuthServiceTest {
@@ -55,6 +57,18 @@ public class AuthServiceTest {
         assertEquals("hashedPassword", result.getPasswordHash());
 
         verify(userRepository).save(any(User.class));
+    }
+
+    @Test
+    void registerFailsWhenEmailAlreadyExists() {
+
+        RegisterRequest request = new RegisterRequest("Test User", "test@example.com", null, "password123");
+
+        // email already exists in database
+        when(userRepository.existsByEmail("test@example.com")).thenReturn(true);
+
+        assertThrows(IllegalArgumentException.class, () -> authService.register(request));
+        verify(userRepository, never()).save(any(User.class));
     }
     
 }
