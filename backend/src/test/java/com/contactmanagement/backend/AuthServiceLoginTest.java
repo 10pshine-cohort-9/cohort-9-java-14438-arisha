@@ -29,6 +29,7 @@ public class AuthServiceLoginTest {
     @InjectMocks
     private AuthService authService;
 
+    //Case 1: User successfully logs in using email
     @Test
     void loginSuccessfullyWithEmail() {
 
@@ -49,5 +50,29 @@ public class AuthServiceLoginTest {
         assertEquals("test@example.com", result.getEmail());
 
         verify(userRepository).findByEmail("test@example.com");
+    }
+
+    //Case 2: user successfully logs in using phone number
+    @Test
+    void loginSuccessfullyWithPhoneNumber() {
+
+        LoginRequest request = new LoginRequest("03001234567", "password123");
+        User existingUser = new User("Test User", null, "03001234567", "hashedPassword");
+
+        when(userRepository.findByEmail("03001234567")).thenReturn(Optional.empty()); //email is found empty
+        //User found by phone number
+        when(userRepository.findByPhoneNumber("03001234567")).thenReturn(Optional.of(existingUser));
+        when(passwordEncoder.matches("password123", "hashedPassword")).thenReturn(true);
+
+        User result = authService.login(request);
+
+        // Test values
+        assertNotNull(result);
+        assertEquals("Test User", result.getFullName());
+        assertEquals("03001234567", result.getPhoneNumber());
+
+        // Check both searches happened
+        verify(userRepository).findByEmail("03001234567");
+        verify(userRepository).findByPhoneNumber("03001234567");
     }
 }
