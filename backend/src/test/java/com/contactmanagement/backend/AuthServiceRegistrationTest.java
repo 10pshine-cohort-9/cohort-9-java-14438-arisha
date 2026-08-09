@@ -1,23 +1,23 @@
 package com.contactmanagement.backend;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import com.contactmanagement.backend.repository.UserRepository;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.mockito.InjectMocks;
-import com.contactmanagement.backend.service.AuthService;
-import com.contactmanagement.backend.dto.RegisterRequest;
-import static org.mockito.Mockito.when;
-import com.contactmanagement.backend.entity.User;
 import static org.mockito.ArgumentMatchers.any;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import com.contactmanagement.backend.dto.RegisterRequest;
+import com.contactmanagement.backend.entity.User;
+import com.contactmanagement.backend.repository.UserRepository;
+import com.contactmanagement.backend.service.AuthService;
 
 @ExtendWith(MockitoExtension.class)
 public class AuthServiceRegistrationTest {
@@ -30,7 +30,7 @@ public class AuthServiceRegistrationTest {
     @InjectMocks 
     private AuthService authService;
 
-    //1. User Registration Test
+    //Case 1: User Registration Successful
     @Test 
     void registerUserSuccessfully(){
         // registration request with email only
@@ -59,6 +59,7 @@ public class AuthServiceRegistrationTest {
         verify(userRepository).save(any(User.class));
     }
 
+    //Case 2: Email already exists in database and registration fails
     @Test
     void registerFailsWhenEmailAlreadyExists() {
 
@@ -71,6 +72,7 @@ public class AuthServiceRegistrationTest {
         verify(userRepository, never()).save(any(User.class));
     }
 
+    //Case 3: Phone number already exists in database and registration fails
     @Test
     void registerFailsWhenPhoneAlreadyExists() {
 
