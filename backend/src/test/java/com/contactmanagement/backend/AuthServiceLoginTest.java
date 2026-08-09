@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -74,5 +75,21 @@ public class AuthServiceLoginTest {
         // Check both searches happened
         verify(userRepository).findByEmail("03001234567");
         verify(userRepository).findByPhoneNumber("03001234567");
+    }
+
+    //Case 3: User not found
+    @Test
+    void loginFailsWhenUserNotFound() {
+
+        LoginRequest request = new LoginRequest("unknown@example.com", "password123");
+
+        //not found by either email or number
+        when(userRepository.findByEmail("unknown@example.com")).thenReturn(Optional.empty());
+        when(userRepository.findByPhoneNumber("unknown@example.com")).thenReturn(Optional.empty());
+
+        assertThrows(IllegalArgumentException.class, () -> authService.login(request));
+
+        verify(userRepository).findByEmail("unknown@example.com");
+        verify(userRepository).findByPhoneNumber("unknown@example.com");
     }
 }
