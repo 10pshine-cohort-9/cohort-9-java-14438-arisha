@@ -92,4 +92,19 @@ public class AuthServiceLoginTest {
         verify(userRepository).findByEmail("unknown@example.com");
         verify(userRepository).findByPhoneNumber("unknown@example.com");
     }
+
+    //Case 4: Password incorrect
+    @Test
+    void loginFailsWhenPasswordIsIncorrect() {
+
+        LoginRequest request =new LoginRequest("test@example.com", "wrongPassword");
+        User existingUser = new User("Test User", "test@example.com", null, "hashedPassword");
+
+        when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(existingUser));
+        when(passwordEncoder.matches("wrongPassword", "hashedPassword")).thenReturn(false);
+
+        assertThrows(IllegalArgumentException.class, () -> authService.login(request));
+
+        verify(userRepository).findByEmail("test@example.com");
+    }
 }
