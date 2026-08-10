@@ -29,8 +29,13 @@ public class ContactService {
         return contactRepository.findByIdAndUserId(id, userId);    // Find a contact by ID
     }
 
-    public void deleteContact(Integer id) {
-        contactRepository.deleteById(id); // Delete a contact by ID
+    public void deleteContact(Integer id, Integer userId) {
+        Optional<Contact> contact = contactRepository.findByIdAndUserId(id, userId);
+
+        if (contact.isEmpty()) {
+            throw new IllegalArgumentException("Contact not found");
+        }
+        contactRepository.delete(contact.get());
     }
     
 }
