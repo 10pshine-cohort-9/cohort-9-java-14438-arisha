@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.contactmanagement.backend.entity.Contact;
-import com.contactmanagement.backend.service.ContactService;
 import com.contactmanagement.backend.entity.User;
+import com.contactmanagement.backend.service.ContactService;
 
 @RestController
 @RequestMapping("/api/contacts")
@@ -28,14 +28,14 @@ public class ContactController {
 
     //1. fetch all contacts- CRUD action: GET /api/contacts
     @GetMapping
-    public Page<Contact> getAllContacts(Pageable pageable){
-        return contactService.getAllContacts(pageable);
+    public Page<Contact> getAllContacts(Pageable pageable, @AuthenticationPrincipal User user){
+        return contactService.getAllContacts(user.getId(), pageable);
     }
 
     //2. fetch contacts by id- CRUD action: Get /api/contacts/5
     @GetMapping("/{id}")
-    public Optional<Contact> getContactById(@PathVariable Integer id){
-        return contactService.getContactById(id);
+    public Optional<Contact> getContactById(@PathVariable Integer id, @AuthenticationPrincipal User user){
+        return contactService.getContactById(id, user.getId());
     }
 
     //3. Creating a contact- CRUD action: POST /api/contacts

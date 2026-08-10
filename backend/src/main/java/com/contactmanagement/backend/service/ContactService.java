@@ -21,12 +21,12 @@ public class ContactService {
         return contactRepository.save(contact);
     }
 
-    public Page<Contact> getAllContacts(Pageable pageable) {
-        return contactRepository.findAll(pageable);     // Get contacts one page at a time
+    public Page<Contact> getAllContacts(Integer userId, Pageable pageable) {
+        return contactRepository.findByUserId(userId, pageable);     // Get contacts one page at a time
     }
 
-    public Optional<Contact> getContactById(Integer id) {
-        return contactRepository.findById(id);     // Find a contact by ID
+    public Optional<Contact> getContactById(Integer id, Integer userId) {
+        return contactRepository.findByIdAndUserId(id, userId);    // Find a contact by ID
     }
 
     public void deleteContact(Integer id) {
