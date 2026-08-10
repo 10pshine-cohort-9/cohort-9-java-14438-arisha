@@ -38,4 +38,19 @@ public class ContactService {
         contactRepository.delete(contact.get());
     }
     
+    public Contact updateContact(Integer id, Integer userId, Contact updatedContact) {
+
+        Optional<Contact> contact = contactRepository.findByIdAndUserId(id, userId);
+
+        if (contact.isEmpty()) {
+            throw new IllegalArgumentException("Contact not found");
+        }
+        Contact existingContact = contact.get();
+
+        existingContact.setFirstName(updatedContact.getFirstName());
+        existingContact.setLastName(updatedContact.getLastName());
+        existingContact.setTitle(updatedContact.getTitle());
+
+        return contactRepository.save(existingContact);
+    }
 }

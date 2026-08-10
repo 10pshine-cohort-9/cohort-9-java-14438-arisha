@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,7 +34,7 @@ public class ContactController {
         return contactService.getAllContacts(user.getId(), pageable);
     }
 
-    //2. fetch contacts by id- CRUD action: Get /api/contacts/5
+    //2. fetch contacts by id- CRUD action: Get /api/contacts/{id}
     @GetMapping("/{id}")
     public Optional<Contact> getContactById(@PathVariable Integer id, @AuthenticationPrincipal User user){
         return contactService.getContactById(id, user.getId());
@@ -46,11 +47,18 @@ public class ContactController {
         return contactService.saveContact(contact);
     }
 
-    //4. Delete contact by id- CRUD action: DELETE /api/contacts/5
+    //4. Delete contact by id- CRUD action: DELETE /api/contacts/{id}
     @DeleteMapping("/{id}")
     public void deleteContact(@PathVariable Integer id, @AuthenticationPrincipal User user) {
 
     contactService.deleteContact(id, user.getId());
-}
+    }
+
+    //5. Update a contact- CRUD action: PUT /api/contacts/{id}
+    @PutMapping("/{id}")
+    public Contact updateContact(@PathVariable Integer id, @RequestBody Contact updatedContact, @AuthenticationPrincipal User user) {
+
+    return contactService.updateContact(id, user.getId(), updatedContact);
+    }
 
 }
