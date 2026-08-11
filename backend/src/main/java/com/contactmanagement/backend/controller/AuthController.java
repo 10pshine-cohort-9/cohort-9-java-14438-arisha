@@ -14,6 +14,8 @@ import com.contactmanagement.backend.entity.User;
 import com.contactmanagement.backend.security.JwtService;
 import com.contactmanagement.backend.service.AuthService;
 
+import jakarta.validation.Valid;
+
 
 @RestController
 @RequestMapping("/api/auth")
@@ -28,7 +30,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public AuthResponse login(@RequestBody LoginRequest request) {
+    public AuthResponse login(@Valid @RequestBody LoginRequest request) {
 
             User user = authService.login(request);
             String token = jwtService.generateToken(user);
@@ -37,7 +39,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public AuthResponse register(@RequestBody RegisterRequest request) {
+    public AuthResponse register(@Valid @RequestBody RegisterRequest request) {
 
         User user = authService.register(request);
         String token = jwtService.generateToken(user);
@@ -46,9 +48,7 @@ public class AuthController {
     }
 
     @PostMapping("/change-password")
-    public void changePassword(
-        @AuthenticationPrincipal User user,
-        @RequestBody ChangePasswordRequest request) {
+    public void changePassword(@AuthenticationPrincipal User user,@Valid @RequestBody ChangePasswordRequest request) {
 
         authService.changePassword(user, request);
     }

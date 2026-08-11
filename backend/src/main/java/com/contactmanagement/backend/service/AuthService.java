@@ -2,6 +2,7 @@ package com.contactmanagement.backend.service;
 
 import java.util.Optional;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -54,7 +55,11 @@ public class AuthService {
             phoneNumber,
             encodedPassword
         );
-        return userRepository.save(user);
+        try {
+            return userRepository.save(user);
+        } catch (DataIntegrityViolationException e) {
+            throw new IllegalArgumentException("Email or phone number already exists");
+        }
     }
 
     public User login(LoginRequest request) {

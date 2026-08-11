@@ -11,9 +11,9 @@ import org.springframework.stereotype.Service;
 import com.contactmanagement.backend.entity.User;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class JwtService {
@@ -24,9 +24,16 @@ public class JwtService {
     @Value("${jwt.expiration}")
     private long expiration;
 
+    private SecretKey signingKey;
+
     private SecretKey getSigningKey() {
+        return signingKey;
+    }
+
+    @PostConstruct
+    public void initializeSigningKey() {
         byte[] keyBytes = Base64.getDecoder().decode(secretKey);
-        return Keys.hmacShaKeyFor(keyBytes);
+        signingKey = Keys.hmacShaKeyFor(keyBytes);
     }
 
     public String generateToken(User user) {
@@ -51,20 +58,5 @@ public class JwtService {
             .getPayload();
 
         return Integer.valueOf(claims.getSubject());
-    }
-
-    public boolean isTokenValid(String token) {
-
-        try {
-            Jwts.parser()
-                .verifyWith(getSigningKey())
-                .build()
-                .parseSignedClaims(token);
-
-        return true;
-
-        } catch (JwtException | IllegalArgumentException e) {
-            return false;
-        }
     }
 }

@@ -1,21 +1,21 @@
 package com.contactmanagement.backend.security;
 
 import java.io.IOException;
+import java.util.Collections;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.contactmanagement.backend.entity.User;
 import com.contactmanagement.backend.repository.UserRepository;
 
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.Collections;
-
-import com.contactmanagement.backend.entity.User;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter{
@@ -35,7 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
                 if (authHeader != null && authHeader.startsWith("Bearer ")) {
                     String token = authHeader.substring(7);
 
-                    if (jwtService.isTokenValid(token)) {
+                    try {
                         Integer userId = jwtService.getUserIdFromToken(token);
 
                         User user = userRepository.findById(userId).orElse(null);
@@ -46,6 +46,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 
                             SecurityContextHolder.getContext().setAuthentication(authentication);
                         }
+                    }catch (JwtException | IllegalArgumentException e){
+
                     }
                 }
                 filterChain.doFilter(request, response);
