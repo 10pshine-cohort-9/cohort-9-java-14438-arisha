@@ -1,12 +1,15 @@
+DECLARE @lockResult INT;
+
 EXEC sys.sp_getapplock
     @Resource = 'contact_management_schema_init',
     @LockMode = 'Exclusive',
     @LockOwner = 'Session',
-    @LockTimeout = -1;EXEC sys.sp_getapplock
-    @Resource = 'contact_management_schema_init',
-    @LockMode = 'Exclusive',
-    @LockOwner = 'Session',
     @LockTimeout = -1;
+
+IF @lockResult <0
+    THROW 50000, 'Could not acquire schema initialization lock', 1;
+
+BEGIN TRY
 
 IF NOT EXISTS (
     SELECT 1
@@ -31,3 +34,13 @@ WHERE phone_number IS NOT NULL;
 EXEC sys.sp_releaseapplock
     @Resource = 'contact_management_schema_init',
     @LockOwner = 'Session';
+
+END TRY
+
+BEGIN CATCH
+    EXEC sys.sp_releaseapplock
+    @Resource = 'contact_management_schema_init',
+    @LockOwner = 'Session';
+
+    THROW;
+END CATCH;
