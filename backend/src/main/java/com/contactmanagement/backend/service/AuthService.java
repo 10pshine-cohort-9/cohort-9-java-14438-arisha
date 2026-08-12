@@ -11,6 +11,7 @@ import com.contactmanagement.backend.dto.LoginRequest;
 import com.contactmanagement.backend.dto.RegisterRequest;
 import com.contactmanagement.backend.entity.User;
 import com.contactmanagement.backend.repository.UserRepository;
+import com.contactmanagement.backend.exception.AuthenticationException;
 
 @Service
 public class AuthService {
@@ -71,7 +72,7 @@ public class AuthService {
             user = userRepository.findByPhoneNumber(identifier); //If can not find user by email, try phone number
         }
         if (user.isEmpty()) {
-            throw new IllegalArgumentException("User not found");// can not find user by email or phone number
+            throw new AuthenticationException("Invalid credentials");// can not find user by email or phone number
         }
 
         User foundUser = user.get();
@@ -79,7 +80,7 @@ public class AuthService {
         String storedPasswordHash = foundUser.getPasswordHash();
 
         if (!passwordEncoder.matches(enteredPassword, storedPasswordHash)) {
-            throw new IllegalArgumentException("Invalid password");
+            throw new AuthenticationException("Invalid credentials");
         }
         return foundUser;
     }
