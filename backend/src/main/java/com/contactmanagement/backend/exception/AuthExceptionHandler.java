@@ -17,8 +17,8 @@ public class AuthExceptionHandler {
     }
 
     //login failure
-    @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<String> handleAuthenticationException(AuthenticationException exception) {
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<String> handleAuthenticationException(InvalidCredentialsException exception) {
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exception.getMessage());
     }
