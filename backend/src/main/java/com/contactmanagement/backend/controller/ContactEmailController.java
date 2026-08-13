@@ -29,7 +29,7 @@ public class ContactEmailController {
         return contactEmailService.getEmailsByContactId(contactId, user.getId());
     }
 
-    //2. 
+    //2. To get one contact email by its id - GET /api/contact-emails/3
     @GetMapping("/{id}")
     public ResponseEntity<ContactEmail> getContactEmailById(@PathVariable Integer id, @AuthenticationPrincipal User user) {
             Optional<ContactEmail> contactEmail = contactEmailService.getContactEmailById(id, user.getId());
