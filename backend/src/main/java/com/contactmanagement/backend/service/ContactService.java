@@ -53,4 +53,10 @@ public class ContactService {
 
         return contactRepository.save(existingContact);
     }
+
+    public Page<Contact> searchContacts(Integer userId, String searchTerm, Pageable pageable) {
+
+        return contactRepository.findByUserIdAndFirstNameContainingIgnoreCaseOrUserIdAndLastNameContainingIgnoreCase(
+            userId, searchTerm, userId, searchTerm, pageable);
+    }
 }

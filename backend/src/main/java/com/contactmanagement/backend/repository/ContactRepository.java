@@ -9,8 +9,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.contactmanagement.backend.entity.Contact;
 
 public interface ContactRepository extends JpaRepository<Contact, Integer> {
-    Page<Contact> findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(
+    Page<Contact> findByUserIdAndFirstNameContainingIgnoreCaseOrUserIdAndLastNameContainingIgnoreCase(
+        Integer userId1,
         String firstName,
+        Integer userId2,
         String lastName,
         Pageable pageable
 );
