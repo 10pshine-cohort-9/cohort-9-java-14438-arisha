@@ -45,6 +45,9 @@ public class ContactEmailController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteContactEmail(@PathVariable Integer id, @AuthenticationPrincipal User user) {
         boolean deleted = contactEmailService.deleteContactEmail(id, user.getId());
+        if (!deleted) {
+            return ResponseEntity.notFound().build();
+        }
 
         return ResponseEntity.noContent().build();
     }
