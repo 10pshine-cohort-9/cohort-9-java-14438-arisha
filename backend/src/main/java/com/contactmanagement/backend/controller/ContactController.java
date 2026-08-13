@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.contactmanagement.backend.entity.Contact;
@@ -59,6 +60,13 @@ public class ContactController {
     public Contact updateContact(@PathVariable Integer id, @RequestBody Contact updatedContact, @AuthenticationPrincipal User user) {
 
     return contactService.updateContact(id, user.getId(), updatedContact);
+    }
+
+    //6. Search from logged-in user's own contact list- CRUD action: GET /api/contacts/search?searchTerm={name}
+    @GetMapping("/search")
+    public Page<Contact> searchContacts(@RequestParam String searchTerm, Pageable pageable, @AuthenticationPrincipal User user) {
+
+        return contactService.searchContacts(user.getId(), searchTerm, pageable);
     }
 
 }
