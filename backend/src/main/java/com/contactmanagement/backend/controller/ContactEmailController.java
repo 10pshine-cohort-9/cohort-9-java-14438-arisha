@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +39,14 @@ public class ContactEmailController {
                 return ResponseEntity.notFound().build();
             }
             return ResponseEntity.ok(contactEmail.get());
+    }
+
+    //3. Delete emails by id - DELETE /api/contact-emails/{id}
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteContactEmail(@PathVariable Integer id, @AuthenticationPrincipal User user) {
+        boolean deleted = contactEmailService.deleteContactEmail(id, user.getId());
+
+        return ResponseEntity.noContent().build();
     }
     
 }
