@@ -39,8 +39,15 @@ public class ContactEmailService {
         return contactEmail;
     }
 
-    public void deleteContactEmail(Integer id) {
-        contactEmailRepository.deleteById(id);    // Delete a contact email by ID
+    public boolean deleteContactEmail(Integer id, Integer userId) {
+        Optional<ContactEmail> contactEmail = getContactEmailById(id, userId);
+
+        if (contactEmail.isEmpty()) {
+            return false;
+        }
+
+        contactEmailRepository.deleteById(id);
+        return true;
     }
     
 }
