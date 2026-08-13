@@ -18,7 +18,11 @@ public class ContactEmailService {
         this.contactService = contactService;
     }
     
-    public List<ContactEmail> getEmailsByContactId(Integer contactId) { // Get all emails belonging to one contact
+    public List<ContactEmail> getEmailsByContactId(Integer contactId, Integer userId) { // Get all emails belonging to one contact
+
+        if (contactService.getContactById(contactId, userId).isEmpty()) {
+            throw new IllegalArgumentException("Contact not found");
+        }
         return contactEmailRepository.findByContactId(contactId);
     }
 
