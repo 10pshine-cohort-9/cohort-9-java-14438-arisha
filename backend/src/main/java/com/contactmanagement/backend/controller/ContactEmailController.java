@@ -1,7 +1,9 @@
 package com.contactmanagement.backend.controller;
 
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +27,17 @@ public class ContactEmailController {
     @GetMapping("/contact/{contactId}")
     public List<ContactEmail> getEmailsByContactId(@PathVariable Integer contactId, @AuthenticationPrincipal User user) {
         return contactEmailService.getEmailsByContactId(contactId, user.getId());
+    }
+
+    //2. 
+    @GetMapping("/{id}")
+    public ResponseEntity<ContactEmail> getContactEmailById(@PathVariable Integer id, @AuthenticationPrincipal User user) {
+            Optional<ContactEmail> contactEmail = contactEmailService.getContactEmailById(id, user.getId());
+
+            if (contactEmail.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(contactEmail.get());
     }
     
 }
