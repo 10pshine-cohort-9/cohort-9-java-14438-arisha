@@ -11,10 +11,13 @@ import com.contactmanagement.backend.repository.ContactEmailRepository;
 @Service
 public class ContactEmailService {
     private final ContactEmailRepository contactEmailRepository;
+    private final ContactService contactService;
 
-    public ContactEmailService(ContactEmailRepository contactEmailRepository) {
+    public ContactEmailService(ContactEmailRepository contactEmailRepository, ContactService contactService) {
         this.contactEmailRepository = contactEmailRepository;
+        this.contactService = contactService;
     }
+    
     public List<ContactEmail> getEmailsByContactId(Integer contactId) { // Get all emails belonging to one contact
         return contactEmailRepository.findByContactId(contactId);
     }
