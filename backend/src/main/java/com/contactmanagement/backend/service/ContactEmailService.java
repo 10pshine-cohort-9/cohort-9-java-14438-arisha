@@ -26,8 +26,17 @@ public class ContactEmailService {
         return contactEmailRepository.findByContactId(contactId);
     }
 
-    public Optional<ContactEmail> getContactEmailById(Integer id) {
-        return contactEmailRepository.findById(id);     // Find a contact email by ID
+    public Optional<ContactEmail> getContactEmailById(Integer id, Integer userId) {
+        Optional<ContactEmail> contactEmail = contactEmailRepository.findById(id);
+
+        if (contactEmail.isEmpty()) { return Optional.empty();}    
+
+        Integer contactId = contactEmail.get().getContact().getId();
+
+        if (contactService.getContactById(contactId, userId).isEmpty()) {
+            return Optional.empty();
+        }
+        return contactEmail;
     }
 
     public void deleteContactEmail(Integer id) {
