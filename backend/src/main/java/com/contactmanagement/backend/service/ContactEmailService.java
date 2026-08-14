@@ -5,8 +5,10 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.contactmanagement.backend.dto.ContactEmailRequest;
 import com.contactmanagement.backend.entity.ContactEmail;
 import com.contactmanagement.backend.repository.ContactEmailRepository;
+import com.contactmanagement.backend.entity.Contact;
 
 @Service
 public class ContactEmailService {
@@ -48,6 +50,22 @@ public class ContactEmailService {
 
         contactEmailRepository.deleteById(id);
         return true;
+    }
+
+    public ContactEmail createContactEmail(Integer contactId, Integer userId, ContactEmailRequest request) {
+        Optional<Contact> contact = contactService.getContactById(contactId, userId);
+
+        if (contact.isEmpty()) {
+            throw new IllegalArgumentException("Contact not found");
+        }
+
+        String emailAddress = request.getEmailAddress();
+        String label = request.getLabel();
+        Contact foundContact = contact.get();
+        ContactEmail contactEmail = new ContactEmail(emailAddress, label, foundContact);
+
+        ContactEmail savedEmail = contactEmailRepository.save(contactEmail);
+        return savedEmail;
     }
     
 }
