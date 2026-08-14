@@ -3,6 +3,9 @@ package com.contactmanagement.backend.service;
 import org.springframework.stereotype.Service;
 
 import com.contactmanagement.backend.repository.ContactPhoneRepository;
+import java.util.List;
+import com.contactmanagement.backend.entity.ContactPhone;
+
 
 @Service
 public class ContactPhoneService {
@@ -13,5 +16,11 @@ public class ContactPhoneService {
         this.contactPhoneRepository = contactPhoneRepository;
         this.contactService = contactService;
     }
-    
+
+    public List<ContactPhone> getPhonesByContactId(Integer contactId, Integer userId) {
+        if (contactService.getContactById(contactId, userId).isEmpty()){
+            throw new IllegalArgumentException("Contact not found");
+        }
+        return contactPhoneRepository.findByContactId(contactId);
+    }
 }
