@@ -3,6 +3,7 @@ package com.contactmanagement.backend.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -55,11 +56,12 @@ public class ContactEmailController {
         return ResponseEntity.noContent().build();
     }
 
-    //4. Add a new email address to a contact belonging to the logged in user - POST /api/contact-emails/contact/{id}
+    //4. Add a new email address to a contact belonging to the logged in user - POST /api/contact-emails/contact/{Contact-id}
     @PostMapping("/contact/{contactId}")
-    public ContactEmail createContactEmail(@PathVariable Integer contactId, @RequestBody ContactEmailRequest request, @AuthenticationPrincipal User user) {
+    public ResponseEntity<ContactEmail> createContactEmail(@PathVariable Integer contactId, @RequestBody ContactEmailRequest request, @AuthenticationPrincipal User user) {
 
-        return contactEmailService.createContactEmail(contactId, user.getId(), request);
+        ContactEmail createdEmail = contactEmailService.createContactEmail(contactId, user.getId(), request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdEmail);
     }
     
 }
