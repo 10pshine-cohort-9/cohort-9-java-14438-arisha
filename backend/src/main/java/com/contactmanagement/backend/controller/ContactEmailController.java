@@ -69,11 +69,10 @@ public class ContactEmailController {
     @PutMapping("/{id}")
     public ResponseEntity<ContactEmail> updateContactEmail(@PathVariable Integer id, @RequestBody ContactEmailRequest request,
     @AuthenticationPrincipal User user) {
-
         Optional<ContactEmail> updatedEmail = contactEmailService.updateContactEmail(id, user.getId(), request);
 
         if (updatedEmail.isEmpty()) {
-        return ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(updatedEmail.get());
     }
