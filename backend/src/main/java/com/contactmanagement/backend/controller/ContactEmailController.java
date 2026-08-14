@@ -8,9 +8,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.contactmanagement.backend.dto.ContactEmailRequest;
 import com.contactmanagement.backend.entity.ContactEmail;
 import com.contactmanagement.backend.entity.User;
 import com.contactmanagement.backend.service.ContactEmailService;
@@ -50,6 +53,13 @@ public class ContactEmailController {
         }
 
         return ResponseEntity.noContent().build();
+    }
+
+    //4. Add a new email address to a contact belonging to the logged in user - POST /api/contact-emails/contact/{id}
+    @PostMapping("/contact/{contactId}")
+    public ContactEmail createContactEmail(@PathVariable Integer contactId, @RequestBody ContactEmailRequest request, @AuthenticationPrincipal User user) {
+
+        return contactEmailService.createContactEmail(contactId, user.getId(), request);
     }
     
 }
