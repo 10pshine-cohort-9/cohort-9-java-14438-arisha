@@ -6,9 +6,9 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.contactmanagement.backend.dto.ContactEmailRequest;
+import com.contactmanagement.backend.entity.Contact;
 import com.contactmanagement.backend.entity.ContactEmail;
 import com.contactmanagement.backend.repository.ContactEmailRepository;
-import com.contactmanagement.backend.entity.Contact;
 
 @Service
 public class ContactEmailService {
@@ -66,6 +66,21 @@ public class ContactEmailService {
 
         ContactEmail savedEmail = contactEmailRepository.save(contactEmail);
         return savedEmail;
+    }
+
+    public Optional<ContactEmail> updateContactEmail(Integer id, Integer userId, ContactEmailRequest request) {
+        Optional<ContactEmail> contactEmail = getContactEmailById(id, userId);
+
+        if (contactEmail.isEmpty()) {
+            return Optional.empty();
+        }
+
+        ContactEmail foundEmail = contactEmail.get();
+        foundEmail.setEmailAddress(request.getEmailAddress());
+        foundEmail.setLabel(request.getLabel());
+
+        ContactEmail savedEmail = contactEmailRepository.save(foundEmail);
+        return Optional.of(savedEmail);
     }
     
 }
