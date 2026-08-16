@@ -76,4 +76,14 @@ public class ContactPhoneService {
         ContactPhone savedPhone = contactPhoneRepository.save(foundPhone);
         return Optional.of(savedPhone);
     }
+
+    //4. delete contact phone
+    public boolean deleteContactPhone(Integer id, Integer userId){
+        Optional<ContactPhone> contactPhone = getContactPhoneById(id, userId);
+        if (contactPhone.isEmpty()){
+            return false;
+        }
+        contactPhoneRepository.deleteById(id);
+        return true;
+    }
 }
