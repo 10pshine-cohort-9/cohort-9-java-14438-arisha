@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
 import com.contactmanagement.backend.controller.AuthController;
 
@@ -26,6 +27,11 @@ public class AuthExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<String> handleValidationException(MethodArgumentNotValidException exception) {
 
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid request data");
+    }
+
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ResponseEntity<String> handleMethodValidationException(HandlerMethodValidationException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid request data");
     }
 }
