@@ -4,9 +4,11 @@ import org.springframework.stereotype.Service;
 
 import com.contactmanagement.backend.repository.ContactPhoneRepository;
 import java.util.List;
+
+import com.contactmanagement.backend.dto.ContactPhoneRequest;
 import com.contactmanagement.backend.entity.ContactPhone;
 import java.util.Optional;
-
+import com.contactmanagement.backend.entity.Contact;
 
 @Service
 public class ContactPhoneService {
@@ -38,5 +40,22 @@ public class ContactPhoneService {
         }
 
         return contactPhone;
+    }
+
+    //2. Create contact phone
+    public ContactPhone createContactPhone(Integer contactId, Integer userId, ContactPhoneRequest request) {
+        Optional<Contact> contact = contactService.getContactById(contactId, userId);
+
+        if (contact.isEmpty()) {
+            throw new IllegalArgumentException("Contact not found");
+        }
+
+        String phoneNumber = request.getPhoneNumber();
+        String label = request.getLabel();
+        Contact foundContact = contact.get();
+
+        ContactPhone contactPhone = new ContactPhone(phoneNumber, label, foundContact);
+        ContactPhone savedPhone = contactPhoneRepository.save(contactPhone);
+        return savedPhone;
     }
 }
