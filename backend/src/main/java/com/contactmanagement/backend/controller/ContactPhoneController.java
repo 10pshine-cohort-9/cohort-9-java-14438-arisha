@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.contactmanagement.backend.entity.ContactPhone;
 import com.contactmanagement.backend.entity.User;
 import com.contactmanagement.backend.service.ContactPhoneService;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,10 +42,11 @@ public class ContactPhoneController {
     // Add a new phone number to a contact belonging to the logged-in user
     // POST /api/contact-phones/contact/{contactId}
     @PostMapping("/contact/{contactId}")
-    public ContactPhone createContactPhone(@PathVariable Integer contactId, @RequestBody ContactPhoneRequest request,
+    public ResponseEntity<ContactPhone> createContactPhone(@PathVariable Integer contactId, @RequestBody ContactPhoneRequest request,
     @AuthenticationPrincipal User user) {
 
-        return contactPhoneService.createContactPhone(contactId, user.getId(), request);
+        ContactPhone createdPhone = contactPhoneService.createContactPhone(contactId, user.getId(), request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdPhone);
     }
     
 }
