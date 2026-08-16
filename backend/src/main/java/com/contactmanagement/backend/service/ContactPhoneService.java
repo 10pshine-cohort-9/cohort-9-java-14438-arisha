@@ -1,14 +1,14 @@
 package com.contactmanagement.backend.service;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
-import com.contactmanagement.backend.repository.ContactPhoneRepository;
-import java.util.List;
-
 import com.contactmanagement.backend.dto.ContactPhoneRequest;
-import com.contactmanagement.backend.entity.ContactPhone;
-import java.util.Optional;
 import com.contactmanagement.backend.entity.Contact;
+import com.contactmanagement.backend.entity.ContactPhone;
+import com.contactmanagement.backend.repository.ContactPhoneRepository;
 
 @Service
 public class ContactPhoneService {
@@ -57,5 +57,23 @@ public class ContactPhoneService {
         ContactPhone contactPhone = new ContactPhone(phoneNumber, label, foundContact);
         ContactPhone savedPhone = contactPhoneRepository.save(contactPhone);
         return savedPhone;
+    }
+
+    //3. update contact phone
+    public Optional<ContactPhone> updateContactPhone(Integer id, Integer userId, ContactPhoneRequest request) {
+        Optional<ContactPhone> contactPhone = getContactPhoneById(id, userId);
+
+        if (contactPhone.isEmpty()) {
+            return Optional.empty();
+        }
+        //update phone number
+        ContactPhone foundPhone = contactPhone.get();
+        foundPhone.setPhoneNumber(request.getPhoneNumber());
+
+        //update label
+        foundPhone.setLabel(request.getLabel());
+
+        ContactPhone savedPhone = contactPhoneRepository.save(foundPhone);
+        return Optional.of(savedPhone);
     }
 }
