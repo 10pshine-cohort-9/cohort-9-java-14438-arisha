@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,4 +61,17 @@ public class ContactPhoneController {
         }
         return ResponseEntity.ok(updatedPhone.get());
     }
+
+    // Delete a phone number belonging to a contact of the logged in user
+    // DELETE /api/contact-phones/{id}
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteContactPhone(@PathVariable Integer id, @AuthenticationPrincipal User user){
+        boolean deleted = contactPhoneService.deleteContactPhone(id, user.getId());
+
+        if(!deleted){
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.noContent().build();
+    } 
 }
