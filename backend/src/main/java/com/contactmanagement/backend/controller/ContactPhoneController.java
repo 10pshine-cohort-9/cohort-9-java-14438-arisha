@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.contactmanagement.backend.entity.ContactPhone;
 import com.contactmanagement.backend.entity.User;
 import com.contactmanagement.backend.service.ContactPhoneService;
+import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping("/api/contact-phones")
@@ -23,8 +24,13 @@ public class ContactPhoneController {
 
     //1. Get phone by id - GET /api/contact-phones/{id}
     @GetMapping ("/{id}")
-    public Optional<ContactPhone> getPhoneById(@PathVariable Integer id, @AuthenticationPrincipal User user){
-        return contactPhoneService.getContactPhoneById(id, user.getId());
+    public ResponseEntity<ContactPhone> getPhoneById(@PathVariable Integer id, @AuthenticationPrincipal User user){
+        Optional<ContactPhone> contactPhone = contactPhoneService.getContactPhoneById(id, user.getId());
+
+        if (contactPhone.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(contactPhone.get());
     }
     
 }
