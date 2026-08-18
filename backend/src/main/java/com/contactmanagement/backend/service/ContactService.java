@@ -2,6 +2,8 @@ package com.contactmanagement.backend.service;
 
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -13,6 +15,8 @@ import com.contactmanagement.backend.repository.ContactRepository;
 
 @Service
 public class ContactService {
+    private static final Logger logger = LoggerFactory.getLogger(ContactService.class);
+    
     private final ContactRepository contactRepository;
 
     public ContactService(ContactRepository contactRepository) {
