@@ -59,7 +59,9 @@ public class ContactService {
         existingContact.setLastName(updatedContact.getLastName());
         existingContact.setTitle(updatedContact.getTitle());
 
-        return contactRepository.save(existingContact);
+        Contact savedContact = contactRepository.save(existingContact);
+        logger.info("Contact updated with ID: {} for user ID: {}", id, userId);
+        return savedContact;
     }
 
     public Page<Contact> searchContacts(Integer userId, String searchTerm, Pageable pageable) {
