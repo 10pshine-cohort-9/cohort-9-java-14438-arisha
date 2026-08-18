@@ -54,6 +54,7 @@ public class ContactEmailService {
         }
 
         contactEmailRepository.deleteById(id);
+        logger.info("Contact email deleted with ID: {} for user ID: {}", id, userId);
         return true;
     }
 
