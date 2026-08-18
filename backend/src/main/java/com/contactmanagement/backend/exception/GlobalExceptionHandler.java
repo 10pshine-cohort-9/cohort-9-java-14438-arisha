@@ -16,6 +16,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<String> handleDataIntegrityViolation(DataIntegrityViolationException exception) {
+        logger.error("Database constraint violation occurred", exception);
+
         return ResponseEntity.status(HttpStatus.CONFLICT).body("Database constraint violation");
     }
 
