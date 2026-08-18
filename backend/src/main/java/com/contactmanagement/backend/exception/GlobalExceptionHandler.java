@@ -23,6 +23,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<String> handleResponseStatusException(ResponseStatusException exception) {
+        logger.warn("Request failed: {}", exception.getReason());
+
         return ResponseEntity.status(exception.getStatusCode()).body(exception.getReason());
     }
 
