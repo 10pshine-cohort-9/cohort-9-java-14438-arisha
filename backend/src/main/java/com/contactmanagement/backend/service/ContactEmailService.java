@@ -3,7 +3,9 @@ package com.contactmanagement.backend.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.contactmanagement.backend.dto.ContactEmailRequest;
 import com.contactmanagement.backend.entity.Contact;
@@ -23,7 +25,7 @@ public class ContactEmailService {
     public List<ContactEmail> getEmailsByContactId(Integer contactId, Integer userId) { // Get all emails belonging to one contact
 
         if (contactService.getContactById(contactId, userId).isEmpty()) {
-            throw new IllegalArgumentException("Contact not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Contact not found");
         }
         return contactEmailRepository.findByContactId(contactId);
     }
@@ -56,7 +58,7 @@ public class ContactEmailService {
         Optional<Contact> contact = contactService.getContactById(contactId, userId);
 
         if (contact.isEmpty()) {
-            throw new IllegalArgumentException("Contact not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Contact not found");
         }
 
         String emailAddress = request.getEmailAddress();
