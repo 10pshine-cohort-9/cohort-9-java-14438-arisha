@@ -70,6 +70,7 @@ public class ContactEmailService {
         ContactEmail contactEmail = new ContactEmail(emailAddress, label, foundContact);
 
         ContactEmail savedEmail = contactEmailRepository.save(contactEmail);
+        logger.info("Contact email created with ID: {} for contact ID: {} and user ID: {}", savedEmail.getId(), contactId, userId);
         return savedEmail;
     }
 
