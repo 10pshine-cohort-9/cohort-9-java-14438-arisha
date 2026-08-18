@@ -24,8 +24,10 @@ public class ContactService {
     }
 
     public Contact saveContact(Contact contact) {
-        return contactRepository.save(contact);
-    }
+            Contact savedContact = contactRepository.save(contact);
+            logger.info("Contact created with ID: {} for user ID: {}", savedContact.getId(), savedContact.getUser().getId());
+            return savedContact;
+        }
 
     public Page<Contact> getAllContacts(Integer userId, Pageable pageable) {
         return contactRepository.findByUserId(userId, pageable);     // Get contacts one page at a time
