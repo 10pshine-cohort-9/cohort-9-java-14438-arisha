@@ -1,9 +1,8 @@
 package com.contactmanagement.backend.controller;
 
-import java.util.Optional;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,8 +36,8 @@ public class ContactController {
 
     //2. fetch contacts by id- CRUD action: Get /api/contacts/{id}
     @GetMapping("/{id}")
-    public Optional<Contact> getContactById(@PathVariable Integer id, @AuthenticationPrincipal User user){
-        return contactService.getContactById(id, user.getId());
+    public ResponseEntity<Contact> getContactById(@PathVariable Integer id, @AuthenticationPrincipal User user){
+        return ResponseEntity.of(contactService.getContactById(id, user.getId()));
     }
 
     //3. Creating a contact- CRUD action: POST /api/contacts
