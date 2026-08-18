@@ -44,6 +44,7 @@ public class ContactService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Contact not found");
         }
         contactRepository.delete(contact.get());
+        logger.info("Contact deleted with ID: {} for user ID: {}", id, userId);
     }
     
     public Contact updateContact(Integer id, Integer userId, Contact updatedContact) {
