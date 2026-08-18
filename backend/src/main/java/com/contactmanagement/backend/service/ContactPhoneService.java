@@ -3,7 +3,9 @@ package com.contactmanagement.backend.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.contactmanagement.backend.dto.ContactPhoneRequest;
 import com.contactmanagement.backend.entity.Contact;
@@ -22,7 +24,7 @@ public class ContactPhoneService {
 
     public List<ContactPhone> getPhonesByContactId(Integer contactId, Integer userId) {
         if (contactService.getContactById(contactId, userId).isEmpty()){
-            throw new IllegalArgumentException("Contact not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Contact not found");
         }
         return contactPhoneRepository.findByContactId(contactId);
     }
@@ -47,7 +49,7 @@ public class ContactPhoneService {
         Optional<Contact> contact = contactService.getContactById(contactId, userId);
 
         if (contact.isEmpty()) {
-            throw new IllegalArgumentException("Contact not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Contact not found");
         }
 
         String phoneNumber = request.getPhoneNumber();
