@@ -86,6 +86,7 @@ public class ContactEmailService {
         foundEmail.setLabel(request.getLabel());
 
         ContactEmail savedEmail = contactEmailRepository.save(foundEmail);
+        logger.info("Contact email updated with ID: {} for user ID: {}", id, userId);
         return Optional.of(savedEmail);
     }
     
