@@ -4,7 +4,9 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.contactmanagement.backend.entity.Contact;
 import com.contactmanagement.backend.repository.ContactRepository;
@@ -33,7 +35,7 @@ public class ContactService {
         Optional<Contact> contact = contactRepository.findByIdAndUserId(id, userId);
 
         if (contact.isEmpty()) {
-            throw new IllegalArgumentException("Contact not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Contact not found");
         }
         contactRepository.delete(contact.get());
     }
@@ -43,7 +45,7 @@ public class ContactService {
         Optional<Contact> contact = contactRepository.findByIdAndUserId(id, userId);
 
         if (contact.isEmpty()) {
-            throw new IllegalArgumentException("Contact not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Contact not found");
         }
         Contact existingContact = contact.get();
 
