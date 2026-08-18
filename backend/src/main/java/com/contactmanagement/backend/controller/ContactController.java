@@ -2,6 +2,7 @@ package com.contactmanagement.backend.controller;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -42,9 +43,12 @@ public class ContactController {
 
     //3. Creating a contact- CRUD action: POST /api/contacts
     @PostMapping
-    public Contact createContact(@RequestBody Contact contact, @AuthenticationPrincipal User user){
+    public ResponseEntity<Contact> createContact(@RequestBody Contact contact, @AuthenticationPrincipal User user){
+        contact.setId(null);
         contact.setUser(user);
-        return contactService.saveContact(contact);
+
+        Contact savedContact = contactService.saveContact(contact);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedContact);
     }
 
     //4. Delete contact by id- CRUD action: DELETE /api/contacts/{id}
