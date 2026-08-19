@@ -3,6 +3,8 @@ package com.contactmanagement.backend.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -11,8 +13,6 @@ import com.contactmanagement.backend.dto.ContactPhoneRequest;
 import com.contactmanagement.backend.entity.Contact;
 import com.contactmanagement.backend.entity.ContactPhone;
 import com.contactmanagement.backend.repository.ContactPhoneRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Service
 public class ContactPhoneService {
@@ -61,6 +61,7 @@ public class ContactPhoneService {
 
         ContactPhone contactPhone = new ContactPhone(phoneNumber, label, foundContact);
         ContactPhone savedPhone = contactPhoneRepository.save(contactPhone);
+        logger.info("Contact phone created with ID: {} for contact ID: {} and user ID: {}", savedPhone.getId(), contactId, userId);
         return savedPhone;
     }
 
