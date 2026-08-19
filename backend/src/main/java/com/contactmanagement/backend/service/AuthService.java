@@ -87,6 +87,7 @@ public class AuthService {
         if (!passwordEncoder.matches(enteredPassword, storedPasswordHash)) {
             throw new InvalidCredentialsException("Invalid credentials");
         }
+        logger.info("User logged in successfully with ID: {}", foundUser.getId());
         return foundUser;
     }
 
