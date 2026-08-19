@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.contactmanagement.backend.dto.LoginRequest;
 import com.contactmanagement.backend.entity.User;
+import com.contactmanagement.backend.exception.InvalidCredentialsException;
 import com.contactmanagement.backend.repository.UserRepository;
 import com.contactmanagement.backend.service.AuthService;
 
@@ -87,7 +88,7 @@ public class AuthServiceLoginTest {
         when(userRepository.findByEmail("unknown@example.com")).thenReturn(Optional.empty());
         when(userRepository.findByPhoneNumber("unknown@example.com")).thenReturn(Optional.empty());
 
-        assertThrows(IllegalArgumentException.class, () -> authService.login(request));
+        assertThrows(InvalidCredentialsException.class, () -> authService.login(request));
 
         verify(userRepository).findByEmail("unknown@example.com");
         verify(userRepository).findByPhoneNumber("unknown@example.com");
@@ -103,7 +104,7 @@ public class AuthServiceLoginTest {
         when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(existingUser));
         when(passwordEncoder.matches("wrongPassword", "hashedPassword")).thenReturn(false);
 
-        assertThrows(IllegalArgumentException.class, () -> authService.login(request));
+        assertThrows(InvalidCredentialsException.class, () -> authService.login(request));
 
         verify(userRepository).findByEmail("test@example.com");
     }
