@@ -60,7 +60,9 @@ public class AuthService {
             encodedPassword
         );
         try {
-            return userRepository.save(user);
+            User savedUser = userRepository.save(user);
+            logger.info("User registered successfully with ID: {}", savedUser.getId());
+            return savedUser;
         } catch (DataIntegrityViolationException e) {
             throw new IllegalArgumentException("Email or phone number already exists");
         }
