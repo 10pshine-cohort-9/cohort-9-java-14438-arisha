@@ -104,6 +104,6 @@ public class AuthService {
         // update password
         user.setPasswordHash(newEncodedPassword);
         userRepository.save(user);
-
+        logger.info("Password changed successfully for user ID: {}", user.getId());
     }
 }
