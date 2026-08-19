@@ -91,6 +91,7 @@ public class ContactPhoneService {
             return false;
         }
         contactPhoneRepository.deleteById(id);
+        logger.info("Contact phone deleted with ID: {} for user ID: {}", id, userId);
         return true;
     }
 }
