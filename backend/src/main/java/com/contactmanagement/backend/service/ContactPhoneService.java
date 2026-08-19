@@ -11,9 +11,12 @@ import com.contactmanagement.backend.dto.ContactPhoneRequest;
 import com.contactmanagement.backend.entity.Contact;
 import com.contactmanagement.backend.entity.ContactPhone;
 import com.contactmanagement.backend.repository.ContactPhoneRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class ContactPhoneService {
+    private static final Logger logger =LoggerFactory.getLogger(ContactPhoneService.class);
     private final ContactPhoneRepository contactPhoneRepository;
     private final ContactService contactService;
 
