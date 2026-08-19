@@ -80,6 +80,7 @@ public class ContactPhoneService {
         foundPhone.setLabel(request.getLabel());
 
         ContactPhone savedPhone = contactPhoneRepository.save(foundPhone);
+        logger.info("Contact phone updated with ID: {} for user ID: {}", id, userId);
         return Optional.of(savedPhone);
     }
 
