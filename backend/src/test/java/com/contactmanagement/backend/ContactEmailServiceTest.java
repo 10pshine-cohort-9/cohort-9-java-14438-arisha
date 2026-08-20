@@ -3,6 +3,7 @@ package com.contactmanagement.backend;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
@@ -11,6 +12,7 @@ import org.mockito.Mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.contactmanagement.backend.dto.ContactEmailRequest;
 import com.contactmanagement.backend.entity.Contact;
@@ -56,6 +58,21 @@ public class ContactEmailServiceTest {
 
         verify(contactService).getContactById(1, 10);
         verify(contactEmailRepository).save(any(ContactEmail.class));
+    }
+
+    //Test: Email creation fails because contact does not exist
+    @Test
+    void createContactEmailFailsWhenContactNotFound() {
+
+        ContactEmailRequest request = new ContactEmailRequest();
+        request.setEmailAddress("arisha@example.com");
+        request.setLabel("Personal");
+        // email created for id 1 that does not exist
+        when(contactService.getContactById(1, 10)).thenReturn(Optional.empty());
+
+        assertThrows(ResponseStatusException.class, () -> contactEmailService.createContactEmail(1, 10, request));
+
+        verify(contactService).getContactById(1, 10);
     }
     
 }
