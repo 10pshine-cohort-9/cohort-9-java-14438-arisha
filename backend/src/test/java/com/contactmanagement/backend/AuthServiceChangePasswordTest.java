@@ -28,6 +28,7 @@ public class AuthServiceChangePasswordTest {
     @InjectMocks
     private AuthService authService;
 
+    //Case 1: Password changes successfully
     @Test
     void changePasswordSuccessfully() {
         User user = new User("Test User", "test@example.com", null, "oldHashedPassword");
@@ -42,6 +43,7 @@ public class AuthServiceChangePasswordTest {
         verify(userRepository).save(user);
     }
 
+    //Case 2: current password is added wrong and change password request fails
     @Test
     void changePasswordFailsWhenCurrentPasswordIsWrong() {
         User user = new User("Test User", "test@example.com", null, "oldHashedPassword");
