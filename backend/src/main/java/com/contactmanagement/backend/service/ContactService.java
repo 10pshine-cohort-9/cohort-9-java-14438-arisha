@@ -1,5 +1,6 @@
 package com.contactmanagement.backend.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -69,5 +70,22 @@ public class ContactService {
 
         return contactRepository.findByUserIdAndFirstNameContainingIgnoreCaseOrUserIdAndLastNameContainingIgnoreCase(
             userId, searchTerm, userId, searchTerm, pageable);
+    }
+
+    public String exportContactsToCsv(Integer userId) {
+
+        List<Contact> contacts = contactRepository.findByUserId(userId);
+        StringBuilder csv = new StringBuilder();
+
+        csv.append("First Name,Last Name,Title\n");
+
+        for (Contact contact : contacts) {
+            csv.append(contact.getFirstName()).append(",");
+            csv.append(contact.getLastName()).append(",");
+            csv.append(contact.getTitle() == null ? "" : contact.getTitle()).append("\n");
+        }
+
+        logger.info("Exported {} contacts for user ID: {}", contacts.size(), userId); 
+        return csv.toString();
     }
 }
