@@ -3,6 +3,7 @@ package com.contactmanagement.backend;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,6 +12,7 @@ import org.mockito.Mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.contactmanagement.backend.entity.Contact;
 import com.contactmanagement.backend.repository.ContactRepository;
@@ -59,5 +61,15 @@ public class ContactServiceTest {
         verify(contactRepository).findByIdAndUserId(1, 10);
         verify(contactRepository).delete(contact);
     }
-    
+
+    //Case 3: The contact does not exist for users to delete
+    @Test
+    void deleteContactFailsWhenContactNotFound() {
+        //contact not found
+        when(contactRepository.findByIdAndUserId(1, 10)).thenReturn(Optional.empty());
+
+        assertThrows(ResponseStatusException.class, () -> contactService.deleteContact(1, 10));
+
+        verify(contactRepository).findByIdAndUserId(1, 10);
+    }
 }
