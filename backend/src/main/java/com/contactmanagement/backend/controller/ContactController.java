@@ -20,10 +20,10 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.contactmanagement.backend.dto.ContactRequest;
 import com.contactmanagement.backend.entity.Contact;
 import com.contactmanagement.backend.entity.User;
 import com.contactmanagement.backend.service.ContactService;
-import com.contactmanagement.backend.dto.ContactRequest;
 
 @RestController
 @RequestMapping("/api/contacts")
@@ -65,9 +65,9 @@ public class ContactController {
 
     //5. Update a contact- CRUD action: PUT /api/contacts/{id}
     @PutMapping("/{id}")
-    public Contact updateContact(@PathVariable Integer id, @RequestBody Contact updatedContact, @AuthenticationPrincipal User user) {
-
-    return contactService.updateContact(id, user.getId(), updatedContact);
+    public Contact updateContact(@PathVariable Integer id, @RequestBody ContactRequest request, @AuthenticationPrincipal User user) {
+        Contact updatedContact = new Contact(request.getFirstName(), request.getLastName(), request.getTitle(), user);
+        return contactService.updateContact(id, user.getId(), updatedContact);
     }
 
     //6. Search from logged-in user's own contact list- CRUD action: GET /api/contacts/search?searchTerm={name}
