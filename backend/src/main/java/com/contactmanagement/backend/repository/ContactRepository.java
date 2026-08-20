@@ -1,5 +1,6 @@
 package com.contactmanagement.backend.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -18,6 +19,7 @@ public interface ContactRepository extends JpaRepository<Contact, Integer> {
 );
 
 Page<Contact> findByUserId(Integer userId, Pageable pageable);
+List<Contact> findByUserId(Integer userId);
 Optional<Contact> findByIdAndUserId(Integer id, Integer userId);
 
 }
