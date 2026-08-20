@@ -1,5 +1,8 @@
 package com.contactmanagement.backend.service;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.contactmanagement.backend.entity.Contact;
+import com.contactmanagement.backend.entity.User;
 import com.contactmanagement.backend.repository.ContactRepository;
 
 @Service
@@ -87,5 +91,11 @@ public class ContactService {
 
         logger.info("Exported {} contacts for user ID: {}", contacts.size(), userId); 
         return csv.toString();
+    }
+
+    public int importContactsFromCsv(String csvContent, User user) throws IOException {
+        BufferedReader reader = new BufferedReader(new StringReader(csvContent));
+
+        return 0;
     }
 }
