@@ -3,6 +3,7 @@ package com.contactmanagement.backend;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
@@ -11,6 +12,7 @@ import org.mockito.Mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.contactmanagement.backend.dto.ContactPhoneRequest;
 import com.contactmanagement.backend.entity.Contact;
@@ -30,6 +32,7 @@ public class ContactPhoneServiceTest {
     @InjectMocks
     private ContactPhoneService contactPhoneService;
 
+    //Test: create contact phone
     @Test
     void createContactPhoneSuccessfully() {
 
@@ -55,6 +58,21 @@ public class ContactPhoneServiceTest {
 
         verify(contactService).getContactById(1, 10);
         verify(contactPhoneRepository).save(any(ContactPhone.class));
+    }
+
+    //Test: failed to create contact phone
+    @Test
+    void createContactPhoneFailsWhenContactNotFound() {
+
+        ContactPhoneRequest request = new ContactPhoneRequest();
+        request.setPhoneNumber("03001234567");
+        request.setLabel("Mobile");
+
+        when(contactService.getContactById(1, 10)).thenReturn(Optional.empty());
+
+        assertThrows(ResponseStatusException.class, () -> contactPhoneService.createContactPhone(1, 10, request));
+
+        verify(contactService).getContactById(1, 10);
     }
     
 }
