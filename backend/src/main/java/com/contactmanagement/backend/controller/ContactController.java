@@ -2,6 +2,7 @@ package com.contactmanagement.backend.controller;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -71,5 +72,15 @@ public class ContactController {
 
         return contactService.searchContacts(user.getId(), searchTerm, pageable);
     }
+
+    @GetMapping("/export")
+    public ResponseEntity<String> exportContacts(@AuthenticationPrincipal User user) {
+        String csv = contactService.exportContactsToCsv(user.getId());
+
+        return ResponseEntity.ok()
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=contacts.csv")
+            .header(HttpHeaders.CONTENT_TYPE, "text/csv")
+            .body(csv);
+        }
 
 }
