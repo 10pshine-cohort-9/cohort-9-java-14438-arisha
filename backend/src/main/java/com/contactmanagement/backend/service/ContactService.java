@@ -96,6 +96,29 @@ public class ContactService {
     public int importContactsFromCsv(String csvContent, User user) throws IOException {
         BufferedReader reader = new BufferedReader(new StringReader(csvContent));
 
-        return 0;
+        String line;
+        int importedCount = 0;
+
+        reader.readLine(); // skip CSV header
+
+        while ((line = reader.readLine()) != null) {
+            String[] values = line.split(",");
+
+            if (values.length < 2) {
+                continue;
+            }
+
+            String firstName = values[0].trim();
+            String lastName = values[1].trim();
+            String title = values.length > 2 ? values[2].trim() : "";
+
+            Contact contact = new Contact(firstName, lastName, title, user);
+            contactRepository.save(contact);
+            importedCount++;
+        }
+
+        logger.info("Imported {} contacts for user ID: {}", importedCount, user.getId());
+
+        return importedCount;
     }
 }
