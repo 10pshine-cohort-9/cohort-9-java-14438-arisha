@@ -1,5 +1,7 @@
 package com.contactmanagement.backend.controller;
 
+import java.io.IOException;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -14,7 +16,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.contactmanagement.backend.entity.Contact;
 import com.contactmanagement.backend.entity.User;
@@ -73,6 +77,7 @@ public class ContactController {
         return contactService.searchContacts(user.getId(), searchTerm, pageable);
     }
 
+    //csv export
     @GetMapping("/export")
     public ResponseEntity<String> exportContacts(@AuthenticationPrincipal User user) {
         String csv = contactService.exportContactsToCsv(user.getId());
@@ -81,6 +86,17 @@ public class ContactController {
             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=contacts.csv")
             .header(HttpHeaders.CONTENT_TYPE, "text/csv")
             .body(csv);
-        }
+    }
+
+    //csv import
+    @PostMapping("/import")
+    public ResponseEntity<String> importContacts(@RequestPart("file") MultipartFile file,
+        @AuthenticationPrincipal User user) throws IOException {
+
+        String csvContent = new String(file.getBytes());
+        int importedCount = contactService.importContactsFromCsv(csvContent, user);
+
+        return ResponseEntity.ok(importedCount + " contacts imported successfully");
+    }
 
 }
