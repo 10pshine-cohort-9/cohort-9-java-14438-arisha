@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
@@ -73,6 +74,26 @@ public class ContactEmailServiceTest {
         assertThrows(ResponseStatusException.class, () -> contactEmailService.createContactEmail(1, 10, request));
 
         verify(contactService).getContactById(1, 10);
+    }
+
+    //Test: Delete email of a registered user
+    @Test
+    void deleteContactEmailSuccessfully() {
+        
+        Contact contact = new Contact();
+        contact.setId(1);
+
+        ContactEmail contactEmail = new ContactEmail("arisha@example.com", "Personal", contact);
+        contactEmail.setId(5);
+
+        when(contactEmailRepository.findById(5)).thenReturn(Optional.of(contactEmail));
+        when(contactService.getContactById(1, 10)).thenReturn(Optional.of(contact));
+
+        boolean result = contactEmailService.deleteContactEmail(5, 10);
+
+        assertTrue(result);
+
+        verify(contactEmailRepository).deleteById(5);
     }
     
 }
