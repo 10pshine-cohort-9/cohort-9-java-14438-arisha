@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.contactmanagement.backend.entity.Contact;
 import com.contactmanagement.backend.entity.User;
 import com.contactmanagement.backend.service.ContactService;
+import com.contactmanagement.backend.dto.ContactRequest;
 
 @RestController
 @RequestMapping("/api/contacts")
@@ -48,10 +49,9 @@ public class ContactController {
 
     //3. Creating a contact- CRUD action: POST /api/contacts
     @PostMapping
-    public ResponseEntity<Contact> createContact(@RequestBody Contact contact, @AuthenticationPrincipal User user){
-        contact.setId(null);
-        contact.setUser(user);
+    public ResponseEntity<Contact> createContact(@RequestBody ContactRequest request, @AuthenticationPrincipal User user) {
 
+        Contact contact = new Contact(request.getFirstName(), request.getLastName(), request.getTitle(), user);
         Contact savedContact = contactService.saveContact(contact);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedContact);
     }
