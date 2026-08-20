@@ -99,7 +99,10 @@ public class ContactService {
         String line;
         int importedCount = 0;
 
-        reader.readLine(); // skip CSV header
+        String header = reader.readLine();
+        if (header == null) {
+            return 0;
+        }
 
         while ((line = reader.readLine()) != null) {
             String[] values = line.split(",");
