@@ -1,10 +1,12 @@
 package com.contactmanagement.backend;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -38,6 +40,19 @@ public class AuthServiceChangePasswordTest {
         authService.changePassword(user, request);
         assertEquals("newHashedPassword", user.getPasswordHash());
         verify(userRepository).save(user);
+    }
+
+    @Test
+    void changePasswordFailsWhenCurrentPasswordIsWrong() {
+        User user = new User("Test User", "test@example.com", null, "oldHashedPassword");
+
+        ChangePasswordRequest request = new ChangePasswordRequest("wrongPassword", "newPassword123");
+
+        when(passwordEncoder.matches("wrongPassword", "oldHashedPassword")).thenReturn(false);
+
+        assertThrows(IllegalArgumentException.class,() -> authService.changePassword(user, request));
+
+        verify(userRepository, never()).save(user);
     }
     
 }
