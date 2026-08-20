@@ -44,5 +44,20 @@ public class ContactServiceTest {
 
         verify(contactRepository).findByIdAndUserId(1, 10);
     } 
+
+    //Case 2: Find and delete contact
+    @Test
+    void deleteContactSuccessfully() {
+
+        //Give contact id for deletion
+        Contact contact = new Contact();
+        contact.setId(1);
+
+        when(contactRepository.findByIdAndUserId(1, 10)).thenReturn(Optional.of(contact));
+        contactService.deleteContact(1, 10);
+
+        verify(contactRepository).findByIdAndUserId(1, 10);
+        verify(contactRepository).delete(contact);
+    }
     
 }
