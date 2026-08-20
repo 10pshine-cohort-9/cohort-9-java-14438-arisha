@@ -72,4 +72,33 @@ public class ContactServiceTest {
 
         verify(contactRepository).findByIdAndUserId(1, 10);
     }
+
+    //Case 4: Update a contact for a registered user
+    @Test
+    void updateContactSuccessfully() {
+
+        //old contact details
+        Contact existingContact = new Contact();
+        existingContact.setId(1);
+        existingContact.setFirstName("Ali");
+        existingContact.setLastName("Khan");
+        existingContact.setTitle("Student");
+
+        //new contact details
+        Contact updatedContact = new Contact();
+        updatedContact.setFirstName("Arisha");
+        updatedContact.setLastName("Fatima");
+        updatedContact.setTitle("Student");
+
+        when(contactRepository.findByIdAndUserId(1, 10)).thenReturn(Optional.of(existingContact));
+        when(contactRepository.save(existingContact)).thenReturn(existingContact);
+
+        Contact result = contactService.updateContact(1, 10, updatedContact);
+
+        assertEquals("Arisha", result.getFirstName());
+        assertEquals("Fatima", result.getLastName());
+        assertEquals("Student", result.getTitle());
+
+        verify(contactRepository).save(existingContact);
+    }
 }
