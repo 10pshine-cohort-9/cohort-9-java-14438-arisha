@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -13,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 
 import com.contactmanagement.backend.controller.ContactController;
 import com.contactmanagement.backend.dto.ContactRequest;
@@ -86,5 +88,27 @@ public class ContactControllerTest {
         assertEquals("text/csv", response.getHeaders().getFirst(HttpHeaders.CONTENT_TYPE));
 
         verify(contactService).exportContactsToCsv(10);
+    }
+
+    @Test
+    void importContactsSuccessfully() throws Exception {
+        User user = new User();
+        user.setId(10);
+
+        String csv = """
+            First Name,Last Name,Title
+            Ali,Khan,Student
+            Sara,Ahmed,Developer
+            """;
+
+        MockMultipartFile file = new MockMultipartFile("file", "contacts.csv", "text/csv", csv.getBytes());
+
+        when(contactService.importContactsFromCsv(anyString(), eq(user))).thenReturn(2);
+        ResponseEntity<String> response = contactController.importContacts(file, user);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("2 contacts imported successfully", response.getBody());
+
+        verify(contactService).importContactsFromCsv(anyString(), eq(user));
     }
 }
