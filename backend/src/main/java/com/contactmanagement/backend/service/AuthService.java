@@ -37,18 +37,12 @@ public class AuthService {
             throw new IllegalArgumentException("Email or phone number is required");
         }
 
-        //Duplicate email check
-        if (email != null && !email.isBlank()){ //if email is provided by the user
-            if (userRepository.existsByEmail(email)){ //if email exists in database
-                throw new IllegalArgumentException("Email is already registered");
-            }
+        if (email != null && !email.isBlank() && userRepository.existsByEmail(email)) {
+            throw new IllegalArgumentException("Email is already registered");
         }
 
-        //Duplicate phone number check
-        if (phoneNumber != null && !phoneNumber.isBlank()){ //if number is provided by the user
-            if (userRepository.existsByPhoneNumber(phoneNumber)){ //if number exists in database
-                throw new IllegalArgumentException("Phone number is already registered");
-            }
+        if (phoneNumber != null && !phoneNumber.isBlank() && userRepository.existsByPhoneNumber(phoneNumber)) {
+            throw new IllegalArgumentException("Phone number is already registered");
         }
 
         String encodedPassword = passwordEncoder.encode(request.getPassword());
