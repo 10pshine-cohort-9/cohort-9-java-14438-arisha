@@ -1,5 +1,6 @@
 package com.contactmanagement.backend;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -7,14 +8,17 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.contactmanagement.backend.entity.Contact;
+import com.contactmanagement.backend.entity.User;
 import com.contactmanagement.backend.repository.ContactRepository;
 import com.contactmanagement.backend.service.ContactService;
 
@@ -100,5 +104,37 @@ public class ContactServiceTest {
         assertEquals("Student", result.getTitle());
 
         verify(contactRepository).save(existingContact);
+    }
+
+    @Test
+    void exportContactsToCsvSuccessfully() {
+        Contact contact = new Contact();
+        contact.setFirstName("Ali");
+        contact.setLastName("Khan");
+        contact.setTitle("Student");
+
+        when(contactRepository.findByUserId(10)).thenReturn(List.of(contact));
+
+        String result = contactService.exportContactsToCsv(10);
+
+        assertEquals("First Name,Last Name,Title\nAli,Khan,Student\n", result);
+
+        verify(contactRepository).findByUserId(10);
+    }
+
+    @Test
+    void importContactsFromCsvSuccessfully() throws Exception { 
+        User user = new User();
+        user.setId(10);
+
+        String csv =
+            "First Name,Last Name,Title\n" +
+            "Ali,Khan,Student\n" +
+            "Sara,Ahmed,Developer\n";
+
+        int result = contactService.importContactsFromCsv(csv, user);
+
+        assertEquals(2, result);
+        verify(contactRepository, times(2)).save(any(Contact.class));
     }
 }
