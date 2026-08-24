@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -64,4 +65,26 @@ public class ContactControllerTest {
 
         verify(contactService).updateContact(eq(1), eq(10), any(Contact.class));
     } 
+
+    @Test
+    void exportContactsSuccessfully() {
+        User user = new User();
+        user.setId(10);
+
+        String csv = """
+            First Name,Last Name,Title
+            Ali,Khan,Student
+            """;
+
+        when(contactService.exportContactsToCsv(10)).thenReturn(csv);
+
+        ResponseEntity<String> response = contactController.exportContacts(user);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(csv, response.getBody());
+        assertEquals("attachment; filename=contacts.csv", response.getHeaders().getFirst(HttpHeaders.CONTENT_DISPOSITION));
+        assertEquals("text/csv", response.getHeaders().getFirst(HttpHeaders.CONTENT_TYPE));
+
+        verify(contactService).exportContactsToCsv(10);
+    }
 }
