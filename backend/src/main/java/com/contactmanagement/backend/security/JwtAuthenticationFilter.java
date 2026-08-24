@@ -21,7 +21,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter{
-    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+    private static final Logger jwtLogger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
     private final JwtService jwtService;
     private final UserRepository userRepository;
 
@@ -50,7 +50,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
                             SecurityContextHolder.getContext().setAuthentication(authentication);
                         }
                     }catch (JwtException | IllegalArgumentException e){
-                        logger.warn("Invalid JWT token received");
+                        jwtLogger.warn("Invalid JWT token received");
                     } 
                 }
                 filterChain.doFilter(request, response);
