@@ -127,10 +127,11 @@ public class ContactServiceTest {
         User user = new User();
         user.setId(10);
 
-        String csv =
-            "First Name,Last Name,Title\n" +
-            "Ali,Khan,Student\n" +
-            "Sara,Ahmed,Developer\n";
+        String csv = """
+            First Name,Last Name,Title
+            Ali,Khan,Student
+            Sara,Ahmed,Developer
+            """;
 
         int result = contactService.importContactsFromCsv(csv, user);
 
