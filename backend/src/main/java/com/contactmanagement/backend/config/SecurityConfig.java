@@ -20,9 +20,7 @@ public class SecurityConfig {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
-    @SuppressWarnings("java:S112")
     @Bean
-    // Spring Security's HttpSecurity build process declares Exception.
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
