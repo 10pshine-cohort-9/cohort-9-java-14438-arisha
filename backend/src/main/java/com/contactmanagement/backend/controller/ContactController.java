@@ -35,19 +35,16 @@ public class ContactController {
         this.contactService = contactService;
     }
 
-    //1. fetch all contacts- CRUD action: GET /api/contacts
     @GetMapping
     public Page<Contact> getAllContacts(Pageable pageable, @AuthenticationPrincipal User user){
         return contactService.getAllContacts(user.getId(), pageable);
     }
 
-    //2. fetch contacts by id- CRUD action: Get /api/contacts/{id}
     @GetMapping("/{id}")
     public ResponseEntity<Contact> getContactById(@PathVariable Integer id, @AuthenticationPrincipal User user){
         return ResponseEntity.of(contactService.getContactById(id, user.getId()));
     }
 
-    //3. Creating a contact- CRUD action: POST /api/contacts
     @PostMapping
     public ResponseEntity<Contact> createContact(@RequestBody ContactRequest request, @AuthenticationPrincipal User user) {
 
@@ -56,28 +53,24 @@ public class ContactController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedContact);
     }
 
-    //4. Delete contact by id- CRUD action: DELETE /api/contacts/{id}
     @DeleteMapping("/{id}")
     public void deleteContact(@PathVariable Integer id, @AuthenticationPrincipal User user) {
 
     contactService.deleteContact(id, user.getId());
     }
 
-    //5. Update a contact- CRUD action: PUT /api/contacts/{id}
     @PutMapping("/{id}")
     public Contact updateContact(@PathVariable Integer id, @RequestBody ContactRequest request, @AuthenticationPrincipal User user) {
         Contact updatedContact = new Contact(request.getFirstName(), request.getLastName(), request.getTitle(), user);
         return contactService.updateContact(id, user.getId(), updatedContact);
     }
 
-    //6. Search from logged-in user's own contact list- CRUD action: GET /api/contacts/search?searchTerm={name}
     @GetMapping("/search")
     public Page<Contact> searchContacts(@RequestParam String searchTerm, Pageable pageable, @AuthenticationPrincipal User user) {
 
         return contactService.searchContacts(user.getId(), searchTerm, pageable);
     }
 
-    //csv export
     @GetMapping("/export")
     public ResponseEntity<String> exportContacts(@AuthenticationPrincipal User user) {
         String csv = contactService.exportContactsToCsv(user.getId());
@@ -88,7 +81,6 @@ public class ContactController {
             .body(csv);
     }
 
-    //csv import
     @PostMapping("/import")
     public ResponseEntity<String> importContacts(@RequestPart("file") MultipartFile file,
         @AuthenticationPrincipal User user) throws IOException {
