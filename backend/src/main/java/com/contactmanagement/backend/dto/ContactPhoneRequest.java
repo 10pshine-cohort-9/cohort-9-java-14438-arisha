@@ -5,6 +5,7 @@ public class ContactPhoneRequest {
     private String label;
 
     public ContactPhoneRequest() {
+        // Required by Jackson for JSON deserialization
     }
 
     public String getPhoneNumber() {

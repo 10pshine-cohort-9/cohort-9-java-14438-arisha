@@ -5,6 +5,7 @@ public class ContactEmailRequest {
     private String label;
 
     public ContactEmailRequest() {
+        // Required by Jackson for JSON deserialization
     }
 
     public String getEmailAddress() {
