@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import java.util.List;
 
 import com.contactmanagement.backend.controller.ContactEmailController;
 import com.contactmanagement.backend.dto.ContactEmailRequest;
@@ -47,5 +48,32 @@ public class ContactEmailControllerTest {
         assertEquals(createdEmail, response.getBody());
 
         verify(contactEmailService).createContactEmail(1, 10, request);
+    }
+
+    @Test
+    void getEmailsByContactIdSuccessfully() {
+        User user = new User();
+        user.setId(10);
+
+        ContactEmail firstEmail = new ContactEmail();
+        firstEmail.setId(1);
+        firstEmail.setEmailAddress("ali@example.com");
+        firstEmail.setLabel("Personal");
+
+        ContactEmail secondEmail = new ContactEmail();
+        secondEmail.setId(2);
+        secondEmail.setEmailAddress("ali@work.com");
+        secondEmail.setLabel("Work");
+
+        List<ContactEmail> emails = List.of(firstEmail, secondEmail);
+
+        when(contactEmailService.getEmailsByContactId(1, 10)).thenReturn(emails);
+
+        List<ContactEmail> result = contactEmailController.getEmailsByContactId(1, user);
+
+        assertEquals(2, result.size());
+        assertEquals(emails, result);
+
+        verify(contactEmailService).getEmailsByContactId(1, 10);
     }
 }
