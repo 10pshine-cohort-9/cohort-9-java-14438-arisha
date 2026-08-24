@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.verify;
@@ -45,4 +46,22 @@ public class ContactControllerTest {
         verify(contactService).saveContact(any(Contact.class));
     }
     
+    @Test
+    void updateContactSuccessfully() {
+        User user = new User();
+        user.setId(10);
+
+        ContactRequest request = new ContactRequest("Arisha", "Fatima", "Student");
+
+        Contact updatedContact = new Contact("Arisha", "Fatima", "Student", user);
+        updatedContact.setId(1);
+
+        when(contactService.updateContact(eq(1), eq(10), any(Contact.class))).thenReturn(updatedContact);
+
+        Contact result = contactController.updateContact(1, request, user);
+
+        assertEquals(updatedContact, result);
+
+        verify(contactService).updateContact(eq(1), eq(10), any(Contact.class));
+    } 
 }
