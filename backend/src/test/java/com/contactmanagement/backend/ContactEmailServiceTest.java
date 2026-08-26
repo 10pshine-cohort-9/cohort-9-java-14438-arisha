@@ -1,5 +1,6 @@
 package com.contactmanagement.backend;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -96,4 +97,48 @@ public class ContactEmailServiceTest {
         verify(contactEmailRepository).deleteById(5);
     }
     
+    @Test
+    void getEmailsByContactIdSuccessfully() {
+        Contact contact = new Contact();
+        contact.setId(1);
+
+        ContactEmail email = new ContactEmail("arisha@example.com", "Personal", contact);
+        email.setId(5);
+
+        when(contactService.getContactById(1, 10)).thenReturn(Optional.of(contact));
+        when(contactEmailRepository.findByContactId(1)).thenReturn(List.of(email));
+
+        List<ContactEmail> result = contactEmailService.getEmailsByContactId(1, 10);
+
+        assertEquals(1, result.size());
+        assertEquals(email, result.get(0));
+
+        verify(contactService).getContactById(1, 10);
+        verify(contactEmailRepository).findByContactId(1);
+    }
+
+    @Test
+    void updateContactEmailSuccessfully() {
+        Contact contact = new Contact();
+        contact.setId(1);
+
+        ContactEmail existingEmail = new ContactEmail("old@example.com", "Personal", contact);
+        existingEmail.setId(5);
+
+        ContactEmailRequest request = new ContactEmailRequest();
+        request.setEmailAddress("new@example.com");
+        request.setLabel("Work");
+
+        when(contactEmailRepository.findById(5)).thenReturn(Optional.of(existingEmail));
+        when(contactService.getContactById(1, 10)).thenReturn(Optional.of(contact));
+        when(contactEmailRepository.save(existingEmail)).thenReturn(existingEmail);
+
+        Optional<ContactEmail> result = contactEmailService.updateContactEmail(5, 10, request);
+
+        assertTrue(result.isPresent());
+        assertEquals("new@example.com", result.get().getEmailAddress());
+        assertEquals("Work", result.get().getLabel());
+
+        verify(contactEmailRepository).save(existingEmail);
+    }
 }
