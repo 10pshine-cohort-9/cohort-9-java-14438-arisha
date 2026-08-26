@@ -77,6 +77,32 @@ function ContactsPage() {
                 setError("Unable to connect to the server");
             }
     }
+    async function handleDeleteContact(contactId) {
+        const token = localStorage.getItem("token");
+
+        try {
+            const response = await fetch("/api/contacts/" + contactId, {
+                method: "DELETE",
+                headers: {
+                    Authorization: "Bearer " + token,
+                },
+            });
+
+            if (!response.ok) {
+                setError("Unable to delete contact");
+                return;
+            }
+
+            const updatedContacts = contacts.filter(
+                (contact) => contact.id !== contactId
+            );
+
+            setContacts(updatedContacts);
+            setError("");
+        } catch {
+            setError("Unable to connect to the server");
+        }
+    }  
 
     return (
         <div>
@@ -128,6 +154,10 @@ function ContactsPage() {
                         {contact.firstName} {contact.lastName}
                     </h3>
                     <p>{contact.title}</p>
+
+                    <button onClick={() => handleDeleteContact(contact.id)}>
+                        Delete
+                    </button>
                 </div>
             ))}
         </div>
