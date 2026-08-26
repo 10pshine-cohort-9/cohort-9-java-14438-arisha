@@ -116,5 +116,30 @@ public class ContactPhoneServiceTest {
         verify(contactService).getContactById(1, 10);
         verify(contactPhoneRepository).findByContactId(1);
     }
+
+    @Test
+    void updateContactPhoneSuccessfully() {
+        Contact contact = new Contact();
+        contact.setId(1);
+
+        ContactPhone existingPhone = new ContactPhone("03001234567", "Mobile", contact);
+        existingPhone.setId(5);
+
+        ContactPhoneRequest request = new ContactPhoneRequest();
+        request.setPhoneNumber("03111234567");
+        request.setLabel("Work");
+
+        when(contactPhoneRepository.findById(5)).thenReturn(Optional.of(existingPhone));
+        when(contactService.getContactById(1, 10)).thenReturn(Optional.of(contact));
+        when(contactPhoneRepository.save(existingPhone)).thenReturn(existingPhone);
+
+        Optional<ContactPhone> result = contactPhoneService.updateContactPhone(5, 10, request);
+
+        assertTrue(result.isPresent());
+        assertEquals("03111234567", result.get().getPhoneNumber());
+        assertEquals("Work", result.get().getLabel());
+
+        verify(contactPhoneRepository).save(existingPhone);
+    }
     
 }
