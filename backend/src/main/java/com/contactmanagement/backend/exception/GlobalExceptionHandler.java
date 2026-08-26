@@ -27,6 +27,12 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(exception.getStatusCode()).body(exception.getReason());
     }
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException exception) {
+        logger.warn("Invalid request");
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid request");
+    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGeneralException(Exception exception) {
