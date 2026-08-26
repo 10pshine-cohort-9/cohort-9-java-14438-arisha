@@ -1,5 +1,6 @@
 package com.contactmanagement.backend.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,11 @@ public class ContactPhoneController {
 
     public ContactPhoneController(ContactPhoneService contactPhoneService) {
         this.contactPhoneService = contactPhoneService;
+    }
+
+    @GetMapping("/contact/{contactId}")
+    public List<ContactPhone> getPhonesByContactId(@PathVariable Integer contactId, @AuthenticationPrincipal User user) {
+        return contactPhoneService.getPhonesByContactId(contactId, user.getId());
     }
 
     @GetMapping ("/{id}")

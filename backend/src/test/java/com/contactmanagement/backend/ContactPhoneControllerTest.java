@@ -1,5 +1,6 @@
 package com.contactmanagement.backend;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -146,6 +147,32 @@ class ContactPhoneControllerTest {
         ResponseEntity<Void> response = contactPhoneController.deleteContactPhone(1, user);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void getPhonesByContactIdSuccessfully() {
+        User user = new User();
+        user.setId(10);
+
+        ContactPhone firstPhone = new ContactPhone();
+        firstPhone.setId(1);
+        firstPhone.setPhoneNumber("03001234567");
+        firstPhone.setLabel("Personal");
+
+        ContactPhone secondPhone = new ContactPhone();
+        secondPhone.setId(2);
+        secondPhone.setPhoneNumber("03111234567");
+        secondPhone.setLabel("Work");
+
+        List<ContactPhone> phones = List.of(firstPhone, secondPhone);
+
+        when(contactPhoneService.getPhonesByContactId(1, 10)).thenReturn(phones);
+
+        List<ContactPhone> result = contactPhoneController.getPhonesByContactId(1, user);
+
+        assertEquals(phones, result);
+
+        verify(contactPhoneService).getPhonesByContactId(1, 10);
     }
     
 }
