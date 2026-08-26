@@ -281,6 +281,10 @@ function ContactsPage() {
 
                             <p>{contact.title}</p>
 
+                            <button onClick={() => navigate("/contacts/" + contact.id)}>
+                                View Details
+                            </button>
+
                             <button onClick={() => startEditing(contact)}>
                                 Edit
                             </button>
