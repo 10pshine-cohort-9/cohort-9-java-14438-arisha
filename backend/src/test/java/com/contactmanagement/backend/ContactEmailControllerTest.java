@@ -136,4 +136,28 @@ class ContactEmailControllerTest {
 
         verify(contactEmailService).updateContactEmail(1, 10, request);
     }
+
+    @Test
+    void getContactEmailByIdReturnsNotFound() { 
+        User user = new User();
+        user.setId(10);
+
+        when(contactEmailService.getContactEmailById(1, 10)).thenReturn(Optional.empty());
+
+        ResponseEntity<ContactEmail> response = contactEmailController.getContactEmailById(1, user);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void deleteContactEmailReturnsNotFound() {
+        User user = new User();
+        user.setId(10);
+
+        when(contactEmailService.deleteContactEmail(1, 10)).thenReturn(false);
+
+        ResponseEntity<Void> response = contactEmailController.deleteContactEmail(1, user);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
 }
