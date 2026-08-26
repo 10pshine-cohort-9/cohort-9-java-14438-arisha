@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import java.util.List;
+import java.util.Optional;
 
 import com.contactmanagement.backend.controller.ContactEmailController;
 import com.contactmanagement.backend.dto.ContactEmailRequest;
@@ -75,5 +76,25 @@ public class ContactEmailControllerTest {
         assertEquals(emails, result);
 
         verify(contactEmailService).getEmailsByContactId(1, 10);
+    }
+
+    @Test
+    void getContactEmailByIdSuccessfully() {
+        User user = new User();
+        user.setId(10);
+
+        ContactEmail email = new ContactEmail();
+        email.setId(1);
+        email.setEmailAddress("ali@example.com");
+        email.setLabel("Personal");
+
+        when(contactEmailService.getContactEmailById(1, 10)).thenReturn(Optional.of(email));
+
+        ResponseEntity<ContactEmail> response = contactEmailController.getContactEmailById(1, user);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(email, response.getBody());
+
+        verify(contactEmailService).getContactEmailById(1, 10);
     }
 }
