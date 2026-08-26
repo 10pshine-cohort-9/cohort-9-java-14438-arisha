@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.contactmanagement.backend.entity.Contact;
@@ -116,6 +117,7 @@ public class ContactService {
         return writer.toString();
     }
 
+    @Transactional
     public int importContactsFromCsv(String csvContent, User user) {
 
         List<Contact> contactsToImport = new ArrayList<>();
