@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -140,5 +141,33 @@ public class ContactServiceTest {
 
         assertEquals(2, result);
         verify(contactRepository, times(2)).save(any(Contact.class));
+    }
+
+    @Test
+    void csvRoundTripPreservesSpecialCharacters() throws Exception {
+        User user = new User();
+        user.setId(10);
+
+        Contact originalContact = new Contact();
+        originalContact.setFirstName("Ali, Jr.");
+        originalContact.setLastName("O\"Connor");
+        originalContact.setTitle("Senior\nDeveloper");
+
+        when(contactRepository.findByUserId(10)).thenReturn(List.of(originalContact));
+
+        String csv = contactService.exportContactsToCsv(10);
+
+        int importedCount = contactService.importContactsFromCsv(csv, user);
+
+        ArgumentCaptor<Contact> contactCaptor = ArgumentCaptor.forClass(Contact.class);
+
+        verify(contactRepository).save(contactCaptor.capture());
+
+        Contact importedContact = contactCaptor.getValue();
+
+        assertEquals(1, importedCount);
+        assertEquals("Ali, Jr.", importedContact.getFirstName());
+        assertEquals("O\"Connor", importedContact.getLastName());
+        assertEquals("Senior\nDeveloper", importedContact.getTitle());
     }
 }
