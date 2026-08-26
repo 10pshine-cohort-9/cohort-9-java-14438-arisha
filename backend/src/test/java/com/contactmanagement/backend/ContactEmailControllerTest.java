@@ -21,7 +21,7 @@ import com.contactmanagement.backend.entity.User;
 import com.contactmanagement.backend.service.ContactEmailService;
 
 @ExtendWith(MockitoExtension.class)
-public class ContactEmailControllerTest {
+class ContactEmailControllerTest {
     @Mock
     private ContactEmailService contactEmailService;
 

@@ -20,7 +20,7 @@ import com.contactmanagement.backend.entity.User;
 import com.contactmanagement.backend.service.ContactPhoneService;
 
 @ExtendWith(MockitoExtension.class)
-public class ContactPhoneControllerTest {
+class ContactPhoneControllerTest {
     @Mock
     private ContactPhoneService contactPhoneService;
 
