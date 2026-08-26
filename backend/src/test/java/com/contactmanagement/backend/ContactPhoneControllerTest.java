@@ -94,5 +94,19 @@ public class ContactPhoneControllerTest {
 
         verify(contactPhoneService).updateContactPhone(1, 10, request);
     }
+
+    @Test
+    void deleteContactPhoneSuccessfully() {
+        User user = new User();
+        user.setId(10);
+
+        when(contactPhoneService.deleteContactPhone(1, 10)).thenReturn(true);
+
+        ResponseEntity<Void> response = contactPhoneController.deleteContactPhone(1, user);
+
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+
+        verify(contactPhoneService).deleteContactPhone(1, 10);
+    }
     
 }
