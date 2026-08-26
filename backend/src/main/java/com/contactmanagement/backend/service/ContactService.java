@@ -2,6 +2,8 @@ package com.contactmanagement.backend.service;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.io.UncheckedIOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -114,46 +116,43 @@ public class ContactService {
         return writer.toString();
     }
 
-    public int importContactsFromCsv(String csvContent, User user)
-        throws IOException {
+    public int importContactsFromCsv(String csvContent, User user) {
 
-    int importedCount = 0;
+        List<Contact> contactsToImport = new ArrayList<>();
 
-    CSVFormat format = CSVFormat.DEFAULT.builder()
-            .setHeader("First Name", "Last Name", "Title")
-            .setSkipHeaderRecord(true)
-            .get();
+        CSVFormat format = CSVFormat.DEFAULT.builder().setHeader("First Name", "Last Name", "Title").setSkipHeaderRecord(true).get();
 
-    try (CSVParser parser = CSVParser.parse(csvContent, format)) {
+        try (CSVParser parser = CSVParser.parse(csvContent, format)) {
 
-        for (CSVRecord record : parser) {
+            for (CSVRecord record : parser) {
 
-            if (record.size() < 2) {
-                continue;
+                if (record.size() < 2) {
+                    throw new IllegalArgumentException("Invalid CSV file");
+                }
+
+                String firstName = record.get(0).trim();
+                String lastName = record.get(1).trim();
+
+                String title = "";
+                if (record.size() > 2) {
+                    title = record.get(2).trim();
+                }
+
+                Contact contact = new Contact(firstName, lastName, title, user);
+
+                contactsToImport.add(contact);
             }
 
-            String firstName = record.get(0).trim();
-            String lastName = record.get(1).trim();
-
-            String title = "";
-            if (record.size() > 2) {
-                title = record.get(2).trim();
-            }
-
-            Contact contact =
-                    new Contact(firstName, lastName, title, user);
-
-            contactRepository.save(contact);
-            importedCount++;
+        } catch (IOException | IllegalStateException | UncheckedIOException exception) {
+            throw new IllegalArgumentException("Invalid CSV file", exception);
         }
+
+        for (Contact contact : contactsToImport) {
+            contactRepository.save(contact);
+        }
+
+        logger.info("Imported {} contacts for user ID: {}", contactsToImport.size(), user.getId());
+
+        return contactsToImport.size();
     }
-
-    logger.info(
-            "Imported {} contacts for user ID: {}",
-            importedCount,
-            user.getId()
-    );
-
-    return importedCount;
-}
 }

@@ -170,4 +170,18 @@ public class ContactServiceTest {
         assertEquals("O\"Connor", importedContact.getLastName());
         assertEquals("Senior\nDeveloper", importedContact.getTitle());
     }
+
+    @Test
+    void malformedCsvDoesNotSaveAnyContacts() {
+        User user = new User();
+        user.setId(10);
+
+        String csv = "First Name,Last Name,Title\n"
+                + "Ali,Khan,Student\n"
+                + "\"Sara,Ahmed,Developer";
+
+        assertThrows(IllegalArgumentException.class, () -> contactService.importContactsFromCsv(csv, user));
+
+        verify(contactRepository, times(0)).save(any(Contact.class));
+    }
 }
