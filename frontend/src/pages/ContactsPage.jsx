@@ -7,6 +7,10 @@ function ContactsPage() {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [title, setTitle] = useState("");
+    const [editingId, setEditingId] = useState(null);
+    const [editFirstName, setEditFirstName] = useState("");
+    const [editLastName, setEditLastName] = useState("");
+    const [editTitle, setEditTitle] = useState("");
 
     const navigate = useNavigate();
 
@@ -104,6 +108,55 @@ function ContactsPage() {
         }
     }  
 
+    function startEditing(contact) {
+        setEditingId(contact.id);
+        setEditFirstName(contact.firstName);
+        setEditLastName(contact.lastName);
+        setEditTitle(contact.title || "");
+    }
+
+    async function handleUpdateContact(event) {
+        event.preventDefault();
+
+        const token = localStorage.getItem("token");
+
+        try {
+            const response = await fetch("/api/contacts/" + editingId, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + token,
+                },
+                body: JSON.stringify({
+                    firstName: editFirstName,
+                    lastName: editLastName,
+                    title: editTitle,
+                }),
+            });
+
+            if (!response.ok) {
+                setError("Unable to update contact");
+                return;
+            }
+
+            const updatedContact = await response.json();
+
+            const updatedContacts = contacts.map((contact) => {
+                if (contact.id === editingId) {
+                    return updatedContact;
+                }
+
+                 return contact;
+            });
+
+            setContacts(updatedContacts);
+            setEditingId(null);
+            setError("");
+        } catch {
+            setError("Unable to connect to the server");
+        }
+    }
+
     return (
         <div>
             <h1>Contacts</h1>
@@ -150,14 +203,54 @@ function ContactsPage() {
 
             {contacts.map((contact) => (
                 <div key={contact.id}>
-                    <h3>
-                        {contact.firstName} {contact.lastName}
-                    </h3>
-                    <p>{contact.title}</p>
+                    {editingId === contact.id ? (
+                        <form onSubmit={handleUpdateContact}>
+                            <input
+                                type="text"
+                                value={editFirstName}
+                                onChange={(event) => setEditFirstName(event.target.value)}
+                                required
+                            />
 
-                    <button onClick={() => handleDeleteContact(contact.id)}>
-                        Delete
-                    </button>
+                            <input
+                                type="text"
+                                value={editLastName}
+                                onChange={(event) => setEditLastName(event.target.value)}
+                                required
+                            />
+
+                            <input
+                                type="text"
+                                value={editTitle}
+                                onChange={(event) => setEditTitle(event.target.value)}
+                            />
+
+                            <button type="submit">Save</button>
+
+                            <button
+                                type="button"
+                                onClick={() => setEditingId(null)}
+                            >
+                                Cancel
+                            </button>
+                        </form>
+                    ) : (
+                        <>
+                            <h3>
+                                {contact.firstName} {contact.lastName}
+                            </h3>
+
+                            <p>{contact.title}</p>
+
+                            <button onClick={() => startEditing(contact)}>
+                                Edit
+                            </button>
+
+                            <button onClick={() => handleDeleteContact(contact.id)}>
+                                Delete
+                            </button>
+                        </>
+                    )}
                 </div>
             ))}
         </div>
