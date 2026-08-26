@@ -11,6 +11,7 @@ function ContactsPage() {
     const [editFirstName, setEditFirstName] = useState("");
     const [editLastName, setEditLastName] = useState("");
     const [editTitle, setEditTitle] = useState("");
+    const [searchTerm, setSearchTerm] = useState("");
 
     const navigate = useNavigate();
 
@@ -157,9 +158,47 @@ function ContactsPage() {
         }
     }
 
+    async function handleSearch(event) {
+        event.preventDefault();
+        const token = localStorage.getItem("token");
+
+        try {
+            const response = await fetch(
+                "/api/contacts/search?searchTerm=" + searchTerm,
+                {
+                    headers: {
+                        Authorization: "Bearer " + token,
+                    },
+                }
+            );
+
+            if (!response.ok) {
+                ("Unable to search contacts");
+                return;
+            }
+
+            const data = await response.json();
+
+            setContacts(data.content);
+            setError("");
+        } catch {
+            setError("Unable to connect to the server");
+        }
+    }
+
     return (
         <div>
             <h1>Contacts</h1>
+            <form onSubmit={handleSearch}>
+                <input
+                    type="text"
+                    placeholder="Search contacts"
+                    value={searchTerm}
+                    onChange={(event) => setSearchTerm(event.target.value)}
+                />
+
+                <button type="submit">Search</button>
+            </form>
             <h2>Add Contact</h2>
 
             <form onSubmit={handleCreateContact}>
