@@ -1,5 +1,7 @@
 package com.contactmanagement.backend;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,6 +13,8 @@ import org.mockito.Mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -110,5 +114,68 @@ class ContactControllerTest {
         assertEquals("2 contacts imported successfully", response.getBody());
 
         verify(contactService).importContactsFromCsv(anyString(), eq(user));
+    }
+
+    @Test
+    void getAllContactsSuccessfully() {
+        User user = new User();
+        user.setId(10);
+
+        Pageable pageable = Pageable.unpaged();
+        Page<Contact> page = Page.empty();
+
+        when(contactService.getAllContacts(10, pageable)).thenReturn(page);
+
+        Page<Contact> result = contactController.getAllContacts(pageable, user);
+
+        assertEquals(page, result);
+
+        verify(contactService).getAllContacts(10, pageable);
+    }
+
+    @Test
+    void getContactByIdSuccessfully() {
+
+        User user = new User();
+        user.setId(10);
+
+        Contact contact = new Contact();
+        contact.setId(1);
+
+        when(contactService.getContactById(1, 10)).thenReturn(Optional.of(contact));
+
+        ResponseEntity<Contact> response = contactController.getContactById(1, user);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(contact, response.getBody());
+    }
+
+    @Test
+    void deleteContactSuccessfully() {
+
+        User user = new User();
+        user.setId(10);
+
+        contactController.deleteContact(1, user);
+
+        verify(contactService).deleteContact(1, 10);
+    }
+
+    @Test
+    void searchContactsSuccessfully() {
+
+        User user = new User();
+        user.setId(10);
+
+        Pageable pageable = Pageable.unpaged();
+        Page<Contact> page = Page.empty();
+
+        when(contactService.searchContacts(10, "Ali", pageable)).thenReturn(page);
+
+        Page<Contact> result = contactController.searchContacts("Ali", pageable, user);
+
+        assertEquals(page, result);
+
+        verify(contactService).searchContacts(10, "Ali", pageable);
     }
 }
