@@ -108,5 +108,44 @@ class ContactPhoneControllerTest {
 
         verify(contactPhoneService).deleteContactPhone(1, 10);
     }
+
+    @Test
+    void getPhoneByIdReturnsNotFound() {
+        User user = new User();
+        user.setId(10);
+
+        when(contactPhoneService.getContactPhoneById(1, 10)).thenReturn(Optional.empty());
+
+        ResponseEntity<ContactPhone> response = contactPhoneController.getPhoneById(1, user);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void updateContactPhoneReturnsNotFound() {
+        User user = new User();
+        user.setId(10);
+
+        ContactPhoneRequest request = new ContactPhoneRequest();
+
+        when(contactPhoneService.updateContactPhone(1, 10, request)).thenReturn(Optional.empty());
+
+        ResponseEntity<ContactPhone> response = contactPhoneController.updateContactPhone(1, request, user);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void deleteContactPhoneReturnsNotFound() {
+
+        User user = new User();
+        user.setId(10);
+
+        when(contactPhoneService.deleteContactPhone(1, 10)).thenReturn(false);
+
+        ResponseEntity<Void> response = contactPhoneController.deleteContactPhone(1, user);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
     
 }
