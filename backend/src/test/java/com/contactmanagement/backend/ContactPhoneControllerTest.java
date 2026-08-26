@@ -70,5 +70,29 @@ public class ContactPhoneControllerTest {
 
         verify(contactPhoneService).getContactPhoneById(1, 10);
     }
+
+    @Test
+    void updateContactPhoneSuccessfully() {
+        User user = new User();
+        user.setId(10);
+
+        ContactPhoneRequest request = new ContactPhoneRequest();
+        request.setPhoneNumber("03111234567");
+        request.setLabel("Work");
+
+        ContactPhone updatedPhone = new ContactPhone();
+        updatedPhone.setId(1);
+        updatedPhone.setPhoneNumber("03111234567");
+        updatedPhone.setLabel("Work");
+
+        when(contactPhoneService.updateContactPhone(1, 10, request)).thenReturn(Optional.of(updatedPhone));
+
+        ResponseEntity<ContactPhone> response = contactPhoneController.updateContactPhone(1, request, user);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(updatedPhone, response.getBody());
+
+        verify(contactPhoneService).updateContactPhone(1, 10, request);
+    }
     
 }
