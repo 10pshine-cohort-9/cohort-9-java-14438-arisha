@@ -1,5 +1,8 @@
 package com.contactmanagement.backend;
 
+import java.util.List;
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,8 +13,6 @@ import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import java.util.List;
-import java.util.Optional;
 
 import com.contactmanagement.backend.controller.ContactEmailController;
 import com.contactmanagement.backend.dto.ContactEmailRequest;
@@ -96,5 +97,19 @@ public class ContactEmailControllerTest {
         assertEquals(email, response.getBody());
 
         verify(contactEmailService).getContactEmailById(1, 10);
+    }
+
+    @Test
+    void deleteContactEmailSuccessfully() {
+        User user = new User();
+        user.setId(10);
+
+        when(contactEmailService.deleteContactEmail(1, 10)).thenReturn(true);
+
+        ResponseEntity<Void> response = contactEmailController.deleteContactEmail(1, user);
+
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+
+        verify(contactEmailService).deleteContactEmail(1, 10);
     }
 }
