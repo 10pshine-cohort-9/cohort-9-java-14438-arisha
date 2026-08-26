@@ -112,4 +112,28 @@ public class ContactEmailControllerTest {
 
         verify(contactEmailService).deleteContactEmail(1, 10);
     }
+
+    @Test
+    void updateContactEmailSuccessfully() { 
+        User user = new User();
+        user.setId(10);
+
+        ContactEmailRequest request = new ContactEmailRequest();
+        request.setEmailAddress("updated@example.com");
+        request.setLabel("Work");
+
+        ContactEmail updatedEmail = new ContactEmail();
+        updatedEmail.setId(1);
+        updatedEmail.setEmailAddress("updated@example.com");
+        updatedEmail.setLabel("Work");
+
+        when(contactEmailService.updateContactEmail(1, 10, request)).thenReturn(Optional.of(updatedEmail));
+
+        ResponseEntity<ContactEmail> response = contactEmailController.updateContactEmail(1, request, user);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(updatedEmail, response.getBody());
+
+        verify(contactEmailService).updateContactEmail(1, 10, request);
+    }
 }
