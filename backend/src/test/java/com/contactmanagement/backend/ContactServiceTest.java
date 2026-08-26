@@ -117,7 +117,10 @@ public class ContactServiceTest {
 
         String result = contactService.exportContactsToCsv(10);
 
-        assertEquals("First Name,Last Name,Title\nAli,Khan,Student\n", result);
+        assertEquals(
+        "First Name,Last Name,Title\r\nAli,Khan,Student\r\n",
+        result
+        );
 
         verify(contactRepository).findByUserId(10);
     }

@@ -1,6 +1,7 @@
 package com.contactmanagement.backend.controller;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -77,7 +78,7 @@ public class ContactController {
 
         return ResponseEntity.ok()
             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=contacts.csv")
-            .header(HttpHeaders.CONTENT_TYPE, "text/csv")
+            .header(HttpHeaders.CONTENT_TYPE, "text/csv; charset=UTF-8")
             .body(csv);
     }
 
@@ -85,7 +86,10 @@ public class ContactController {
     public ResponseEntity<String> importContacts(@RequestPart("file") MultipartFile file,
         @AuthenticationPrincipal User user) throws IOException {
 
-        String csvContent = new String(file.getBytes());
+        String csvContent = new String(
+        file.getBytes(),
+        StandardCharsets.UTF_8
+        );
         int importedCount = contactService.importContactsFromCsv(csvContent, user);
 
         return ResponseEntity.ok(importedCount + " contacts imported successfully");

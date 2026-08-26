@@ -89,7 +89,10 @@ class ContactControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(csv, response.getBody());
         assertEquals("attachment; filename=contacts.csv", response.getHeaders().getFirst(HttpHeaders.CONTENT_DISPOSITION));
-        assertEquals("text/csv", response.getHeaders().getFirst(HttpHeaders.CONTENT_TYPE));
+        assertEquals(
+        "text/csv; charset=UTF-8",
+        response.getHeaders().getFirst(HttpHeaders.CONTENT_TYPE)
+        );
 
         verify(contactService).exportContactsToCsv(10);
     }

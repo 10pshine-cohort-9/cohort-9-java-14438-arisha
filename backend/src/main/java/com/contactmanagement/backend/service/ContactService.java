@@ -1,11 +1,14 @@
 package com.contactmanagement.backend.service;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.csv.CSVRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -76,52 +79,81 @@ public class ContactService {
             userId, searchTerm, userId, searchTerm, pageable);
     }
 
+
+
     public String exportContactsToCsv(Integer userId) {
 
         List<Contact> contacts = contactRepository.findByUserId(userId);
-        StringBuilder csv = new StringBuilder();
+        StringWriter writer = new StringWriter();
 
-        csv.append("First Name,Last Name,Title\n");
+        try (CSVPrinter printer = new CSVPrinter(writer, CSVFormat.DEFAULT)) {
 
-        for (Contact contact : contacts) {
-            csv.append(contact.getFirstName()).append(",");
-            csv.append(contact.getLastName()).append(",");
-            csv.append(contact.getTitle() == null ? "" : contact.getTitle()).append("\n");
+            printer.printRecord("First Name", "Last Name", "Title");
+
+            for (Contact contact : contacts) {
+                String title = contact.getTitle() == null
+                    ? ""
+                    : contact.getTitle();
+
+                printer.printRecord(contact.getFirstName(), contact.getLastName(), title);
+            }
+
+        } catch (IOException exception) {
+            throw new IllegalStateException(
+                "Unable to export contacts",
+                exception
+             );
         }
 
-        logger.info("Exported {} contacts for user ID: {}", contacts.size(), userId); 
-        return csv.toString();
+        logger.info(
+            "Exported {} contacts for user ID: {}",
+            contacts.size(),
+            userId
+        );
+
+        return writer.toString();
     }
 
-    public int importContactsFromCsv(String csvContent, User user) throws IOException {
-        BufferedReader reader = new BufferedReader(new StringReader(csvContent));
+    public int importContactsFromCsv(String csvContent, User user)
+        throws IOException {
 
-        String line;
-        int importedCount = 0;
+    int importedCount = 0;
 
-        String header = reader.readLine();
-        if (header == null) {
-            return 0;
-        }
+    CSVFormat format = CSVFormat.DEFAULT.builder()
+            .setHeader("First Name", "Last Name", "Title")
+            .setSkipHeaderRecord(true)
+            .get();
 
-        while ((line = reader.readLine()) != null) {
-            String[] values = line.split(",");
+    try (CSVParser parser = CSVParser.parse(csvContent, format)) {
 
-            if (values.length < 2) {
+        for (CSVRecord record : parser) {
+
+            if (record.size() < 2) {
                 continue;
             }
 
-            String firstName = values[0].trim();
-            String lastName = values[1].trim();
-            String title = values.length > 2 ? values[2].trim() : "";
+            String firstName = record.get(0).trim();
+            String lastName = record.get(1).trim();
 
-            Contact contact = new Contact(firstName, lastName, title, user);
+            String title = "";
+            if (record.size() > 2) {
+                title = record.get(2).trim();
+            }
+
+            Contact contact =
+                    new Contact(firstName, lastName, title, user);
+
             contactRepository.save(contact);
             importedCount++;
         }
-
-        logger.info("Imported {} contacts for user ID: {}", importedCount, user.getId());
-
-        return importedCount;
     }
+
+    logger.info(
+            "Imported {} contacts for user ID: {}",
+            importedCount,
+            user.getId()
+    );
+
+    return importedCount;
+}
 }
