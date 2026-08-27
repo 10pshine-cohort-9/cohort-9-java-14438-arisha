@@ -46,6 +46,12 @@ function ContactsPage() {
                     },
                 });
 
+                if (response.status === 401 || response.status === 403) {
+                    localStorage.removeItem("token");
+                    navigate("/");
+                    return;
+                }
+
                 if (!response.ok) {
                     setError("Unable to load contacts");
                     return;
