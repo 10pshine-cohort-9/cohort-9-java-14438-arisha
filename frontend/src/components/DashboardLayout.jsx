@@ -33,11 +33,23 @@ function DashboardLayout({ children, title, subtitle }) {
             </aside>
 
             <main className="dashboard-main">
+                <header className="dashboard-header">
+                <p className="dashboard-eyebrow">
+                    CONTACT MANAGEMENT SYSTEM
+                </p>
+
                 <h1>{title}</h1>
 
-                {subtitle && <p>{subtitle}</p>}
+                {subtitle && (
+                    <p className="dashboard-subtitle">
+                        {subtitle}
+                    </p>
+                )}
+                </header>
 
-                {children}
+                <div className="dashboard-content">
+                    {children}
+                </div>
             </main>
         </div>
     );
