@@ -310,6 +310,10 @@ function ContactDetailsPage() {
         <div>
             <h1>Contact Details</h1>
 
+             <button type="button" onClick={() => navigate("/contacts")}>
+                Back to Contacts
+            </button>
+
             {error && <p>{error}</p>}
 
             {contact && (
