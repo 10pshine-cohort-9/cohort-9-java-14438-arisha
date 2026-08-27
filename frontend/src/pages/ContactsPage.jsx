@@ -186,9 +186,18 @@ function ContactsPage() {
         }
     }
 
+    function handleLogout() {
+        localStorage.removeItem("token");
+        navigate("/");
+    }
+
     return (
         <div>
             <h1>Contacts</h1>
+
+            <button type="button" onClick={handleLogout}>
+                Logout
+            </button>
             <form onSubmit={handleSearch}>
                 <input
                     type="text"
