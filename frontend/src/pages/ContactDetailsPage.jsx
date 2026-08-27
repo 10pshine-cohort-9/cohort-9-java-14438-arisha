@@ -11,6 +11,8 @@ function ContactDetailsPage() {
     const [editingEmailId, setEditingEmailId] = useState(null);
     const [editEmailAddress, setEditEmailAddress] = useState("");
     const [editEmailLabel, setEditEmailLabel] = useState("");
+    const [newPhoneNumber, setNewPhoneNumber] = useState("");
+    const [newPhoneLabel, setNewPhoneLabel] = useState("");
 
     const { id } = useParams();
     const navigate = useNavigate();
@@ -187,6 +189,44 @@ function ContactDetailsPage() {
         }
     }
 
+    async function handleAddPhone(event) {
+        event.preventDefault();
+
+        const token = localStorage.getItem("token");
+
+        try {
+            const response = await fetch(
+                "/api/contact-phones/contact/" + id,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: "Bearer " + token,
+                    },
+                    body: JSON.stringify({
+                        phoneNumber: newPhoneNumber,
+                        label: newPhoneLabel,
+                    }),
+                }
+            );
+
+            if (!response.ok) {
+                setError("Unable to add phone number");
+                return;
+            }
+
+            const newPhone = await response.json();
+
+            setPhones([...phones, newPhone]);
+
+            setNewPhoneNumber("");
+            setNewPhoneLabel("");
+            setError("");
+        } catch {
+            setError("Unable to connect to the server");
+        }
+    }
+
     return (
         <div>
             <h1>Contact Details</h1>
@@ -285,6 +325,26 @@ function ContactDetailsPage() {
                     ))}
 
                     <h3>Phone Numbers</h3>
+
+                    <form onSubmit={handleAddPhone}>
+                        <input
+                            type="text"
+                            placeholder="Phone number"
+                            value={newPhoneNumber}
+                            onChange={(event) => setNewPhoneNumber(event.target.value)}
+                            required
+                        />
+
+                        <input
+                            type="text"
+                            placeholder="Label"
+                            value={newPhoneLabel}
+                            onChange={(event) => setNewPhoneLabel(event.target.value)}
+                            required
+                        />
+
+                        <button type="submit">Add Phone</button>
+                    </form>
 
                     {phones.length === 0 && <p>No phone numbers added.</p>}
 
