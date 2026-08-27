@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import DashboardLayout from "../components/DashboardLayout";
 
 function ContactsPage() {
     const [contacts, setContacts] = useState([]);
@@ -191,11 +192,6 @@ function ContactsPage() {
         setActiveSearchTerm(searchTerm.trim());
     }
 
-    function handleLogout() {
-        localStorage.removeItem("token");
-        navigate("/");
-    }
-
     async function handleChangePassword(event) {
         event.preventDefault();
 
@@ -311,12 +307,10 @@ function ContactsPage() {
     }
 
     return (
-        <div>
-            <h1>Contacts</h1>
-
-            <button type="button" onClick={handleLogout}>
-                Logout
-            </button>
+        <DashboardLayout
+            title="Contacts Dashboard"
+            subtitle="Manage and organize all your contacts from one place."
+        >
 
             <button type="button" onClick={handleExportContacts}>
                 Export Contacts
@@ -496,7 +490,7 @@ function ContactsPage() {
                     </button>
                 </div>
             )}
-        </div>
+        </DashboardLayout>
     );
 }
 
