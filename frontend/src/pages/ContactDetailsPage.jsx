@@ -8,6 +8,9 @@ function ContactDetailsPage() {
     const [phones, setPhones] = useState([]);
     const [newEmailAddress, setNewEmailAddress] = useState("");
     const [newEmailLabel, setNewEmailLabel] = useState("");
+    const [editingEmailId, setEditingEmailId] = useState(null);
+    const [editEmailAddress, setEditEmailAddress] = useState("");
+    const [editEmailLabel, setEditEmailLabel] = useState("");
 
     const { id } = useParams();
     const navigate = useNavigate();
@@ -138,6 +141,52 @@ function ContactDetailsPage() {
         }
     }
 
+    function handleStartEditEmail(email) {
+        setEditingEmailId(email.id);
+        setEditEmailAddress(email.emailAddress);
+        setEditEmailLabel(email.label);
+    }
+
+    async function handleSaveEditEmail(emailId) {
+        const token = localStorage.getItem("token");
+
+        try {
+            const response = await fetch(
+                "/api/contact-emails/" + emailId,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: "Bearer " + token,
+                    },
+                    body: JSON.stringify({
+                        emailAddress: editEmailAddress,
+                        label: editEmailLabel,
+                    }),
+                }
+            );
+
+            if (!response.ok) {
+                setError("Unable to update email address");
+                return;
+            }
+
+            const updatedEmail = await response.json();
+
+            const updatedEmails = emails.map((email) =>
+                email.id === emailId ? updatedEmail : email
+            );
+
+            setEmails(updatedEmails);
+            setEditingEmailId(null);
+            setEditEmailAddress("");
+            setEditEmailLabel("");
+            setError("");
+        } catch {
+            setError("Unable to connect to the server");
+        }
+    }
+
     return (
         <div>
             <h1>Contact Details</h1>
@@ -176,16 +225,63 @@ function ContactDetailsPage() {
                     {emails.length === 0 && <p>No email addresses added.</p>}
 
                     {emails.map((email) => (
-                        <p key={email.id}>
-                            {email.label}: {email.emailAddress}
+                        <div key={email.id}>
+                            {editingEmailId === email.id ? (
+                            <div>
+                                <input
+                                    type="email"
+                                    value={editEmailAddress}
+                                    onChange={(event) =>
+                                        setEditEmailAddress(event.target.value)
+                                    }
+                                />
 
-                            <button
-                                type="button"
-                                onClick={() => handleDeleteEmail(email.id)}
-                            >
-                                Delete
-                            </button>
-                        </p>
+                                <input
+                                    type="text"
+                                    value={editEmailLabel}
+                                    onChange={(event) =>
+                                        setEditEmailLabel(event.target.value)
+                                    }
+                                />
+
+                                <button
+                                    type="button"
+                                    onClick={() => handleSaveEditEmail(email.id)}
+                                >
+                                    Save
+                                </button>
+
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setEditingEmailId(null);
+                                        setEditEmailAddress("");
+                                        setEditEmailLabel("");
+                                    }}
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        ) : (
+                            <p>
+                                {email.label}: {email.emailAddress}
+
+                                <button
+                                    type="button"
+                                    onClick={() => handleStartEditEmail(email)}
+                                >
+                                    Edit
+                                </button>
+
+                                <button
+                                    type="button"
+                                    onClick={() => handleDeleteEmail(email.id)}
+                                >
+                                    Delete
+                                </button>
+                            </p>
+                            )}
+                        </div>
                     ))}
 
                     <h3>Phone Numbers</h3>
