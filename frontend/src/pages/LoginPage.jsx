@@ -40,41 +40,86 @@ function LoginPage() {
     }
 
     return (
-        <div>
-            <h1>Login</h1>
+    <div className="auth-page">
+        <section className="auth-brand">
+            <div className="brand-badge">CM</div>
 
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Email or Phone Number</label>
-                    <input
-                        type="text"
-                        value={identifier}
-                        onChange={(event) => setIdentifier(event.target.value)}
-                        required
-                    />
-                </div>
+            <h1>ContactHub</h1>
 
-                <div>
-                    <label>Password</label>
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(event) => setPassword(event.target.value)}
-                        required
-                    />
-                </div>
-
-                {error && <p>{error}</p>}
-
-                <button type="submit">Login</button>
-            </form>
-
-            <p>
-                Don't have an account?{" "}
-                <Link to="/register">Register</Link>
+            <p className="brand-description">
+                A simple and secure way to organize your contacts,
+                email addresses, and phone numbers.
             </p>
-        </div>
+
+            <div className="brand-footer">
+                Contact Management System
+            </div>
+        </section>
+
+        <section className="auth-panel">
+            <div className="auth-card">
+                <div className="auth-heading">
+                    <p className="auth-eyebrow">WELCOME BACK</p>
+
+                    <h2>Sign in to your account</h2>
+
+                    <p>
+                        Enter your details to access your contact dashboard.
+                    </p>
+                </div>
+
+                <form className="auth-form" onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label>Email or Phone Number</label>
+
+                        <input
+                            type="text"
+                            placeholder="Enter email or phone number"
+                            value={identifier}
+                            onChange={(event) =>
+                                setIdentifier(event.target.value)
+                            }
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Password</label>
+
+                        <input
+                            type="password"
+                            placeholder="Enter your password"
+                            value={password}
+                            onChange={(event) =>
+                                setPassword(event.target.value)
+                            }
+                            required
+                        />
+                    </div>
+
+                    {error && (
+                        <p className="form-message error-message">
+                            {error}
+                        </p>
+                    )}
+
+                    <button
+                        className="primary-button full-width"
+                        type="submit"
+                    >
+                        Sign In
+                    </button>
+                </form>
+
+                <p className="auth-switch">
+                    Don't have an account?{" "}
+                    <Link to="/register">Create an account</Link>
+                </p>
+            </div>
+        </section>
+    </div>
     );
+
 }
 
 export default LoginPage;
