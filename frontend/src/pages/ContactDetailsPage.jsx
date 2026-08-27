@@ -6,13 +6,18 @@ function ContactDetailsPage() {
     const [error, setError] = useState("");
     const [emails, setEmails] = useState([]);
     const [phones, setPhones] = useState([]);
+
     const [newEmailAddress, setNewEmailAddress] = useState("");
     const [newEmailLabel, setNewEmailLabel] = useState("");
     const [editingEmailId, setEditingEmailId] = useState(null);
     const [editEmailAddress, setEditEmailAddress] = useState("");
     const [editEmailLabel, setEditEmailLabel] = useState("");
+
     const [newPhoneNumber, setNewPhoneNumber] = useState("");
     const [newPhoneLabel, setNewPhoneLabel] = useState("");
+    const [editingPhoneId, setEditingPhoneId] = useState(null);
+    const [editPhoneNumber, setEditPhoneNumber] = useState("");
+    const [editPhoneLabel, setEditPhoneLabel] = useState("");
 
     const { id } = useParams();
     const navigate = useNavigate();
@@ -255,6 +260,52 @@ function ContactDetailsPage() {
         }
     }
 
+    function handleStartEditPhone(phone) {
+        setEditingPhoneId(phone.id);
+        setEditPhoneNumber(phone.phoneNumber);
+        setEditPhoneLabel(phone.label);
+    }
+
+    async function handleSaveEditPhone(phoneId) {
+        const token = localStorage.getItem("token");
+
+        try {
+            const response = await fetch(
+                "/api/contact-phones/" + phoneId,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: "Bearer " + token,
+                    },
+                    body: JSON.stringify({
+                        phoneNumber: editPhoneNumber,
+                        label: editPhoneLabel,
+                    }),
+                }
+            );
+
+            if (!response.ok) {
+                setError("Unable to update phone number");
+                return;
+            }
+
+            const updatedPhone = await response.json();
+
+            const updatedPhones = phones.map((phone) =>
+                phone.id === phoneId ? updatedPhone : phone
+            );
+
+            setPhones(updatedPhones);
+            setEditingPhoneId(null);
+            setEditPhoneNumber("");
+            setEditPhoneLabel("");
+            setError("");
+        } catch {
+            setError("Unable to connect to the server");
+        }
+    }
+
     return (
         <div>
             <h1>Contact Details</h1>
@@ -360,14 +411,53 @@ function ContactDetailsPage() {
                     {phones.length === 0 && <p>No phone numbers added.</p>}
 
                     {phones.map((phone) => (
-                        <p key={phone.id}>
-                            {phone.label}: {phone.phoneNumber}
+                        <div key={phone.id}>
+                            {editingPhoneId === phone.id ? (
+                                <div>
+                                    <input
+                                        type="text"
+                                        value={editPhoneNumber}
+                                        onChange={(event) =>
+                                        setEditPhoneNumber(event.target.value)
+                                        }
+                                    />
 
-                            <button type="button" onClick={() => handleDeletePhone(phone.id)}>
-                                Delete
-                            </button>
-                        </p>
-                    ))} 
+                                    <input
+                                        type="text"
+                                        value={editPhoneLabel}
+                                        onChange={(event) =>
+                                        setEditPhoneLabel(event.target.value)
+                                        }
+                                    />
+
+                                    <button type="button" onClick={() => handleSaveEditPhone(phone.id)}>
+                                        Save
+                                    </button>
+
+                                    <button type="button" onClick={() => {
+                                        setEditingPhoneId(null);
+                                        setEditPhoneNumber("");
+                                        setEditPhoneLabel("");
+                                    }}
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            ) : (
+                                <p>
+                                    {phone.label}: {phone.phoneNumber}
+
+                                    <button type="button" onClick={() => handleStartEditPhone(phone)}>
+                                        Edit
+                                    </button>
+
+                                    <button type="button" onClick={() => handleDeletePhone(phone.id)}>
+                                        Delete
+                                    </button>
+                                </p>
+                                )}
+                            </div>
+                        ))} 
                 </div>
             )}
         </div>
