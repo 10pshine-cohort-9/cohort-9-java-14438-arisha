@@ -9,26 +9,30 @@ function DashboardLayout({ children, title, subtitle }) {
     }
 
     return (
-        <div>
-            <aside>
-                <h2>CMS</h2>
+        <div className="dashboard-layout">
+            <aside className="sidebar">
+            <div className="sidebar-brand">
+                CMS
+            </div>
 
-                <button
-                    type="button"
-                    onClick={() => navigate("/contacts")}
-                >
-                    Contacts
-                </button>
+            <button
+                type="button"
+                className="sidebar-link"
+                onClick={() => navigate("/contacts")}
+            >
+                Contacts
+            </button>
 
-                <button
-                    type="button"
-                    onClick={handleLogout}
-                >
-                    Logout
-                </button>
+            <button
+                type="button"
+                className="sidebar-logout"
+                onClick={handleLogout}
+            >
+                Logout
+            </button>
             </aside>
 
-            <main>
+            <main className="dashboard-main">
                 <h1>{title}</h1>
 
                 {subtitle && <p>{subtitle}</p>}
