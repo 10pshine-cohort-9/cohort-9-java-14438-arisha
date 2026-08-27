@@ -42,17 +42,19 @@ function LoginPage() {
     return (
     <div className="auth-page">
         <section className="auth-brand">
-            <div className="brand-badge">CM</div>
+            <div className="brand-badge">CMS</div>
 
-            <h1>ContactHub</h1>
+            <h1>Contact Management 
+                <span> System</span>
+            </h1>
 
             <p className="brand-description">
-                A simple and secure way to organize your contacts,
-                email addresses, and phone numbers.
+                Organize and manage your contacts, email addresses,
+                and phone numbers in one secure place.
             </p>
 
             <div className="brand-footer">
-                Contact Management System
+                Simple • Secure • Organized
             </div>
         </section>
 
