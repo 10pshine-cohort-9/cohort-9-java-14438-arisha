@@ -7,11 +7,16 @@ function ContactsPage() {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [title, setTitle] = useState("");
+
     const [editingId, setEditingId] = useState(null);
     const [editFirstName, setEditFirstName] = useState("");
     const [editLastName, setEditLastName] = useState("");
     const [editTitle, setEditTitle] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
+
+    const [currentPassword, setCurrentPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [passwordMessage, setPasswordMessage] = useState("");
 
     const navigate = useNavigate();
 
@@ -191,6 +196,37 @@ function ContactsPage() {
         navigate("/");
     }
 
+    async function handleChangePassword(event) {
+        event.preventDefault();
+
+        const token = localStorage.getItem("token");
+
+        try {
+            const response = await fetch("/api/auth/change-password", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + token,
+                },
+                body: JSON.stringify({
+                currentPassword: currentPassword,
+                newPassword: newPassword,
+                }),
+            });
+
+            if (!response.ok) {
+                setPasswordMessage("Unable to change password");
+                return;
+            }
+
+            setCurrentPassword("");
+            setNewPassword("");
+            setPasswordMessage("Password changed successfully");
+        } catch {
+            setPasswordMessage("Unable to connect to the server");
+        }
+    }
+
     return (
         <div>
             <h1>Contacts</h1>
@@ -198,6 +234,35 @@ function ContactsPage() {
             <button type="button" onClick={handleLogout}>
                 Logout
             </button>
+
+            <h2>Change Password</h2>
+
+            <form onSubmit={handleChangePassword}>
+            <div>
+                <label>Current Password</label>
+                <input
+                    type="password"
+                    value={currentPassword}
+                    onChange={(event) => setCurrentPassword(event.target.value)}
+                    required
+                />
+            </div>
+
+            <div>
+                <label>New Password</label>
+                <input
+                    type="password"
+                    value={newPassword}
+                    onChange={(event) => setNewPassword(event.target.value)}
+                    minLength="8"
+                    required
+                />
+            </div>
+
+            <button type="submit">Change Password</button>
+        </form>
+
+        {passwordMessage && <p>{passwordMessage}</p>}
             <form onSubmit={handleSearch}>
                 <input
                     type="text"
