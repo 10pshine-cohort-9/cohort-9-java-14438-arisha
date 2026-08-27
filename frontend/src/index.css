@@ -437,3 +437,42 @@ button {
 .dashboard-content {
     width: 100%;
 }
+
+/* Contact search */
+
+.contact-search-form {
+    display: flex;
+    gap: 10px;
+    max-width: 520px;
+    margin: 0 0 28px;
+}
+
+.contact-search-input {
+    flex: 1;
+    height: 44px;
+    padding: 0 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    outline: none;
+    background: #ffffff;
+    color: #0f172a;
+}
+
+.contact-search-input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.contact-search-button {
+    height: 44px;
+    padding: 0 20px;
+    border: 0;
+    border-radius: 8px;
+    background: #2563eb;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.contact-search-button:hover {
+    background: #1d4ed8;
+}
