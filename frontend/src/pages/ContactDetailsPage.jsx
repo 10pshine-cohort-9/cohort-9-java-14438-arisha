@@ -5,6 +5,7 @@ function ContactDetailsPage() {
     const [contact, setContact] = useState(null);
     const [error, setError] = useState("");
     const [emails, setEmails] = useState([]);
+    const [phones, setPhones] = useState([]);
 
     const { id } = useParams();
     const navigate = useNavigate();
@@ -35,16 +36,30 @@ function ContactDetailsPage() {
 
                 const emailResponse = await fetch(
                     "/api/contact-emails/contact/" + id,
-                {
-                    headers: {
-                        Authorization: "Bearer " + token,
-                    },
-                }
-            );
+                    {
+                        headers: {
+                            Authorization: "Bearer " + token,
+                        },
+                    }
+                );
 
                 if (emailResponse.ok) {
                     const emailData = await emailResponse.json();
                     setEmails(emailData);
+                }
+
+                const phoneResponse = await fetch(
+                    "/api/contact-phones/contact/" + id,
+                    {
+                        headers: {
+                            Authorization: "Bearer " + token,
+                        },
+                    }
+                );
+
+                if (phoneResponse.ok) {
+                    const phoneData = await phoneResponse.json();
+                    setPhones(phoneData);
                 }
             } catch {
                 setError("Unable to connect to the server");
@@ -76,6 +91,16 @@ function ContactDetailsPage() {
                             {email.label}: {email.emailAddress}
                         </p>
                     ))}
+
+                    <h3>Phone Numbers</h3>
+
+                    {phones.length === 0 && <p>No phone numbers added.</p>}
+
+                    {phones.map((phone) => (
+                        <p key={phone.id}>
+                            {phone.label}: {phone.phoneNumber}
+                        </p>
+                    ))} 
                 </div>
             )}
         </div>
