@@ -22,6 +22,10 @@ function ContactsPage() {
     const [totalPages, setTotalPages] = useState(0);
     const [activeSearchTerm, setActiveSearchTerm] = useState(""); 
 
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [importMessage, setImportMessage] = useState("");
+    const [refreshKey, setRefreshKey] = useState(0);
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -66,7 +70,7 @@ function ContactsPage() {
         }
 
         loadContacts();
-    }, [navigate, currentPage, activeSearchTerm]);
+    }, [navigate, currentPage, activeSearchTerm, refreshKey]);
 
         async function handleCreateContact(event) {
             event.preventDefault();
@@ -259,6 +263,53 @@ function ContactsPage() {
         }
     }
 
+    async function handleImportContacts(event) {
+        event.preventDefault();
+
+        const token = localStorage.getItem("token");
+
+        if (!selectedFile) {
+            setImportMessage("Please select a CSV file");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+
+        try {
+            const response = await fetch("/api/contacts/import", {
+                method: "POST",
+                headers: {
+                    Authorization: "Bearer " + token,
+                },
+                body: formData,
+            });
+
+            if (response.status === 401 || response.status === 403) {
+                localStorage.removeItem("token");
+                navigate("/");
+                return;
+            }
+
+            if (!response.ok) {
+                setImportMessage("Unable to import contacts");
+                return;
+            }
+
+            const message = await response.text();
+
+            setImportMessage(message);
+            setSelectedFile(null);
+
+            setSearchTerm("");
+            setActiveSearchTerm("");
+            setCurrentPage(0);
+            setRefreshKey((value) => value + 1);
+        } catch {
+            setImportMessage("Unable to connect to the server");
+        }
+    }
+
     return (
         <div>
             <h1>Contacts</h1>
@@ -270,6 +321,23 @@ function ContactsPage() {
             <button type="button" onClick={handleExportContacts}>
                 Export Contacts
             </button>
+
+            <h2>Import Contacts</h2>
+
+            <form onSubmit={handleImportContacts}>
+                <input
+                    type="file"
+                    accept=".csv"
+                    onChange={(event) => setSelectedFile(event.target.files[0])}
+                    required
+                />
+
+                <button type="submit">
+                    Import Contacts
+                </button>
+            </form>
+
+            {importMessage && <p>{importMessage}</p>}
 
             <h2>Change Password</h2>
 
