@@ -223,12 +223,52 @@ function ContactsPage() {
         }
     }
 
+    async function handleExportContacts() {
+        const token = localStorage.getItem("token");
+
+        try {
+            const response = await fetch("/api/contacts/export", {
+                headers: {
+                    Authorization: "Bearer " + token,
+                },
+            });
+
+            if (response.status === 401 || response.status === 403) {
+                localStorage.removeItem("token");
+                navigate("/");
+                return;
+            }
+
+            if (!response.ok) {
+                setError("Unable to export contacts");
+                return;
+            }
+
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = "contacts.csv";
+            link.click();
+
+            URL.revokeObjectURL(url);
+            setError("");
+        } catch {
+            setError("Unable to connect to the server");
+        }
+    }
+
     return (
         <div>
             <h1>Contacts</h1>
 
             <button type="button" onClick={handleLogout}>
                 Logout
+            </button>
+
+            <button type="button" onClick={handleExportContacts}>
+                Export Contacts
             </button>
 
             <h2>Change Password</h2>
