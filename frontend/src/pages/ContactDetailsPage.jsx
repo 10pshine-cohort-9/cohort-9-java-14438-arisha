@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 function ContactDetailsPage() {
     const [contact, setContact] = useState(null);
     const [error, setError] = useState("");
+    const [emails, setEmails] = useState([]);
 
     const { id } = useParams();
     const navigate = useNavigate();
@@ -31,6 +32,20 @@ function ContactDetailsPage() {
 
                 const data = await response.json();
                 setContact(data);
+
+                const emailResponse = await fetch(
+                    "/api/contact-emails/contact/" + id,
+                {
+                    headers: {
+                        Authorization: "Bearer " + token,
+                    },
+                }
+            );
+
+                if (emailResponse.ok) {
+                    const emailData = await emailResponse.json();
+                    setEmails(emailData);
+                }
             } catch {
                 setError("Unable to connect to the server");
             }
@@ -51,6 +66,16 @@ function ContactDetailsPage() {
                         {contact.firstName} {contact.lastName}
                     </h2>
                     <p>{contact.title}</p>
+
+                    <h3>Email Addresses</h3>
+
+                    {emails.length === 0 && <p>No email addresses added.</p>}
+
+                    {emails.map((email) => (
+                        <p key={email.id}>
+                            {email.label}: {email.emailAddress}
+                        </p>
+                    ))}
                 </div>
             )}
         </div>
