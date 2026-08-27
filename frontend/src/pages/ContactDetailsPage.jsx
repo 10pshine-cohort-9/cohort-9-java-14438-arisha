@@ -227,6 +227,34 @@ function ContactDetailsPage() {
         }
     }
 
+    async function handleDeletePhone(phoneId) {
+        const token = localStorage.getItem("token");
+
+        try {
+            const response = await fetch(
+                "/api/contact-phones/" + phoneId,
+                {
+                    method: "DELETE",
+                    headers: {
+                        Authorization: "Bearer " + token,
+                    },
+                }
+            );
+
+            if (!response.ok) {
+                setError("Unable to delete phone number");
+                return;
+            }
+
+            const updatedPhones = phones.filter((phone) => phone.id !== phoneId);
+
+            setPhones(updatedPhones);
+            setError("");
+        } catch {
+            setError("Unable to connect to the server");
+        }
+    }
+
     return (
         <div>
             <h1>Contact Details</h1>
@@ -268,32 +296,21 @@ function ContactDetailsPage() {
                         <div key={email.id}>
                             {editingEmailId === email.id ? (
                             <div>
-                                <input
-                                    type="email"
-                                    value={editEmailAddress}
-                                    onChange={(event) =>
+                                <input type="email" value={editEmailAddress} onChange={(event) =>
                                         setEditEmailAddress(event.target.value)
                                     }
                                 />
 
-                                <input
-                                    type="text"
-                                    value={editEmailLabel}
-                                    onChange={(event) =>
+                                <input type="text" value={editEmailLabel} onChange={(event) =>
                                         setEditEmailLabel(event.target.value)
                                     }
                                 />
 
-                                <button
-                                    type="button"
-                                    onClick={() => handleSaveEditEmail(email.id)}
-                                >
+                                <button type="button" onClick={() => handleSaveEditEmail(email.id)}>
                                     Save
                                 </button>
 
-                                <button
-                                    type="button"
-                                    onClick={() => {
+                                <button type="button" onClick={() => {
                                         setEditingEmailId(null);
                                         setEditEmailAddress("");
                                         setEditEmailLabel("");
@@ -306,17 +323,11 @@ function ContactDetailsPage() {
                             <p>
                                 {email.label}: {email.emailAddress}
 
-                                <button
-                                    type="button"
-                                    onClick={() => handleStartEditEmail(email)}
-                                >
+                                <button type="button" onClick={() => handleStartEditEmail(email)}>
                                     Edit
                                 </button>
 
-                                <button
-                                    type="button"
-                                    onClick={() => handleDeleteEmail(email.id)}
-                                >
+                                <button type="button" onClick={() => handleDeleteEmail(email.id)}>
                                     Delete
                                 </button>
                             </p>
@@ -351,6 +362,10 @@ function ContactDetailsPage() {
                     {phones.map((phone) => (
                         <p key={phone.id}>
                             {phone.label}: {phone.phoneNumber}
+
+                            <button type="button" onClick={() => handleDeletePhone(phone.id)}>
+                                Delete
+                            </button>
                         </p>
                     ))} 
                 </div>
