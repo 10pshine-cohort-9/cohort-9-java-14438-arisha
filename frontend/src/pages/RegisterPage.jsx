@@ -49,60 +49,122 @@ function RegisterPage() {
     }
 
     return (
-        <div>
-            <h1>Register</h1>
+    <div className="auth-page">
+        <section className="auth-brand">
+            <div className="brand-badge">CMS</div>
 
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Full Name</label>
-                    <input
-                        type="text"
-                        value={fullName}
-                        onChange={(event) => setFullName(event.target.value)}
-                        required
-                    />
-                </div>
+            <h1>
+                Contact Management
+                <span> System</span>
+            </h1>
 
-                <div>
-                    <label>Email</label>
-                    <input
-                        type="email"
-                        value={email}
-                        onChange={(event) => setEmail(event.target.value)}
-                    />
-                </div>
-
-                <div>
-                    <label>Phone Number</label>
-                    <input
-                        type="text"
-                        value={phoneNumber}
-                        onChange={(event) => setPhoneNumber(event.target.value)}
-                    />
-                </div>
-
-                <div>
-                    <label>Password</label>
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(event) => setPassword(event.target.value)}
-                        minLength="8"
-                        required
-                    />
-                </div>
-
-                {error && <p>{error}</p>}
-
-                <button type="submit">Register</button>
-            </form>
-
-            <p>
-                Already have an account?{" "}
-                <Link to="/">Login</Link>
+            <p className="brand-description">
+                Create your account and start organizing your contacts,
+                email addresses, and phone numbers in one secure place.
             </p>
-        </div>
-    );
-}
 
+            <div className="brand-footer">
+                Simple • Secure • Organized
+            </div>
+        </section>
+
+        <section className="auth-panel">
+            <div className="auth-card">
+                <div className="auth-heading">
+                    <p className="auth-eyebrow">
+                        GET STARTED
+                    </p>
+
+                    <h2>Create your account</h2>
+
+                    <p>
+                        Enter your details to start managing your contacts.
+                    </p>
+                </div>
+
+                <form
+                    className="auth-form"
+                    onSubmit={handleSubmit}
+                >
+                    <div className="form-group">
+                        <label>Full Name</label>
+
+                        <input
+                            type="text"
+                            placeholder="Enter your full name"
+                            value={fullName}
+                            onChange={(event) =>
+                                setFullName(event.target.value)
+                            }
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Email</label>
+
+                        <input
+                            type="email"
+                            placeholder="Enter your email"
+                            value={email}
+                            onChange={(event) =>
+                                setEmail(event.target.value)
+                            }
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Phone Number</label>
+
+                        <input
+                            type="text"
+                            placeholder="Enter your phone number"
+                            value={phoneNumber}
+                            onChange={(event) =>
+                                setPhoneNumber(event.target.value)
+                            }
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Password</label>
+
+                        <input
+                            type="password"
+                            placeholder="Minimum 8 characters"
+                            value={password}
+                            onChange={(event) =>
+                                setPassword(event.target.value)
+                            }
+                            minLength="8"
+                            required
+                        />
+                    </div>
+
+                    {error && (
+                        <p className="form-message error-message">
+                            {error}
+                        </p>
+                    )}
+
+                    <button
+                        className="primary-button full-width"
+                        type="submit"
+                    >
+                        Create Account
+                    </button>
+                </form>
+
+                <p className="auth-switch">
+                    Already have an account?{" "}
+                    <Link to="/">
+                        Sign in
+                    </Link>
+                </p>
+            </div>
+        </section>
+    </div>
+);
+
+}
 export default RegisterPage;
