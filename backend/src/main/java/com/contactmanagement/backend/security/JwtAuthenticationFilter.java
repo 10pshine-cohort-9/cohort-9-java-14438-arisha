@@ -3,6 +3,8 @@ package com.contactmanagement.backend.security;
 import java.io.IOException;
 import java.util.Collections;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -19,6 +21,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter{
+    private static final Logger jwtLogger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
     private final JwtService jwtService;
     private final UserRepository userRepository;
 
@@ -47,8 +50,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
                             SecurityContextHolder.getContext().setAuthentication(authentication);
                         }
                     }catch (JwtException | IllegalArgumentException e){
-
-                    }
+                        jwtLogger.warn("Invalid JWT token received");
+                    } 
                 }
                 filterChain.doFilter(request, response);
             }

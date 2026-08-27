@@ -29,13 +29,11 @@ public class ContactEmailController {
         this.contactEmailService = contactEmailService;
     }
 
-    //1. To get all emails belonging to a single contact - GET /api/contact-emails/contact/5
     @GetMapping("/contact/{contactId}")
     public List<ContactEmail> getEmailsByContactId(@PathVariable Integer contactId, @AuthenticationPrincipal User user) {
         return contactEmailService.getEmailsByContactId(contactId, user.getId());
     }
 
-    //2. To get one contact email by its id - GET /api/contact-emails/3
     @GetMapping("/{id}")
     public ResponseEntity<ContactEmail> getContactEmailById(@PathVariable Integer id, @AuthenticationPrincipal User user) {
             Optional<ContactEmail> contactEmail = contactEmailService.getContactEmailById(id, user.getId());
@@ -46,7 +44,6 @@ public class ContactEmailController {
             return ResponseEntity.ok(contactEmail.get());
     }
 
-    //3. Delete emails by id - DELETE /api/contact-emails/{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteContactEmail(@PathVariable Integer id, @AuthenticationPrincipal User user) {
         boolean deleted = contactEmailService.deleteContactEmail(id, user.getId());
@@ -57,7 +54,6 @@ public class ContactEmailController {
         return ResponseEntity.noContent().build();
     }
 
-    //4. Add a new email address to a contact belonging to the logged in user - POST /api/contact-emails/contact/{Contact-id}
     @PostMapping("/contact/{contactId}")
     public ResponseEntity<ContactEmail> createContactEmail(@PathVariable Integer contactId, @RequestBody ContactEmailRequest request, @AuthenticationPrincipal User user) {
 
@@ -65,7 +61,6 @@ public class ContactEmailController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdEmail);
     }
 
-    //5. Update a existing contact email - Put /api/contact-emails/{id}
     @PutMapping("/{id}")
     public ResponseEntity<ContactEmail> updateContactEmail(@PathVariable Integer id, @RequestBody ContactEmailRequest request,
     @AuthenticationPrincipal User user) {

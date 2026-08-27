@@ -2,6 +2,8 @@ package com.contactmanagement.backend.service;
 
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ import com.contactmanagement.backend.repository.UserRepository;
 
 @Service
 public class AuthService {
+    private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
     
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -34,18 +37,12 @@ public class AuthService {
             throw new IllegalArgumentException("Email or phone number is required");
         }
 
-        //Duplicate email check
-        if (email != null && !email.isBlank()){ //if email is provided by the user
-            if (userRepository.existsByEmail(email)){ //if email exists in database
-                throw new IllegalArgumentException("Email is already registered");
-            }
+        if (email != null && !email.isBlank() && userRepository.existsByEmail(email)) {
+            throw new IllegalArgumentException("Email is already registered");
         }
 
-        //Duplicate phone number check
-        if (phoneNumber != null && !phoneNumber.isBlank()){ //if number is provided by the user
-            if (userRepository.existsByPhoneNumber(phoneNumber)){ //if number exists in database
-                throw new IllegalArgumentException("Phone number is already registered");
-            }
+        if (phoneNumber != null && !phoneNumber.isBlank() && userRepository.existsByPhoneNumber(phoneNumber)) {
+            throw new IllegalArgumentException("Phone number is already registered");
         }
 
         String encodedPassword = passwordEncoder.encode(request.getPassword());
@@ -57,7 +54,9 @@ public class AuthService {
             encodedPassword
         );
         try {
-            return userRepository.save(user);
+            User savedUser = userRepository.save(user);
+            logger.info("User registered successfully with ID: {}", savedUser.getId());
+            return savedUser;
         } catch (DataIntegrityViolationException e) {
             throw new IllegalArgumentException("Email or phone number already exists");
         }
@@ -82,6 +81,7 @@ public class AuthService {
         if (!passwordEncoder.matches(enteredPassword, storedPasswordHash)) {
             throw new InvalidCredentialsException("Invalid credentials");
         }
+        logger.info("User logged in successfully with ID: {}", foundUser.getId());
         return foundUser;
     }
 
@@ -98,6 +98,6 @@ public class AuthService {
         // update password
         user.setPasswordHash(newEncodedPassword);
         userRepository.save(user);
-
+        logger.info("Password changed successfully for user ID: {}", user.getId());
     }
 }

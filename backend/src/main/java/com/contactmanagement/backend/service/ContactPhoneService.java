@@ -3,6 +3,8 @@ package com.contactmanagement.backend.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -14,6 +16,7 @@ import com.contactmanagement.backend.repository.ContactPhoneRepository;
 
 @Service
 public class ContactPhoneService {
+    private static final Logger logger =LoggerFactory.getLogger(ContactPhoneService.class);
     private final ContactPhoneRepository contactPhoneRepository;
     private final ContactService contactService;
 
@@ -58,6 +61,7 @@ public class ContactPhoneService {
 
         ContactPhone contactPhone = new ContactPhone(phoneNumber, label, foundContact);
         ContactPhone savedPhone = contactPhoneRepository.save(contactPhone);
+        logger.info("Contact phone created with ID: {} for contact ID: {} and user ID: {}", savedPhone.getId(), contactId, userId);
         return savedPhone;
     }
 
@@ -76,6 +80,7 @@ public class ContactPhoneService {
         foundPhone.setLabel(request.getLabel());
 
         ContactPhone savedPhone = contactPhoneRepository.save(foundPhone);
+        logger.info("Contact phone updated with ID: {} for user ID: {}", id, userId);
         return Optional.of(savedPhone);
     }
 
@@ -86,6 +91,7 @@ public class ContactPhoneService {
             return false;
         }
         contactPhoneRepository.deleteById(id);
+        logger.info("Contact phone deleted with ID: {} for user ID: {}", id, userId);
         return true;
     }
 }
