@@ -6,6 +6,8 @@ function ContactDetailsPage() {
     const [error, setError] = useState("");
     const [emails, setEmails] = useState([]);
     const [phones, setPhones] = useState([]);
+    const [newEmailAddress, setNewEmailAddress] = useState("");
+    const [newEmailLabel, setNewEmailLabel] = useState("");
 
     const { id } = useParams();
     const navigate = useNavigate();
@@ -69,6 +71,43 @@ function ContactDetailsPage() {
         loadContact();
     }, [id, navigate]);
 
+    async function handleAddEmail(event) {
+        event.preventDefault();
+
+        const token = localStorage.getItem("token");
+
+        try {
+            const response = await fetch(
+                "/api/contact-emails/contact/" + id,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: "Bearer " + token,
+                    },
+                    body: JSON.stringify({
+                        emailAddress: newEmailAddress,
+                        label: newEmailLabel,
+                    }),
+                }
+            );
+
+            if (!response.ok) {
+                setError("Unable to add email address");
+                return;
+            }
+
+            const newEmail = await response.json();
+
+            setEmails([...emails, newEmail]);
+            setNewEmailAddress("");
+            setNewEmailLabel("");
+            setError("");
+        } catch {
+            setError("Unable to connect to the server");
+        }
+    }
+
     return (
         <div>
             <h1>Contact Details</h1>
@@ -83,6 +122,26 @@ function ContactDetailsPage() {
                     <p>{contact.title}</p>
 
                     <h3>Email Addresses</h3>
+
+                    <form onSubmit={handleAddEmail}>
+                        <input
+                            type="email"
+                            placeholder="Email address"
+                            value={newEmailAddress}
+                            onChange={(event) => setNewEmailAddress(event.target.value)}
+                            required
+                        />
+
+                        <input
+                            type="text"
+                            placeholder="Label"
+                            value={newEmailLabel}
+                            onChange={(event) => setNewEmailLabel(event.target.value)}
+                            required
+                        />
+
+                        <button type="submit">Add Email</button>
+                    </form>
 
                     {emails.length === 0 && <p>No email addresses added.</p>}
 
