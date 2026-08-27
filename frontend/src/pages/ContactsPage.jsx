@@ -361,15 +361,18 @@ function ContactsPage() {
         </form>
 
         {passwordMessage && <p>{passwordMessage}</p>}
-            <form onSubmit={handleSearch}>
+            <form className="contact-search-form" onSubmit={handleSearch}>
                 <input
+                    className="contact-search-input"
                     type="text"
                     placeholder="Search contacts"
                     value={searchTerm}
                     onChange={(event) => setSearchTerm(event.target.value)}
                 />
 
-                <button type="submit">Search</button>
+                <button className="contact-search-button" type="submit">
+                    Search
+                </button>
             </form>
             <h2>Add Contact</h2>
 
