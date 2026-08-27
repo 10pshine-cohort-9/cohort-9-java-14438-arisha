@@ -18,6 +18,10 @@ function ContactsPage() {
     const [newPassword, setNewPassword] = useState("");
     const [passwordMessage, setPasswordMessage] = useState("");
 
+    const [currentPage, setCurrentPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+    const [activeSearchTerm, setActiveSearchTerm] = useState(""); 
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -30,7 +34,13 @@ function ContactsPage() {
             }
 
             try {
-                const response = await fetch("/api/contacts", {
+                let url = "/api/contacts?page=" + currentPage + "&size=5";
+
+                if (activeSearchTerm !== "") {
+                    url = "/api/contacts/search?searchTerm=" + encodeURIComponent(activeSearchTerm) + "&page=" + currentPage + "&size=5";
+                }
+
+                const response = await fetch(url, {
                     headers: {
                         Authorization: "Bearer " + token,
                     },
@@ -43,13 +53,14 @@ function ContactsPage() {
 
                 const data = await response.json();
                 setContacts(data.content);
+                setTotalPages(data.totalPages);
             } catch {
                 setError("Unable to connect to the server");
             }
         }
 
         loadContacts();
-    }, [navigate]);
+    }, [navigate, currentPage, activeSearchTerm]);
 
         async function handleCreateContact(event) {
             event.preventDefault();
@@ -163,32 +174,11 @@ function ContactsPage() {
         }
     }
 
-    async function handleSearch(event) {
+    function handleSearch(event) {
         event.preventDefault();
-        const token = localStorage.getItem("token");
 
-        try {
-            const response = await fetch(
-                "/api/contacts/search?searchTerm=" + searchTerm,
-                {
-                    headers: {
-                        Authorization: "Bearer " + token,
-                    },
-                }
-            );
-
-            if (!response.ok) {
-                ("Unable to search contacts");
-                return;
-            }
-
-            const data = await response.json();
-
-            setContacts(data.content);
-            setError("");
-        } catch {
-            setError("Unable to connect to the server");
-        }
+        setCurrentPage(0);
+        setActiveSearchTerm(searchTerm.trim());
     }
 
     function handleLogout() {
@@ -370,6 +360,28 @@ function ContactsPage() {
                     )}
                 </div>
             ))}
+
+            {totalPages > 0 && (
+                <div>
+                    <button
+                        type="button"
+                        onClick={() => setCurrentPage(currentPage - 1)}
+                        disabled={currentPage === 0}
+                    >
+                        Previous
+                    </button>
+
+                    <span>
+                        Page {currentPage + 1} of {totalPages}
+                    </span>
+
+                    <button type="button" onClick={() => setCurrentPage(currentPage + 1)} 
+                    disabled={currentPage === totalPages - 1}
+                    >
+                        Next
+                    </button>
+                </div>
+            )}
         </div>
     );
 }
