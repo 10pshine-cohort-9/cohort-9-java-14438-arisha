@@ -108,6 +108,36 @@ function ContactDetailsPage() {
         }
     }
 
+    async function handleDeleteEmail(emailId) {
+        const token = localStorage.getItem("token");
+
+        try {
+            const response = await fetch(
+                "/api/contact-emails/" + emailId,
+                {
+                    method: "DELETE",
+                    headers: {
+                        Authorization: "Bearer " + token,
+                    },
+                }
+            );
+
+            if (!response.ok) {
+                setError("Unable to delete email address");
+                return;
+            }
+
+            const updatedEmails = emails.filter(
+                (email) => email.id !== emailId
+            );
+
+            setEmails(updatedEmails);
+            setError("");
+        } catch {
+            setError("Unable to connect to the server");
+        }
+    }
+
     return (
         <div>
             <h1>Contact Details</h1>
@@ -148,6 +178,13 @@ function ContactDetailsPage() {
                     {emails.map((email) => (
                         <p key={email.id}>
                             {email.label}: {email.emailAddress}
+
+                            <button
+                                type="button"
+                                onClick={() => handleDeleteEmail(email.id)}
+                            >
+                                Delete
+                            </button>
                         </p>
                     ))}
 
