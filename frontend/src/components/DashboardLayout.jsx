@@ -25,6 +25,14 @@ function DashboardLayout({ children, title, subtitle }) {
 
             <button
                 type="button"
+                className="sidebar-link"
+                onClick={() => navigate("/profile")}
+            >
+                Profile
+            </button>
+
+            <button
+                type="button"
                 className="sidebar-logout"
                 onClick={handleLogout}
             >
