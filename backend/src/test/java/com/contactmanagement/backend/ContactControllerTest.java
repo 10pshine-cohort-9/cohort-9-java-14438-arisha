@@ -1,0 +1,184 @@
+package com.contactmanagement.backend;
+
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
+
+import com.contactmanagement.backend.controller.ContactController;
+import com.contactmanagement.backend.dto.ContactRequest;
+import com.contactmanagement.backend.entity.Contact;
+import com.contactmanagement.backend.entity.User;
+import com.contactmanagement.backend.service.ContactService;
+
+@ExtendWith(MockitoExtension.class)
+class ContactControllerTest {
+    @Mock
+    private ContactService contactService;
+
+    @InjectMocks
+    private ContactController contactController;
+
+    @Test
+    void createContactSuccessfully() {
+        User user = new User();
+        user.setId(10);
+
+        ContactRequest request = new ContactRequest("Ali", "Khan", "Student");
+        Contact savedContact = new Contact("Ali", "Khan", "Student", user);
+        savedContact.setId(1);
+
+        when(contactService.saveContact(any(Contact.class))).thenReturn(savedContact);
+
+        ResponseEntity<Contact> response = contactController.createContact(request, user);
+
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals(savedContact, response.getBody());
+
+        verify(contactService).saveContact(any(Contact.class));
+    }
+    
+    @Test
+    void updateContactSuccessfully() {
+        User user = new User();
+        user.setId(10);
+
+        ContactRequest request = new ContactRequest("Arisha", "Fatima", "Student");
+
+        Contact updatedContact = new Contact("Arisha", "Fatima", "Student", user);
+        updatedContact.setId(1);
+
+        when(contactService.updateContact(eq(1), eq(10), any(Contact.class))).thenReturn(updatedContact);
+
+        Contact result = contactController.updateContact(1, request, user);
+
+        assertEquals(updatedContact, result);
+
+        verify(contactService).updateContact(eq(1), eq(10), any(Contact.class));
+    } 
+
+    @Test
+    void exportContactsSuccessfully() {
+        User user = new User();
+        user.setId(10);
+
+        String csv = """
+            First Name,Last Name,Title
+            Ali,Khan,Student
+            """;
+
+        when(contactService.exportContactsToCsv(10)).thenReturn(csv);
+
+        ResponseEntity<String> response = contactController.exportContacts(user);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(csv, response.getBody());
+        assertEquals("attachment; filename=contacts.csv", response.getHeaders().getFirst(HttpHeaders.CONTENT_DISPOSITION));
+        assertEquals(
+        "text/csv; charset=UTF-8",
+        response.getHeaders().getFirst(HttpHeaders.CONTENT_TYPE)
+        );
+
+        verify(contactService).exportContactsToCsv(10);
+    }
+
+    @Test
+    void importContactsSuccessfully() throws Exception {
+        User user = new User();
+        user.setId(10);
+
+        String csv = """
+            First Name,Last Name,Title
+            Ali,Khan,Student
+            Sara,Ahmed,Developer
+            """;
+
+        MockMultipartFile file = new MockMultipartFile("file", "contacts.csv", "text/csv", csv.getBytes());
+
+        when(contactService.importContactsFromCsv(anyString(), eq(user))).thenReturn(2);
+        ResponseEntity<String> response = contactController.importContacts(file, user);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("2 contacts imported successfully", response.getBody());
+
+        verify(contactService).importContactsFromCsv(anyString(), eq(user));
+    }
+
+    @Test
+    void getAllContactsSuccessfully() {
+        User user = new User();
+        user.setId(10);
+
+        Pageable pageable = Pageable.unpaged();
+        Page<Contact> page = Page.empty();
+
+        when(contactService.getAllContacts(10, pageable)).thenReturn(page);
+
+        Page<Contact> result = contactController.getAllContacts(pageable, user);
+
+        assertEquals(page, result);
+
+        verify(contactService).getAllContacts(10, pageable);
+    }
+
+    @Test
+    void getContactByIdSuccessfully() {
+
+        User user = new User();
+        user.setId(10);
+
+        Contact contact = new Contact();
+        contact.setId(1);
+
+        when(contactService.getContactById(1, 10)).thenReturn(Optional.of(contact));
+
+        ResponseEntity<Contact> response = contactController.getContactById(1, user);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(contact, response.getBody());
+    }
+
+    @Test
+    void deleteContactSuccessfully() {
+
+        User user = new User();
+        user.setId(10);
+
+        contactController.deleteContact(1, user);
+
+        verify(contactService).deleteContact(1, 10);
+    }
+
+    @Test
+    void searchContactsSuccessfully() {
+
+        User user = new User();
+        user.setId(10);
+
+        Pageable pageable = Pageable.unpaged();
+        Page<Contact> page = Page.empty();
+
+        when(contactService.searchContacts(10, "Ali", pageable)).thenReturn(page);
+
+        Page<Contact> result = contactController.searchContacts("Ali", pageable, user);
+
+        assertEquals(page, result);
+
+        verify(contactService).searchContacts(10, "Ali", pageable);
+    }
+}

@@ -1,5 +1,6 @@
 package com.contactmanagement.backend.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
@@ -28,7 +29,11 @@ public class ContactPhoneController {
         this.contactPhoneService = contactPhoneService;
     }
 
-    //1. Get phone by id - GET /api/contact-phones/{id}
+    @GetMapping("/contact/{contactId}")
+    public List<ContactPhone> getPhonesByContactId(@PathVariable Integer contactId, @AuthenticationPrincipal User user) {
+        return contactPhoneService.getPhonesByContactId(contactId, user.getId());
+    }
+
     @GetMapping ("/{id}")
     public ResponseEntity<ContactPhone> getPhoneById(@PathVariable Integer id, @AuthenticationPrincipal User user){
         Optional<ContactPhone> contactPhone = contactPhoneService.getContactPhoneById(id, user.getId());
@@ -39,8 +44,6 @@ public class ContactPhoneController {
         return ResponseEntity.ok(contactPhone.get());
     }
 
-    // Add a new phone number to a contact belonging to the logged-in user
-    // POST /api/contact-phones/contact/{contactId}
     @PostMapping("/contact/{contactId}")
     public ResponseEntity<ContactPhone> createContactPhone(@PathVariable Integer contactId, @RequestBody ContactPhoneRequest request,
     @AuthenticationPrincipal User user) {
@@ -49,8 +52,6 @@ public class ContactPhoneController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPhone);
     }
 
-    // Update a phone number belonging to a contact of the logged-in user
-    // PUT /api/contact-phones/{id}
     @PutMapping("/{id}")
     public ResponseEntity<ContactPhone> updateContactPhone(@PathVariable Integer id, @RequestBody ContactPhoneRequest request,
     @AuthenticationPrincipal User user) {
@@ -62,8 +63,6 @@ public class ContactPhoneController {
         return ResponseEntity.ok(updatedPhone.get());
     }
 
-    // Delete a phone number belonging to a contact of the logged in user
-    // DELETE /api/contact-phones/{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteContactPhone(@PathVariable Integer id, @AuthenticationPrincipal User user){
         boolean deleted = contactPhoneService.deleteContactPhone(id, user.getId());

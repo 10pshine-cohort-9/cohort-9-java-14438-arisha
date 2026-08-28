@@ -3,6 +3,8 @@ package com.contactmanagement.backend.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -14,6 +16,7 @@ import com.contactmanagement.backend.repository.ContactEmailRepository;
 
 @Service
 public class ContactEmailService {
+    private static final Logger logger = LoggerFactory.getLogger(ContactEmailService.class);
     private final ContactEmailRepository contactEmailRepository;
     private final ContactService contactService;
 
@@ -51,6 +54,7 @@ public class ContactEmailService {
         }
 
         contactEmailRepository.deleteById(id);
+        logger.info("Contact email deleted with ID: {} for user ID: {}", id, userId);
         return true;
     }
 
@@ -67,6 +71,7 @@ public class ContactEmailService {
         ContactEmail contactEmail = new ContactEmail(emailAddress, label, foundContact);
 
         ContactEmail savedEmail = contactEmailRepository.save(contactEmail);
+        logger.info("Contact email created with ID: {} for contact ID: {} and user ID: {}", savedEmail.getId(), contactId, userId);
         return savedEmail;
     }
 
@@ -82,6 +87,7 @@ public class ContactEmailService {
         foundEmail.setLabel(request.getLabel());
 
         ContactEmail savedEmail = contactEmailRepository.save(foundEmail);
+        logger.info("Contact email updated with ID: {} for user ID: {}", id, userId);
         return Optional.of(savedEmail);
     }
     
