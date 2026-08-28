@@ -1,7 +1,9 @@
 package com.contactmanagement.backend.controller;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,11 +12,11 @@ import com.contactmanagement.backend.dto.AuthResponse;
 import com.contactmanagement.backend.dto.ChangePasswordRequest;
 import com.contactmanagement.backend.dto.LoginRequest;
 import com.contactmanagement.backend.dto.RegisterRequest;
+import com.contactmanagement.backend.dto.UpdateProfileRequest;
+import com.contactmanagement.backend.dto.UserProfileResponse;
 import com.contactmanagement.backend.entity.User;
 import com.contactmanagement.backend.security.JwtService;
 import com.contactmanagement.backend.service.AuthService;
-import org.springframework.web.bind.annotation.GetMapping;
-import com.contactmanagement.backend.dto.UserProfileResponse;
 
 import jakarta.validation.Valid;
 
@@ -56,6 +58,13 @@ public class AuthController {
             user.getEmail(),
             user.getPhoneNumber()
         );
+    }
+
+    @PutMapping("/profile")
+    public UserProfileResponse updateProfile(@AuthenticationPrincipal User user, @Valid @RequestBody UpdateProfileRequest request) {
+        User updatedUser = authService.updateProfile(user, request);
+
+        return new UserProfileResponse(updatedUser.getFullName(), updatedUser.getEmail(), updatedUser.getPhoneNumber());
     }
 
     @PostMapping("/change-password")
