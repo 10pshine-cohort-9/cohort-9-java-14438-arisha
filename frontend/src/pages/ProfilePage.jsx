@@ -101,7 +101,7 @@ function ProfilePage() {
             {error && <p>{error}</p>}
 
             {profile && (
-    <form onSubmit={handleSaveProfile}>
+    <div>
         {!isEditing ? (
             <>
                 <button
@@ -119,7 +119,7 @@ function ProfilePage() {
                 </p>
             </>
         ) : (
-            <div>
+            <form onSubmit={handleSaveProfile}>
                 <div>
                     <label>Full Name</label>
                     <input
@@ -163,9 +163,9 @@ function ProfilePage() {
                 >
                     Cancel
                 </button>
-            </div>
+            </form>
         )}
-    </form>
+    </div>
 )}
         </DashboardLayout>
     );
