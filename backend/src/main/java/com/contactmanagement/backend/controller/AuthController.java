@@ -13,6 +13,8 @@ import com.contactmanagement.backend.dto.RegisterRequest;
 import com.contactmanagement.backend.entity.User;
 import com.contactmanagement.backend.security.JwtService;
 import com.contactmanagement.backend.service.AuthService;
+import org.springframework.web.bind.annotation.GetMapping;
+import com.contactmanagement.backend.dto.UserProfileResponse;
 
 import jakarta.validation.Valid;
 
@@ -45,6 +47,15 @@ public class AuthController {
         String token = jwtService.generateToken(user);
 
         return new AuthResponse(token);
+    }
+
+    @GetMapping("/profile")
+    public UserProfileResponse getProfile( @AuthenticationPrincipal User user) {
+        return new UserProfileResponse(
+            user.getFullName(),
+            user.getEmail(),
+            user.getPhoneNumber()
+        );
     }
 
     @PostMapping("/change-password")
