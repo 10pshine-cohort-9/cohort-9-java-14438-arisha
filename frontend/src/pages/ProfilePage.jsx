@@ -6,6 +6,11 @@ function ProfilePage() {
     const [profile, setProfile] = useState(null);
     const [error, setError] = useState("");
 
+    const [isEditing, setIsEditing] = useState(false);
+    const [editFullName, setEditFullName] = useState("");
+    const [editEmail, setEditEmail] = useState("");
+    const [editPhoneNumber, setEditPhoneNumber] = useState("");
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -45,6 +50,13 @@ function ProfilePage() {
         loadProfile();
     }, [navigate]);
 
+    function handleStartEdit() {
+        setEditFullName(profile.fullName);
+        setEditEmail(profile.email || "");
+        setEditPhoneNumber(profile.phoneNumber || "");
+        setIsEditing(true);
+    }
+
     return (
         <DashboardLayout
             title="Profile"
@@ -53,15 +65,68 @@ function ProfilePage() {
             {error && <p>{error}</p>}
 
             {profile && (
+    <div>
+        {!isEditing ? (
+            <>
+                <button
+                    type="button"
+                    onClick={handleStartEdit}
+                >
+                    Edit Profile
+                </button>
+
+                <p>Full Name: {profile.fullName}</p>
+                <p>Email: {profile.email || "Not provided"}</p>
+                <p>
+                    Phone Number:{" "}
+                    {profile.phoneNumber || "Not provided"}
+                </p>
+            </>
+        ) : (
+            <div>
                 <div>
-                    <p>Full Name: {profile.fullName}</p>
-                    <p>Email: {profile.email || "Not provided"}</p>
-                    <p>
-                        Phone Number:{" "}
-                        {profile.phoneNumber || "Not provided"}
-                    </p>
+                    <label>Full Name</label>
+                    <input
+                        type="text"
+                        value={editFullName}
+                        onChange={(event) =>
+                            setEditFullName(event.target.value)
+                        }
+                    />
                 </div>
-            )}
+
+                <div>
+                    <label>Email</label>
+                    <input
+                        type="email"
+                        value={editEmail}
+                        onChange={(event) =>
+                            setEditEmail(event.target.value)
+                        }
+                    />
+                </div>
+
+                <div>
+                    <label>Phone Number</label>
+                    <input
+                        type="text"
+                        value={editPhoneNumber}
+                        onChange={(event) =>
+                            setEditPhoneNumber(event.target.value)
+                        }
+                    />
+                </div>
+
+                <button
+                    type="button"
+                    onClick={() => setIsEditing(false)}
+                >
+                    Cancel
+                </button>
+            </div>
+        )}
+    </div>
+)}
         </DashboardLayout>
     );
 }
