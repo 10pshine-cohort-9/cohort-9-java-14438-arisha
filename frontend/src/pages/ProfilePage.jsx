@@ -57,6 +57,42 @@ function ProfilePage() {
         setIsEditing(true);
     }
 
+    async function handleSaveProfile(event) {
+        event.preventDefault();
+
+        const token = localStorage.getItem("token");
+
+        try {
+            const response = await fetch("/api/auth/profile", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + token,
+                },
+                body: JSON.stringify({fullName: editFullName, email: editEmail, phoneNumber: editPhoneNumber}),
+            });
+
+            if (response.status === 401 || response.status === 403) {
+                localStorage.removeItem("token");
+                navigate("/");
+                return;
+            }
+
+            if (!response.ok) {
+                setError("Unable to update profile");
+                return;
+            }
+
+            const updatedProfile = await response.json();
+
+            setProfile(updatedProfile);
+            setIsEditing(false);
+            setError("");
+        } catch {
+            setError("Unable to connect to the server");
+        }
+    }
+
     return (
         <DashboardLayout
             title="Profile"
@@ -65,7 +101,7 @@ function ProfilePage() {
             {error && <p>{error}</p>}
 
             {profile && (
-    <div>
+    <form onSubmit={handleSaveProfile}>
         {!isEditing ? (
             <>
                 <button
@@ -117,6 +153,10 @@ function ProfilePage() {
                     />
                 </div>
 
+                <button type="submit">
+                    Save Changes
+                </button>
+
                 <button
                     type="button"
                     onClick={() => setIsEditing(false)}
@@ -125,7 +165,7 @@ function ProfilePage() {
                 </button>
             </div>
         )}
-    </div>
+    </form>
 )}
         </DashboardLayout>
     );
