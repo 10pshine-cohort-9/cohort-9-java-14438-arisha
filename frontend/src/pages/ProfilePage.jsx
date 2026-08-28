@@ -11,6 +11,10 @@ function ProfilePage() {
     const [editEmail, setEditEmail] = useState("");
     const [editPhoneNumber, setEditPhoneNumber] = useState("");
 
+    const [currentPassword, setCurrentPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [passwordMessage, setPasswordMessage] = useState(""); 
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -93,6 +97,37 @@ function ProfilePage() {
         }
     }
 
+    async function handleChangePassword(event) {
+    event.preventDefault();
+
+    const token = localStorage.getItem("token");
+
+    try {
+        const response = await fetch("/api/auth/change-password", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
+            },
+            body: JSON.stringify({
+                currentPassword: currentPassword,
+                newPassword: newPassword,
+            }),
+        });
+
+        if (!response.ok) {
+            setPasswordMessage("Unable to change password");
+            return;
+        }
+
+        setCurrentPassword("");
+        setNewPassword("");
+        setPasswordMessage("Password changed successfully");
+    } catch {
+        setPasswordMessage("Unable to connect to the server");
+    }
+}
+
     return (
         <DashboardLayout
             title="Profile"
@@ -167,6 +202,41 @@ function ProfilePage() {
         )}
     </div>
 )}
+
+<h2>Change Password</h2>
+
+<form onSubmit={handleChangePassword}>
+    <div>
+        <label>Current Password</label>
+        <input
+            type="password"
+            value={currentPassword}
+            onChange={(event) =>
+                setCurrentPassword(event.target.value)
+            }
+            required
+        />
+    </div>
+
+    <div>
+        <label>New Password</label>
+        <input
+            type="password"
+            value={newPassword}
+            onChange={(event) =>
+                setNewPassword(event.target.value)
+            }
+            minLength="8"
+            required
+        />
+    </div>
+
+    <button type="submit">
+        Change Password
+    </button>
+</form>
+
+{passwordMessage && <p>{passwordMessage}</p>}
         </DashboardLayout>
     );
 }
