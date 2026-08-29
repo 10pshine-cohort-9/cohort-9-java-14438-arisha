@@ -805,3 +805,106 @@ button {
     font-size: 30px;
     font-weight: 700;
 }
+
+/* Contact import and export */
+
+.contact-tools-card {
+    width: 100%;
+    max-width: 760px;
+    padding: 24px;
+    margin-bottom: 28px;
+
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
+}
+
+.contact-tools-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+
+    margin-bottom: 22px;
+}
+
+.contact-tools-eyebrow {
+    margin: 0 0 6px;
+
+    color: #2563eb;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.contact-tools-header h2 {
+    margin: 0 0 6px;
+
+    color: #0f172a;
+    font-size: 20px;
+}
+
+.contact-tools-description {
+    margin: 0;
+
+    color: #64748b;
+    font-size: 14px;
+}
+
+.contact-export-button,
+.contact-import-button {
+    min-height: 42px;
+    padding: 0 16px;
+
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.contact-export-button {
+    border: 1px solid #cbd5e1;
+
+    background: #ffffff;
+    color: #334155;
+}
+
+.contact-export-button:hover {
+    border-color: #2563eb;
+    color: #2563eb;
+}
+
+.contact-import-form {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.contact-file-input {
+    flex: 1;
+
+    padding: 10px 12px;
+
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+
+    background: #f8fafc;
+}
+
+.contact-import-button {
+    border: 0;
+
+    background: #2563eb;
+    color: #ffffff;
+}
+
+.contact-import-button:hover {
+    background: #1d4ed8;
+}
+
+.contact-import-message {
+    margin: 14px 0 0;
+
+    color: #475569;
+    font-size: 14px;
+}
