@@ -250,27 +250,57 @@ function ContactsPage() {
                 <h2>{totalContacts}</h2>
             </section>
 
-            <button type="button" onClick={handleExportContacts}>
-                Export Contacts
-            </button>
+           <section className="contact-tools-card">
+    <div className="contact-tools-header">
+        <div>
+            <p className="contact-tools-eyebrow">
+                CONTACT TOOLS
+            </p>
 
-            <h2>Import Contacts</h2>
+            <h2>Import & Export</h2>
 
-            <form onSubmit={handleImportContacts}>
-                <input
-                    type="file"
-                    accept=".csv"
-                    onChange={(event) => setSelectedFile(event.target.files[0])}
-                    required
-                />
+            <p className="contact-tools-description">
+                Import contacts from a CSV file or export your contacts.
+            </p>
+        </div>
 
-                <button type="submit">
-                    Import Contacts
-                </button>
-            </form>
+        <button
+            className="contact-export-button"
+            type="button"
+            onClick={handleExportContacts}
+        >
+            Export Contacts
+        </button>
+    </div>
 
-            {importMessage && <p>{importMessage}</p>}
+    <form
+        className="contact-import-form"
+        onSubmit={handleImportContacts}
+    >
+        <input
+            className="contact-file-input"
+            type="file"
+            accept=".csv"
+            onChange={(event) =>
+                setSelectedFile(event.target.files[0])
+            }
+            required
+        />
 
+        <button
+            className="contact-import-button"
+            type="submit"
+        >
+            Import Contacts
+        </button>
+    </form>
+
+    {importMessage && (
+        <p className="contact-import-message">
+            {importMessage}
+        </p>
+    )}
+</section>
             <form className="contact-search-form" onSubmit={handleSearch}>
                 <input
                     className="contact-search-input"
