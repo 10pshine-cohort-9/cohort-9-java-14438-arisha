@@ -1047,3 +1047,43 @@ button {
 .contact-cancel-button:hover {
     background: #f8fafc;
 }
+
+/* Pagination */
+
+.pagination {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    margin-bottom: 24px;
+}
+
+.pagination-button {
+    min-height: 38px;
+    padding: 0 14px;
+
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+
+    background: #ffffff;
+    color: #334155;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.pagination-button:hover:not(:disabled) {
+    border-color: #2563eb;
+    color: #2563eb;
+}
+
+.pagination-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+}
+
+.pagination-info {
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 600;
+}
