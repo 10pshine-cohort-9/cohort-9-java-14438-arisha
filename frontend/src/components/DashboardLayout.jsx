@@ -20,7 +20,15 @@ function DashboardLayout({ children, title, subtitle }) {
                 className="sidebar-link"
                 onClick={() => navigate("/contacts")}
             >
-                Contacts
+                Dashboard
+            </button>
+
+            <button
+                type="button"
+                className="sidebar-link"
+                onClick={() => navigate("/contacts/new")}
+            >
+                Add Contact
             </button>
 
             <button
