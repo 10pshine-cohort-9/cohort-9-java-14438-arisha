@@ -136,9 +136,24 @@ function ProfilePage() {
             {error && <p>{error}</p>}
 
             {profile && (
-    <div>
+    <section className="profile-card">
         {!isEditing ? (
             <>
+            <div className="profile-summary">
+    <div className="profile-avatar">
+        {profile.fullName
+            .split(" ")
+            .map((name) => name[0])
+            .slice(0, 2)
+            .join("")
+            .toUpperCase()}
+    </div>
+
+    <div className="profile-summary-text">
+        <h2>{profile.fullName}</h2>
+        <p>{profile.email || "No email provided"}</p>
+    </div>
+</div>
                 <button
                     type="button"
                     onClick={handleStartEdit}
@@ -200,7 +215,7 @@ function ProfilePage() {
                 </button>
             </form>
         )}
-    </div>
+    </section>
 )}
 
 <h2>Change Password</h2>
