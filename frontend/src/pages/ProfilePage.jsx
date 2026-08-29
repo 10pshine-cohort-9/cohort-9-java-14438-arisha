@@ -187,8 +187,9 @@ function ProfilePage() {
 </div>
             </>
         ) : (
-            <form onSubmit={handleSaveProfile}>
-                <div>
+            <form className="profile-edit-form"
+            onSubmit={handleSaveProfile}>
+                <div className="profile-edit-group">
                     <label>Full Name</label>
                     <input
                         type="text"
@@ -199,7 +200,7 @@ function ProfilePage() {
                     />
                 </div>
 
-                <div>
+                <div className="profile-edit-group"> 
                     <label>Email</label>
                     <input
                         type="email"
@@ -210,7 +211,7 @@ function ProfilePage() {
                     />
                 </div>
 
-                <div>
+                <div className="profile-edit-group">
                     <label>Phone Number</label>
                     <input
                         type="text"
