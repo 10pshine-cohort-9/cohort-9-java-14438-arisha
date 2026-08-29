@@ -559,3 +559,37 @@ button {
     color: #2563eb;
     background: #f8fafc;
 }
+
+.profile-details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 26px 40px;
+}
+
+.profile-detail {
+    min-width: 0;
+    padding: 16px 18px;
+
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+}
+
+.profile-detail-label {
+    display: block;
+    margin-bottom: 7px;
+
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+.profile-detail p {
+    margin: 0;
+
+    color: #0f172a;
+    font-size: 15px;
+    font-weight: 600;
+}
