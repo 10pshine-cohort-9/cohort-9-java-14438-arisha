@@ -433,26 +433,30 @@ function ContactsPage() {
 )}
 
             {totalPages > 0 && (
-                <div>
-                    <button
-                        type="button"
-                        onClick={() => setCurrentPage(currentPage - 1)}
-                        disabled={currentPage === 0}
-                    >
-                        Previous
-                    </button>
+    <div className="pagination">
+        <button
+            className="pagination-button"
+            type="button"
+            onClick={() => setCurrentPage(currentPage - 1)}
+            disabled={currentPage === 0}
+        >
+            Previous
+        </button>
 
-                    <span>
-                        Page {currentPage + 1} of {totalPages}
-                    </span>
+        <span className="pagination-info">
+            Page {currentPage + 1} of {totalPages}
+        </span>
 
-                    <button type="button" onClick={() => setCurrentPage(currentPage + 1)} 
-                    disabled={currentPage === totalPages - 1}
-                    >
-                        Next
-                    </button>
-                </div>
-            )}
+        <button
+            className="pagination-button"
+            type="button"
+            onClick={() => setCurrentPage(currentPage + 1)}
+            disabled={currentPage === totalPages - 1}
+        >
+            Next
+        </button>
+    </div>
+)}
         </DashboardLayout>
     );
 }
