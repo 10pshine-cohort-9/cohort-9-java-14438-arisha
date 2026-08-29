@@ -222,16 +222,22 @@ function ProfilePage() {
                     />
                 </div>
 
-                <button type="submit">
+                <div className="profile-edit-actions">
+                <button
+                    className="profile-save-button"
+                    type="submit"
+                >
                     Save Changes
                 </button>
 
                 <button
-                    type="button"
-                    onClick={() => setIsEditing(false)}
+                className="profile-cancel-button"
+                type="button"
+                onClick={() => setIsEditing(false)}
                 >
                     Cancel
                 </button>
+                </div>
             </form>
         )}
     </section>
