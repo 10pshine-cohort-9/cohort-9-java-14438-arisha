@@ -15,10 +15,6 @@ function ContactsPage() {
     const [editTitle, setEditTitle] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
 
-    const [currentPassword, setCurrentPassword] = useState("");
-    const [newPassword, setNewPassword] = useState("");
-    const [passwordMessage, setPasswordMessage] = useState("");
-
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
     const [activeSearchTerm, setActiveSearchTerm] = useState(""); 
@@ -192,37 +188,6 @@ function ContactsPage() {
         setActiveSearchTerm(searchTerm.trim());
     }
 
-    async function handleChangePassword(event) {
-        event.preventDefault();
-
-        const token = localStorage.getItem("token");
-
-        try {
-            const response = await fetch("/api/auth/change-password", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: "Bearer " + token,
-                },
-                body: JSON.stringify({
-                currentPassword: currentPassword,
-                newPassword: newPassword,
-                }),
-            });
-
-            if (!response.ok) {
-                setPasswordMessage("Unable to change password");
-                return;
-            }
-
-            setCurrentPassword("");
-            setNewPassword("");
-            setPasswordMessage("Password changed successfully");
-        } catch {
-            setPasswordMessage("Unable to connect to the server");
-        }
-    }
-
     async function handleExportContacts() {
         const token = localStorage.getItem("token");
 
@@ -333,34 +298,6 @@ function ContactsPage() {
 
             {importMessage && <p>{importMessage}</p>}
 
-            <h2>Change Password</h2>
-
-            <form onSubmit={handleChangePassword}>
-            <div>
-                <label>Current Password</label>
-                <input
-                    type="password"
-                    value={currentPassword}
-                    onChange={(event) => setCurrentPassword(event.target.value)}
-                    required
-                />
-            </div>
-
-            <div>
-                <label>New Password</label>
-                <input
-                    type="password"
-                    value={newPassword}
-                    onChange={(event) => setNewPassword(event.target.value)}
-                    minLength="8"
-                    required
-                />
-            </div>
-
-            <button type="submit">Change Password</button>
-        </form>
-
-        {passwordMessage && <p>{passwordMessage}</p>}
             <form className="contact-search-form" onSubmit={handleSearch}>
                 <input
                     className="contact-search-input"
