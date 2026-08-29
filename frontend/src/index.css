@@ -476,3 +476,86 @@ button {
 .contact-search-button:hover {
     background: #1d4ed8;
 }
+
+/* Profile */
+
+.profile-card {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+    padding: 28px;
+    margin-bottom: 28px;
+
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.profile-summary {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    padding-bottom: 24px;
+    margin-bottom: 24px;
+
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.profile-avatar {
+    width: 60px;
+    height: 60px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: #dbeafe;
+    color: #1d4ed8;
+
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.profile-summary-text h2 {
+    margin: 0 0 5px;
+
+    color: #0f172a;
+    font-size: 20px;
+}
+
+.profile-summary-text p {
+    margin: 0;
+
+    color: #64748b;
+    font-size: 14px;
+}
+
+.profile-edit-button {
+    position: absolute;
+    top: 28px;
+    right: 28px;
+
+    height: 40px;
+    padding: 0 16px;
+
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+
+    background: #ffffff;
+    color: #334155;
+
+    font-weight: 600;
+}
+
+.profile-edit-button:hover {
+    border-color: #2563eb;
+    color: #2563eb;
+    background: #f8fafc;
+}

@@ -154,10 +154,9 @@ function ProfilePage() {
         <p>{profile.email || "No email provided"}</p>
     </div>
 </div>
-                <button
-                    type="button"
-                    onClick={handleStartEdit}
-                >
+                <button type="button" 
+                className="profile-edit-button"
+                onClick={handleStartEdit}>
                     Edit Profile
                 </button>
 
