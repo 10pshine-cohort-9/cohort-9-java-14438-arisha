@@ -321,62 +321,116 @@ function ContactsPage() {
                 <p>No contacts found.</p>
             )}
 
-            {contacts.map((contact) => (
-                <div key={contact.id}>
-                    {editingId === contact.id ? (
-                        <form onSubmit={handleUpdateContact}>
-                            <input
-                                type="text"
-                                value={editFirstName}
-                                onChange={(event) => setEditFirstName(event.target.value)}
-                                required
-                            />
+            {contacts.length > 0 && (
+    <div className="contacts-table-card">
+        <table className="contacts-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Title</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
 
-                            <input
-                                type="text"
-                                value={editLastName}
-                                onChange={(event) => setEditLastName(event.target.value)}
-                                required
-                            />
+            <tbody>
+                {contacts.map((contact) => (
+                    <tr key={contact.id}>
+                        {editingId === contact.id ? (
+                            <td colSpan="3">
+                                <form
+                                    className="contact-edit-form"
+                                    onSubmit={handleUpdateContact}
+                                >
+                                    <input
+                                        type="text"
+                                        value={editFirstName}
+                                        onChange={(event) =>
+                                            setEditFirstName(event.target.value)
+                                        }
+                                        required
+                                    />
 
-                            <input
-                                type="text"
-                                value={editTitle}
-                                onChange={(event) => setEditTitle(event.target.value)}
-                            />
+                                    <input
+                                        type="text"
+                                        value={editLastName}
+                                        onChange={(event) =>
+                                            setEditLastName(event.target.value)
+                                        }
+                                        required
+                                    />
 
-                            <button type="submit">Save</button>
+                                    <input
+                                        type="text"
+                                        value={editTitle}
+                                        onChange={(event) =>
+                                            setEditTitle(event.target.value)
+                                        }
+                                    />
 
-                            <button
-                                type="button"
-                                onClick={() => setEditingId(null)}
-                            >
-                                Cancel
-                            </button>
-                        </form>
-                    ) : (
-                        <>
-                            <h3>
-                                {contact.firstName} {contact.lastName}
-                            </h3>
+                                    <div className="contact-edit-actions">
+                                        <button
+                                            className="contact-save-button"
+                                            type="submit"
+                                        >
+                                            Save
+                                        </button>
 
-                            <p>{contact.title}</p>
+                                        <button
+                                            className="contact-cancel-button"
+                                            type="button"
+                                            onClick={() => setEditingId(null)}
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </form>
+                            </td>
+                        ) : (
+                            <>
+                                <td>
+                                    {contact.firstName} {contact.lastName}
+                                </td>
 
-                            <button onClick={() => navigate("/contacts/" + contact.id)}>
-                                View Details
-                            </button>
+                                <td>
+                                    {contact.title || "—"}
+                                </td>
 
-                            <button onClick={() => startEditing(contact)}>
-                                Edit
-                            </button>
+                                <td>
+                                    <div className="contact-actions">
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                navigate("/contacts/" + contact.id)
+                                            }
+                                        >
+                                            View Details
+                                        </button>
 
-                            <button onClick={() => handleDeleteContact(contact.id)}>
-                                Delete
-                            </button>
-                        </>
-                    )}
-                </div>
-            ))}
+                                        <button
+                                            type="button"
+                                            onClick={() => startEditing(contact)}
+                                        >
+                                            Edit
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                handleDeleteContact(contact.id)
+                                            }
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
+                                </td>
+                            </>
+                        )}
+                    </tr>
+                ))}
+            </tbody>
+        </table>
+    </div>
+)}
 
             {totalPages > 0 && (
                 <div>
