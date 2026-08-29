@@ -14,6 +14,7 @@ function ContactsPage() {
 
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
+    const [totalContacts, setTotalContacts] = useState(0);
     const [activeSearchTerm, setActiveSearchTerm] = useState(""); 
 
     const [selectedFile, setSelectedFile] = useState(null);
@@ -58,6 +59,10 @@ function ContactsPage() {
                 const data = await response.json();
                 setContacts(data.content);
                 setTotalPages(data.totalPages);
+
+                if (activeSearchTerm === "") {
+                    setTotalContacts(data.totalElements);
+                }
             } catch {
                 setError("Unable to connect to the server");
             }
@@ -88,6 +93,7 @@ function ContactsPage() {
             );
 
             setContacts(updatedContacts);
+            setTotalContacts((value) => Math.max(0, value - 1));
             setError("");
         } catch {
             setError("Unable to connect to the server");
@@ -238,6 +244,11 @@ function ContactsPage() {
             title="Contacts Dashboard"
             subtitle="Manage and organize all your contacts from one place."
         >
+
+            <section className="dashboard-stat-card">
+                <p>Total Contacts</p>
+                <h2>{totalContacts}</h2>
+            </section>
 
             <button type="button" onClick={handleExportContacts}>
                 Export Contacts
