@@ -160,12 +160,31 @@ function ProfilePage() {
                     Edit Profile
                 </button>
 
-                <p>Full Name: {profile.fullName}</p>
-                <p>Email: {profile.email || "Not provided"}</p>
-                <p>
-                    Phone Number:{" "}
-                    {profile.phoneNumber || "Not provided"}
-                </p>
+                <div className="profile-details-grid">
+    <div className="profile-detail">
+        <span className="profile-detail-label">
+            Full Name
+        </span>
+
+        <p>{profile.fullName}</p>
+    </div>
+
+    <div className="profile-detail">
+        <span className="profile-detail-label">
+            Email
+        </span>
+
+        <p>{profile.email || "Not provided"}</p>
+    </div>
+
+    <div className="profile-detail">
+        <span className="profile-detail-label">
+            Phone Number
+        </span>
+
+        <p>{profile.phoneNumber || "Not provided"}</p>
+    </div>
+</div>
             </>
         ) : (
             <form onSubmit={handleSaveProfile}>
