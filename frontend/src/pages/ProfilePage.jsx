@@ -236,40 +236,64 @@ function ProfilePage() {
     </section>
 )}
 
-<h2>Change Password</h2>
+<section className="security-card">
+    <div className="security-card-header">
+        <p className="security-eyebrow">
+            SECURITY
+        </p>
 
-<form onSubmit={handleChangePassword}>
-    <div>
-        <label>Current Password</label>
-        <input
-            type="password"
-            value={currentPassword}
-            onChange={(event) =>
-                setCurrentPassword(event.target.value)
-            }
-            required
-        />
+        <h2>Change Password</h2>
+
+        <p>
+            Update the password used to access your account.
+        </p>
     </div>
 
-    <div>
-        <label>New Password</label>
-        <input
-            type="password"
-            value={newPassword}
-            onChange={(event) =>
-                setNewPassword(event.target.value)
-            }
-            minLength="8"
-            required
-        />
-    </div>
+    <form
+        className="security-form"
+        onSubmit={handleChangePassword}
+    >
+        <div className="security-form-group">
+            <label>Current Password</label>
 
-    <button type="submit">
-        Change Password
-    </button>
-</form>
+            <input
+                type="password"
+                value={currentPassword}
+                onChange={(event) =>
+                    setCurrentPassword(event.target.value)
+                }
+                required
+            />
+        </div>
 
-{passwordMessage && <p>{passwordMessage}</p>}
+        <div className="security-form-group">
+            <label>New Password</label>
+
+            <input
+                type="password"
+                value={newPassword}
+                onChange={(event) =>
+                    setNewPassword(event.target.value)
+                }
+                minLength="8"
+                required
+            />
+        </div>
+
+        <button
+            className="security-button"
+            type="submit"
+        >
+            Change Password
+        </button>
+    </form>
+
+    {passwordMessage && (
+        <p className="security-message">
+            {passwordMessage}
+        </p>
+    )}
+</section>
         </DashboardLayout>
     );
 }
