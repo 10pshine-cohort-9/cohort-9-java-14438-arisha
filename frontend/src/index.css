@@ -593,3 +593,106 @@ button {
     font-size: 15px;
     font-weight: 600;
 }
+
+/* Profile security */
+
+.security-card {
+    width: 100%;
+    max-width: 900px;
+    padding: 28px;
+
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.security-card-header {
+    margin-bottom: 24px;
+}
+
+.security-eyebrow {
+    margin: 0 0 7px;
+
+    color: #2563eb;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.security-card-header h2 {
+    margin: 0 0 7px;
+
+    color: #0f172a;
+    font-size: 22px;
+}
+
+.security-card-header > p:last-child {
+    margin: 0;
+
+    color: #64748b;
+    font-size: 14px;
+}
+
+.security-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    align-items: end;
+}
+
+.security-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.security-form-group label {
+    color: #334155;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.security-form-group input {
+    width: 100%;
+    height: 44px;
+    padding: 0 14px;
+
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    outline: none;
+
+    background: #f8fafc;
+    color: #0f172a;
+}
+
+.security-form-group input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.security-button {
+    width: fit-content;
+    min-height: 42px;
+    padding: 0 18px;
+
+    border: 0;
+    border-radius: 8px;
+
+    background: #2563eb;
+    color: #ffffff;
+
+    font-weight: 600;
+}
+
+.security-button:hover {
+    background: #1d4ed8;
+}
+
+.security-message {
+    margin: 18px 0 0;
+
+    color: #475569;
+    font-size: 14px;
+}
