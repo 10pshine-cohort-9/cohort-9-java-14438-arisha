@@ -33,10 +33,11 @@ function ContactsPage() {
             }
 
             try {
-                let url = "/api/contacts?page=" + currentPage + "&size=5";
+                let url = "/api/contacts?page=" + currentPage + "&size=5&sort=firstName,asc&sort=lastName,asc";
 
                 if (activeSearchTerm !== "") {
-                    url = "/api/contacts/search?searchTerm=" + encodeURIComponent(activeSearchTerm) + "&page=" + currentPage + "&size=5";
+                    url = "/api/contacts/search?searchTerm=" + encodeURIComponent(activeSearchTerm) + "&page=" + currentPage +
+                    "&size=5&sort=firstName,asc&sort=lastName,asc";
                 }
 
                 const response = await fetch(url, {
