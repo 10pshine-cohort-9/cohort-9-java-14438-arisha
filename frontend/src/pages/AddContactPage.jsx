@@ -6,6 +6,10 @@ function AddContactPage() {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [title, setTitle] = useState("");
+    const [emailAddress, setEmailAddress] = useState("");
+    const [emailLabel, setEmailLabel] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [phoneLabel, setPhoneLabel] = useState("");
     const [error, setError] = useState("");
 
     const navigate = useNavigate();
@@ -41,12 +45,58 @@ function AddContactPage() {
             }
 
             if (!response.ok) {
-                setError("Unable to create contact");
-                return;
-            }
+    setError("Unable to create contact");
+    return;
+}
 
-            setError("");
-            navigate("/contacts");
+const newContact = await response.json();
+
+if (emailAddress.trim() !== "") {
+    const emailResponse = await fetch(
+        "/api/contact-emails/contact/" + newContact.id,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
+            },
+            body: JSON.stringify({
+                emailAddress: emailAddress,
+                label: emailLabel,
+            }),
+        }
+    );
+
+    if (!emailResponse.ok) {
+        setError("Contact created, but email could not be added");
+        return;
+    }
+}
+
+if (phoneNumber.trim() !== "") {
+    const phoneResponse = await fetch(
+        "/api/contact-phones/contact/" + newContact.id,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
+            },
+            body: JSON.stringify({
+                phoneNumber: phoneNumber,
+                label: phoneLabel,
+            }),
+        }
+    );
+
+    if (!phoneResponse.ok) {
+        setError("Contact created, but phone number could not be added");
+        return;
+    }
+}
+
+setError("");
+navigate("/contacts");
         } catch {
             setError("Unable to connect to the server");
         }
@@ -98,7 +148,7 @@ function AddContactPage() {
             />
         </div>
 
-        <div className="add-contact-group">
+        <div className="add-contact-group add-contact-title">
             <label>Title</label>
 
             <input
@@ -108,6 +158,56 @@ function AddContactPage() {
                 }
             />
         </div>
+
+        <div className="add-contact-group add-contact-email">
+    <label>Email Address</label>
+
+    <input
+        type="email"
+        value={emailAddress}
+        onChange={(event) =>
+            setEmailAddress(event.target.value)
+        }
+    />
+</div>
+
+<div className="add-contact-group">
+    <label>Email Label</label>
+
+    <input
+        type="text"
+        placeholder="e.g. Work, Personal"
+        value={emailLabel}
+        onChange={(event) =>
+            setEmailLabel(event.target.value)
+        }
+    />
+</div>
+
+<div className="add-contact-group">
+    <label>Phone Number</label>
+
+    <input
+        type="text"
+        value={phoneNumber}
+        onChange={(event) =>
+            setPhoneNumber(event.target.value)
+        }
+    />
+</div>
+
+<div className="add-contact-group">
+    <label>Phone Label</label>
+
+    <input
+        type="text"
+        placeholder="e.g. Mobile, Work"
+        value={phoneLabel}
+        onChange={(event) =>
+            setPhoneLabel(event.target.value)
+        }
+    />
+</div>
 
         <div className="add-contact-actions">
             <button

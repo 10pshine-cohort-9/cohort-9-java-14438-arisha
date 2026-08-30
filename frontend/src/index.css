@@ -1209,3 +1209,7 @@ button {
     color: #b91c1c;
     font-size: 14px;
 }
+
+.add-contact-email {
+    grid-column: 1;
+}
