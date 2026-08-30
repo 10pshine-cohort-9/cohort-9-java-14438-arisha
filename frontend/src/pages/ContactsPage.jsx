@@ -12,6 +12,8 @@ function ContactsPage() {
     const [editLastName, setEditLastName] = useState("");
     const [editTitle, setEditTitle] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
+    const [suggestions, setSuggestions] = useState([]);
+    const [showSuggestions, setShowSuggestions] = useState(false);
 
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
@@ -68,6 +70,50 @@ function ContactsPage() {
 
         loadContacts();
     }, [navigate, currentPage, activeSearchTerm]);
+
+    useEffect(() => {
+        const trimmedSearchTerm = searchTerm.trim();
+
+        if (trimmedSearchTerm.length === 0) {
+            return;
+        }
+
+        const timeoutId = setTimeout(async () => {
+            const token = localStorage.getItem("token");
+
+            try {
+                const response = await fetch(
+                    "/api/contacts/search?searchTerm=" + encodeURIComponent(trimmedSearchTerm) +
+                    "&page=0&size=5&sort=firstName,asc&sort=lastName,asc",
+                    {    
+                        headers: {
+                            Authorization: "Bearer " + token,
+                        },
+                    }
+                );
+
+                if (response.status === 401 || response.status === 403) {
+                    localStorage.removeItem("token");
+                    navigate("/");
+                return;
+                }
+
+                if (!response.ok) {
+                    setSuggestions([]);
+                    return;
+                }
+
+                const data = await response.json();
+
+                setSuggestions(data.content);
+                setShowSuggestions(true);
+            } catch {
+                setSuggestions([]);
+            }
+        }, 300);
+
+        return () => clearTimeout(timeoutId);
+    }, [searchTerm, navigate]);
 
        
     async function handleDeleteContact(contactId) {
@@ -152,6 +198,7 @@ function ContactsPage() {
 
         setCurrentPage(0);
         setActiveSearchTerm(searchTerm.trim());
+        setShowSuggestions(false);
     }
 
     function getAvatarClass(contactId) {
@@ -232,18 +279,78 @@ function ContactsPage() {
         </div>
     </div>
             <form className="contact-search-form" onSubmit={handleSearch}>
-                <input
-                    className="contact-search-input"
-                    type="text"
-                    placeholder="Search contacts"
-                    value={searchTerm}
-                    onChange={(event) => setSearchTerm(event.target.value)}
-                />
+    <div className="contact-search-wrapper">
+        <input
+            className="contact-search-input"
+            type="text"
+            placeholder="Search contacts"
+            value={searchTerm}
+            onChange={(event) => {
+    const value = event.target.value;
 
-                <button className="contact-search-button" type="submit">
-                    Search
+    setSearchTerm(value);
+
+    if (value.trim() === "") {
+        setSuggestions([]);
+        setShowSuggestions(false);
+    }
+}}
+            onFocus={() => {
+                if (suggestions.length > 0) {
+                    setShowSuggestions(true);
+                }
+            }}
+        />
+
+        {showSuggestions && (
+    <div className="contact-suggestions">
+        {suggestions.length > 0 ? (
+            suggestions.map((contact) => (
+                <button
+                    key={contact.id}
+                    type="button"
+                    className="contact-suggestion-item"
+                    onClick={() => {
+                        setShowSuggestions(false);
+                        navigate("/contacts/" + contact.id);
+                    }}
+                >
+                    <div
+                        className={
+                            "contact-avatar " +
+                            getAvatarClass(contact.id)
+                        }
+                    >
+                        {contact.firstName.charAt(0).toUpperCase()}
+                    </div>
+
+                    <div className="contact-suggestion-text">
+                        <strong>
+                            {contact.firstName} {contact.lastName}
+                        </strong>
+
+                        <span>
+                            {contact.title || "Contact"}
+                        </span>
+                    </div>
                 </button>
-            </form>
+            ))
+        ) : (
+            <div className="contact-suggestion-empty">
+                No contacts found
+            </div>
+        )}
+    </div>
+)}
+    </div>
+
+    <button
+        className="contact-search-button"
+        type="submit"
+    >
+        Search
+    </button>
+</form>
 
             {error && <p>{error}</p>}
 
