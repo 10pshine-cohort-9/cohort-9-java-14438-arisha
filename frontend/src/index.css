@@ -1482,3 +1482,23 @@ button {
     width: 100%;
     max-width: 1000px;
 }
+
+.contacts-table th:nth-child(1),
+.contacts-table td:nth-child(1) {
+    width: 35%;
+}
+
+.contacts-table th:nth-child(2),
+.contacts-table td:nth-child(2) {
+    width: 25%;
+}
+
+.contacts-table th:nth-child(3),
+.contacts-table td:nth-child(3) {
+    width: 40%;
+    text-align: center;
+}
+
+.contact-actions {
+    justify-content: center;
+}
