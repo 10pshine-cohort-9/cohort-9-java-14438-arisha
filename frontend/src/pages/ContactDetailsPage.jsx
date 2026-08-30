@@ -314,23 +314,17 @@ function ContactDetailsPage() {
     }
 
     return (
-    <DashboardLayout
-        title="Contact Details"
-        subtitle="View and manage your contact information."
-    >
+    <DashboardLayout title="Contact Details" subtitle="View and manage your contact information.">
+        
+        <button className="contact-back-button" type="button" onClick={() => navigate("/contacts")}>
+            Back to Contacts
+        </button>
+        {error && <p>{error}</p>}
 
-            <button
-    className="contact-back-button"
-    type="button"
-    onClick={() => navigate("/contacts")}
->
-    Back to Contacts
-</button>
-            {error && <p>{error}</p>}
 
-            {contact && (
-    <div className="contact-details-content">
-        <section className="contact-summary-card">
+        {contact && (
+            <div className="contact-details-content">
+            <section className="contact-summary-card">
             <div className="contact-summary-avatar">
                 {contact.firstName.charAt(0)}
                 {contact.lastName.charAt(0)}
@@ -351,72 +345,125 @@ function ContactDetailsPage() {
             </div>
         </section>
 
-        <h3>Email Addresses</h3>
+        <section className="contact-info-card">
+        <div className="contact-info-header">
+            <div>
+                <p className="contact-info-eyebrow">
+                    EMAIL
+                </p>
 
-                    <form onSubmit={handleAddEmail}>
+                <h3>Email Addresses</h3>
+            </div>
+        </div>
+
+        <form className="contact-info-form" onSubmit={handleAddEmail}>
+            <input type="email" placeholder="Email address" value={newEmailAddress}
+            onChange={(event) => setNewEmailAddress(event.target.value)}
+            required
+        />
+
+        <input
+            type="text"
+            placeholder="Label"
+            value={newEmailLabel}
+            onChange={(event) =>
+                setNewEmailLabel(event.target.value)
+            }
+            required
+        />
+
+        <button
+            className="contact-info-add-button"
+            type="submit"
+        >
+            Add Email
+        </button>
+    </form>
+
+    {emails.length === 0 && (
+        <p className="contact-info-empty">
+            No email addresses added.
+        </p>
+    )}
+
+    <div className="contact-info-list">
+        {emails.map((email) => (
+            <div className="contact-info-item"
+                key={email.id}
+            >
+                {editingEmailId === email.id ? (
+                    <div className="contact-info-edit">
                         <input
                             type="email"
-                            placeholder="Email address"
-                            value={newEmailAddress}
-                            onChange={(event) => setNewEmailAddress(event.target.value)}
-                            required
+                            value={editEmailAddress}
+                            onChange={(event) =>
+                                setEditEmailAddress(event.target.value)
+                            }
                         />
 
                         <input
                             type="text"
-                            placeholder="Label"
-                            value={newEmailLabel}
-                            onChange={(event) => setNewEmailLabel(event.target.value)}
-                            required
+                            value={editEmailLabel}
+                            onChange={(event) =>
+                                setEditEmailLabel(event.target.value)
+                            }
                         />
 
-                        <button type="submit">Add Email</button>
-                    </form>
+                        <button
+                            type="button"
+                            onClick={() =>
+                                handleSaveEditEmail(email.id)
+                            }
+                        >
+                            Save
+                        </button>
 
-                    {emails.length === 0 && <p>No email addresses added.</p>}
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setEditingEmailId(null);
+                                setEditEmailAddress("");
+                                setEditEmailLabel("");
+                            }}
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                ) : (
+                    <div className="contact-info-row">
+                        <div>
+                            <span className="contact-info-label">
+                                {email.label}
+                            </span>
 
-                    {emails.map((email) => (
-                        <div key={email.id}>
-                            {editingEmailId === email.id ? (
-                            <div>
-                                <input type="email" value={editEmailAddress} onChange={(event) =>
-                                        setEditEmailAddress(event.target.value)
-                                    }
-                                />
-
-                                <input type="text" value={editEmailLabel} onChange={(event) =>
-                                        setEditEmailLabel(event.target.value)
-                                    }
-                                />
-
-                                <button type="button" onClick={() => handleSaveEditEmail(email.id)}>
-                                    Save
-                                </button>
-
-                                <button type="button" onClick={() => {
-                                        setEditingEmailId(null);
-                                        setEditEmailAddress("");
-                                        setEditEmailLabel("");
-                                    }}
-                                >
-                                    Cancel
-                                </button>
-                            </div>
-                        ) : (
-                            <p>
-                                {email.label}: {email.emailAddress}
-
-                                <button type="button" onClick={() => handleStartEditEmail(email)}>
-                                    Edit
-                                </button>
-
-                                <button type="button" onClick={() => handleDeleteEmail(email.id)}>
-                                    Delete
-                                </button>
-                            </p>
-                            )}
+                            <p>{email.emailAddress}</p>
                         </div>
-                    ))}
+
+                        <div className="contact-info-actions">
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    handleStartEditEmail(email)
+                                }
+                            >
+                                Edit
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    handleDeleteEmail(email.id)
+                                }
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </div>
+        ))}
+    </div>
+</section>
 
                     <h3>Phone Numbers</h3>
 
