@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import DashboardLayout from "../components/DashboardLayout";
 
 function ContactDetailsPage() {
     const [contact, setContact] = useState(null);
@@ -313,8 +314,10 @@ function ContactDetailsPage() {
     }
 
     return (
-        <div>
-            <h1>Contact Details</h1>
+    <DashboardLayout
+        title="Contact Details"
+        subtitle="View and manage your contact information."
+    >
 
              <button type="button" onClick={() => navigate("/contacts")}>
                 Back to Contacts
@@ -470,7 +473,7 @@ function ContactDetailsPage() {
                         ))} 
                 </div>
             )}
-        </div>
+        </DashboardLayout>
     );
 }
 
