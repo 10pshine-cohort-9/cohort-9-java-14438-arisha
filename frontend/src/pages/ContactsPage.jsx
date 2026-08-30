@@ -153,7 +153,7 @@ function ContactsPage() {
         setCurrentPage(0);
         setActiveSearchTerm(searchTerm.trim());
     }
-    
+
     function getAvatarClass(contactId) {
     const avatarClasses = [
         "contact-avatar-blue",
@@ -173,6 +173,8 @@ function ContactsPage() {
         >
             <div className="contacts-dashboard-content">
 
+            <div className="dashboard-overview-grid">
+
             <section className="dashboard-stat-card">
                 <div className="dashboard-stat-icon">
                     C
@@ -184,6 +186,40 @@ function ContactsPage() {
                     <span>Contacts in your address book</span>
                 </div>
             </section>
+
+            <button
+                type="button"
+                className="dashboard-action-card"
+                onClick={() => navigate("/contacts/new")}
+            >
+                <div className="dashboard-action-icon">
+                    +
+                </div>
+
+                <div className="dashboard-action-content">
+                    <p>Add Contact</p>
+                    <h3>New Contact</h3>
+                    <span>Create a new contact</span>
+                </div>
+            </button>
+
+            <button
+                type="button"
+                className="dashboard-action-card"
+                onClick={() => navigate("/contact-tools")}
+            >
+                <div className="dashboard-action-icon">
+                ⇅
+                </div>
+
+                <div className="dashboard-action-content">
+                    <p>Contact Tools</p>
+                    <h3>Import & Export</h3>
+                    <span>Manage your CSV data</span>
+                </div>
+            </button>
+
+        </div>
             <form className="contact-search-form" onSubmit={handleSearch}>
                 <input
                     className="contact-search-input"
