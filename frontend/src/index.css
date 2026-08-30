@@ -164,6 +164,34 @@ button {
     gap: 20px;
 }
 
+.password-input-wrapper {
+    position: relative;
+}
+
+.password-input-wrapper input {
+    width: 100%;
+    padding-right: 70px;
+}
+
+.password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+
+    border: 0;
+    background: transparent;
+    color: #2563eb;
+
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.password-toggle:hover {
+    color: #1d4ed8;
+}
+
 .form-group {
     display: flex;
     flex-direction: column;
@@ -377,6 +405,8 @@ button {
 }
 
 .sidebar-link {
+    margin-bottom: 10px;
+
     background: rgba(255, 255, 255, 0.1);
     color: #ffffff;
 }
@@ -443,7 +473,7 @@ button {
 .contact-search-form {
     display: flex;
     gap: 10px;
-    max-width: 1000px;
+    max-width: none;
     margin: 0 0 28px;
 }
 
@@ -960,7 +990,7 @@ button {
     gap: 18px;
 
     width: 100%;
-    max-width: 1000px;
+    max-width: none;
     margin-bottom: 28px;
 }
 
@@ -1140,7 +1170,7 @@ button {
 
 .contacts-table-card {
     width: 100%;
-    max-width: 1000px;
+    max-width: none;
     margin-bottom: 24px;
 
     overflow: hidden;
@@ -1707,7 +1737,7 @@ button {
 
 .contacts-dashboard-content {
     width: 100%;
-    max-width: 1000px;
+    max-width: none;
 }
 
 .contacts-table th:nth-child(1),
@@ -1785,7 +1815,7 @@ button {
 
 .contacts-directory {
     width: 100%;
-    max-width: 1000px;
+    max-width: none;
     padding: 24px;
 
     background: #ffffff;
