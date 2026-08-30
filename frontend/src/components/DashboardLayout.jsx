@@ -1,7 +1,15 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function DashboardLayout({ children, title, subtitle }) {
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const dashboardActive =
+        location.pathname === "/contacts" ||
+        (location.pathname.startsWith("/contacts/") && location.pathname !== "/contacts/new");
+
+    const addContactActive = location.pathname === "/contacts/new";
+    const profileActive = location.pathname === "/profile";
 
     function handleLogout() {
         localStorage.removeItem("token");
@@ -17,7 +25,7 @@ function DashboardLayout({ children, title, subtitle }) {
 
             <button
                 type="button"
-                className="sidebar-link"
+                className={"sidebar-link" + (dashboardActive ? " sidebar-link-active" : "")}
                 onClick={() => navigate("/contacts")}
             >
                 Dashboard
@@ -25,7 +33,7 @@ function DashboardLayout({ children, title, subtitle }) {
 
             <button
                 type="button"
-                className="sidebar-link"
+                className={"sidebar-link" + (addContactActive ? " sidebar-link-active" : "")}
                 onClick={() => navigate("/contacts/new")}
             >
                 Add Contact
@@ -33,7 +41,7 @@ function DashboardLayout({ children, title, subtitle }) {
 
             <button
                 type="button"
-                className="sidebar-link"
+                className={"sidebar-link" + (profileActive ? " sidebar-link-active" : "")}
                 onClick={() => navigate("/profile")}
             >
                 Profile
