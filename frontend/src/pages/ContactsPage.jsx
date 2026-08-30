@@ -201,6 +201,14 @@ function ContactsPage() {
         setShowSuggestions(false);
     }
 
+    function handleClearSearch() {
+    setSearchTerm("");
+    setActiveSearchTerm("");
+    setCurrentPage(0);
+    setSuggestions([]);
+    setShowSuggestions(false);
+}
+
     function getAvatarClass(contactId) {
     const avatarClasses = [
         "contact-avatar-blue",
@@ -302,6 +310,16 @@ function ContactsPage() {
             }}
         />
 
+        {searchTerm && (
+    <button
+        type="button"
+        className="contact-search-clear"
+        onClick={handleClearSearch}
+        aria-label="Clear search"
+    >
+        ×
+    </button>
+)}
         {showSuggestions && (
     <div className="contact-suggestions">
         {suggestions.length > 0 ? (
