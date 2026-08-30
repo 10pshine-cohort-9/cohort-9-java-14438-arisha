@@ -244,6 +244,7 @@ function ContactsPage() {
             title="Contacts Dashboard"
             subtitle="Manage and organize all your contacts from one place."
         >
+            <div className="contacts-dashboard-content">
 
             <section className="dashboard-stat-card">
                 <p>Total Contacts</p>
@@ -457,6 +458,7 @@ function ContactsPage() {
         </button>
     </div>
 )}
+</div>
         </DashboardLayout>
     );
 }

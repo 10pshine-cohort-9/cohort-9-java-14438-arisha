@@ -443,7 +443,7 @@ button {
 .contact-search-form {
     display: flex;
     gap: 10px;
-    max-width: 520px;
+    max-width: 1000px;
     margin: 0 0 28px;
 }
 
@@ -810,7 +810,7 @@ button {
 
 .contact-tools-card {
     width: 100%;
-    max-width: 760px;
+    max-width: 1000px;
     padding: 24px;
     margin-bottom: 28px;
 
@@ -1474,4 +1474,9 @@ button {
 
 .sidebar-link-active:hover {
     background: #2563eb;
+}
+
+.contacts-dashboard-content {
+    width: 100%;
+    max-width: 1000px;
 }
