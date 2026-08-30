@@ -1831,3 +1831,38 @@ button {
 .contacts-directory .pagination {
     margin: 4px 0 0;
 }
+.contact-actions .contact-view-button {
+    border-color: #2563eb;
+    background: #2563eb;
+    color: #ffffff;
+}
+
+.contact-actions .contact-view-button:hover {
+    border-color: #1d4ed8;
+    background: #1d4ed8;
+    color: #ffffff;
+}
+
+.contact-actions .contact-edit-button {
+    border-color: #cbd5e1;
+    background: #ffffff;
+    color: #475569;
+}
+
+.contact-actions .contact-edit-button:hover {
+    border-color: #94a3b8;
+    background: #f8fafc;
+    color: #334155;
+}
+
+.contact-actions .contact-delete-button {
+    border-color: #fecaca;
+    background: #fff7f7;
+    color: #dc2626;
+}
+
+.contact-actions .contact-delete-button:hover {
+    border-color: #fca5a5;
+    background: #fef2f2;
+    color: #b91c1c;
+}

@@ -484,6 +484,7 @@ function ContactsPage() {
                                 <td>
                                     <div className="contact-actions">
                                         <button
+                                        className="contact-view-button"
                                             type="button"
                                             onClick={() =>
                                                 navigate("/contacts/" + contact.id)
@@ -493,6 +494,7 @@ function ContactsPage() {
                                         </button>
 
                                         <button
+                                        className="contact-edit-button"
                                             type="button"
                                             onClick={() => startEditing(contact)}
                                         >
@@ -500,6 +502,7 @@ function ContactsPage() {
                                         </button>
 
                                         <button
+                                        className="contact-delete-button"
                                             type="button"
                                             onClick={() =>
                                                 handleDeleteContact(contact.id)
