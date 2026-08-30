@@ -10,6 +10,7 @@ function DashboardLayout({ children, title, subtitle }) {
 
     const addContactActive = location.pathname === "/contacts/new";
     const profileActive = location.pathname === "/profile";
+    const contactToolsActive = location.pathname === "/contact-tools";
 
     function handleLogout() {
         localStorage.removeItem("token");
@@ -37,6 +38,14 @@ function DashboardLayout({ children, title, subtitle }) {
                 onClick={() => navigate("/contacts/new")}
             >
                 Add Contact
+            </button>
+
+            <button
+                type="button"
+                className={"sidebar-link" + (contactToolsActive ? " sidebar-link-active" : "")}
+                onClick={() => navigate("/contact-tools")}
+            >
+                Contact Tools
             </button>
 
             <button
