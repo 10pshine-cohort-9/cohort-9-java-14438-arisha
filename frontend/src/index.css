@@ -1455,3 +1455,14 @@ button {
     color: #64748b;
     font-size: 14px;
 }
+
+.contact-info-actions .contact-info-delete-button {
+    border-color: #fecaca;
+    color: #b91c1c;
+}
+
+.contact-info-actions .contact-info-delete-button:hover {
+    border-color: #ef4444;
+    background: #fef2f2;
+    color: #b91c1c;
+}

@@ -345,6 +345,8 @@ function ContactDetailsPage() {
             </div>
         </section>
 
+
+
         <section className="contact-info-card">
         <div className="contact-info-header">
             <div>
@@ -450,11 +452,9 @@ function ContactDetailsPage() {
                             </button>
 
                             <button
-                                type="button"
-                                onClick={() =>
-                                    handleDeleteEmail(email.id)
-                                }
-                            >
+                            className="contact-info-delete-button"
+                            type="button"
+                            onClick={() => handleDeleteEmail(email.id)}>
                                 Delete
                             </button>
                         </div>
@@ -579,11 +579,9 @@ function ContactDetailsPage() {
                             </button>
 
                             <button
-                                type="button"
-                                onClick={() =>
-                                    handleDeletePhone(phone.id)
-                                }
-                            >
+                            className="contact-info-delete-button"
+                            type="button"
+                            onClick={() => handleDeletePhone(phone.id)}>
                                 Delete
                             </button>
                         </div>
