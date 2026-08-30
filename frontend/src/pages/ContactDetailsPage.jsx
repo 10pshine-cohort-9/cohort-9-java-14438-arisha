@@ -319,20 +319,39 @@ function ContactDetailsPage() {
         subtitle="View and manage your contact information."
     >
 
-             <button type="button" onClick={() => navigate("/contacts")}>
-                Back to Contacts
-            </button>
-
+            <button
+    className="contact-back-button"
+    type="button"
+    onClick={() => navigate("/contacts")}
+>
+    Back to Contacts
+</button>
             {error && <p>{error}</p>}
 
             {contact && (
-                <div>
-                    <h2>
-                        {contact.firstName} {contact.lastName}
-                    </h2>
-                    <p>{contact.title}</p>
+    <div className="contact-details-content">
+        <section className="contact-summary-card">
+            <div className="contact-summary-avatar">
+                {contact.firstName.charAt(0)}
+                {contact.lastName.charAt(0)}
+            </div>
 
-                    <h3>Email Addresses</h3>
+            <div className="contact-summary-text">
+                <p className="contact-summary-eyebrow">
+                    CONTACT
+                </p>
+
+                <h2>
+                    {contact.firstName} {contact.lastName}
+                </h2>
+
+                <p>
+                    {contact.title || "No title added"}
+                </p>
+            </div>
+        </section>
+
+        <h3>Email Addresses</h3>
 
                     <form onSubmit={handleAddEmail}>
                         <input
