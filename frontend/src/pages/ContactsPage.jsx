@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+
 import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../components/DashboardLayout";
+import { Fragment, useEffect, useState } from "react";
 
 function ContactsPage() {
     const [contacts, setContacts] = useState([]);
@@ -347,8 +348,31 @@ function ContactsPage() {
             </thead>
 
             <tbody>
-                {contacts.map((contact) => (
-                    <tr key={contact.id}>
+                {contacts.map((contact, index) => {
+    const currentLetter =
+        contact.firstName.charAt(0).toUpperCase();
+
+    const previousLetter =
+        index > 0
+            ? contacts[index - 1].firstName
+                  .charAt(0)
+                  .toUpperCase()
+            : null;
+
+    const showLetter =
+        currentLetter !== previousLetter;
+
+    return (
+        <Fragment key={contact.id}>
+            {showLetter && (
+                <tr className="contact-letter-row">
+                    <td colSpan="3">
+                        {currentLetter}
+                    </td>
+                </tr>
+            )}
+
+            <tr>
                         {editingId === contact.id ? (
                             <td colSpan="3">
                                 <form
@@ -448,7 +472,9 @@ function ContactsPage() {
                             </>
                         )}
                     </tr>
-                ))}
+                </Fragment>
+                    );
+})}
             </tbody>
         </table>
     </div>
