@@ -240,6 +240,18 @@ function ContactsPage() {
         }
     }
 
+    function getAvatarClass(contactId) {
+    const avatarClasses = [
+        "contact-avatar-blue",
+        "contact-avatar-purple",
+        "contact-avatar-green",
+        "contact-avatar-orange",
+        "contact-avatar-pink",
+    ];
+
+    return avatarClasses[contactId % avatarClasses.length];
+}
+
     return (
         <DashboardLayout
             title="Contacts Dashboard"
@@ -390,7 +402,15 @@ function ContactsPage() {
                         ) : (
                             <>
                                 <td>
-                                    {contact.firstName} {contact.lastName}
+                                    <div className="contact-name-cell">
+                                        <div className={"contact-avatar " + getAvatarClass(contact.id)}>
+                                            {contact.firstName.charAt(0).toUpperCase()}
+                                        </div>
+
+                                        <span>
+                                            {contact.firstName} {contact.lastName}
+                                        </span>
+                                    </div>
                                 </td>
 
                                 <td>
