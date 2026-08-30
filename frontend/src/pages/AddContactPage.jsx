@@ -57,51 +57,82 @@ function AddContactPage() {
             title="Add Contact"
             subtitle="Create a new contact for your address book."
         >
-            <form onSubmit={handleCreateContact}>
-                <div>
-                    <label>First Name</label>
+            <section className="add-contact-card">
+    <div className="add-contact-header">
+        <p className="add-contact-eyebrow">
+            NEW CONTACT
+        </p>
 
-                    <input
-                        type="text"
-                        value={firstName}
-                        onChange={(event) =>
-                            setFirstName(event.target.value)
-                        }
-                        required
-                    />
-                </div>
+        <h2>Contact Information</h2>
 
-                <div>
-                    <label>Last Name</label>
+        <p>
+            Enter the basic details for your new contact.
+        </p>
+    </div>
 
-                    <input
-                        type="text"
-                        value={lastName}
-                        onChange={(event) =>
-                            setLastName(event.target.value)
-                        }
-                        required
-                    />
-                </div>
+    <form
+        className="add-contact-form"
+        onSubmit={handleCreateContact}
+    >
+        <div className="add-contact-group">
+            <label>First Name</label>
 
-                <div>
-                    <label>Title</label>
+            <input
+                type="text"
+                value={firstName}
+                onChange={(event) => setFirstName(event.target.value)
+                }
+                required
+            />
+        </div>
 
-                    <input
-                        type="text"
-                        value={title}
-                        onChange={(event) =>
-                            setTitle(event.target.value)
-                        }
-                    />
-                </div>
+        <div className="add-contact-group">
+            <label>Last Name</label>
 
-                <button type="submit">
-                    Add Contact
-                </button>
-            </form>
+            <input
+                type="text"
+                value={lastName}
+                onChange={(event) => setLastName(event.target.value)
+                }
+                required
+            />
+        </div>
 
-            {error && <p>{error}</p>}
+        <div className="add-contact-group">
+            <label>Title</label>
+
+            <input
+                type="text"
+                value={title}
+                onChange={(event) => setTitle(event.target.value)
+                }
+            />
+        </div>
+
+        <div className="add-contact-actions">
+            <button
+                className="add-contact-button"
+                type="submit"
+            >
+                Add Contact
+            </button>
+
+            <button
+                className="add-contact-cancel-button"
+                type="button"
+                onClick={() => navigate("/contacts")}
+            >
+                Cancel
+            </button>
+        </div>
+    </form>
+
+    {error && (
+        <p className="add-contact-error">
+            {error}
+        </p>
+    )}
+</section>
         </DashboardLayout>
     );
 }
