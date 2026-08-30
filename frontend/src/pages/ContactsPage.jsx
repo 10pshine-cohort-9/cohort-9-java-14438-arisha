@@ -261,8 +261,15 @@ function ContactsPage() {
             <div className="contacts-dashboard-content">
 
             <section className="dashboard-stat-card">
-                <p>Total Contacts</p>
-                <h2>{totalContacts}</h2>
+                <div className="dashboard-stat-icon">
+                    C
+                </div>
+
+                <div className="dashboard-stat-content">
+                    <p>Total Contacts</p>
+                    <h2>{totalContacts}</h2>
+                    <span>Contacts in your address book</span>
+                </div>
             </section>
 
            <section className="contact-tools-card">
