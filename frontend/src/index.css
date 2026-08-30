@@ -1297,3 +1297,161 @@ button {
     color: #64748b;
     font-size: 14px;
 }
+
+/* Contact information cards */
+
+.contact-info-card {
+    width: 100%;
+    padding: 24px;
+    margin-bottom: 28px;
+
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.contact-info-header {
+    margin-bottom: 18px;
+}
+
+.contact-info-eyebrow {
+    margin: 0 0 6px;
+
+    color: #2563eb;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.contact-info-header h3 {
+    margin: 0;
+
+    color: #0f172a;
+    font-size: 20px;
+}
+
+.contact-info-form {
+    display: grid;
+    grid-template-columns: 1fr 180px auto;
+    gap: 10px;
+
+    margin-bottom: 20px;
+}
+
+.contact-info-form input {
+    height: 42px;
+    padding: 0 12px;
+
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+
+    outline: none;
+    background: #f8fafc;
+}
+
+.contact-info-form input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.contact-info-add-button {
+    min-height: 42px;
+    padding: 0 16px;
+
+    border: 0;
+    border-radius: 8px;
+
+    background: #2563eb;
+    color: #ffffff;
+
+    font-weight: 600;
+}
+
+.contact-info-add-button:hover {
+    background: #1d4ed8;
+}
+
+.contact-info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.contact-info-item {
+    padding: 14px 16px;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 9px;
+
+    background: #f8fafc;
+}
+
+.contact-info-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.contact-info-label {
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.contact-info-row p {
+    margin: 4px 0 0;
+
+    color: #0f172a;
+    font-size: 14px;
+}
+
+.contact-info-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.contact-info-actions button,
+.contact-info-edit button {
+    min-height: 34px;
+    padding: 0 11px;
+
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+
+    background: #ffffff;
+    color: #475569;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.contact-info-actions button:hover,
+.contact-info-edit button:hover {
+    border-color: #2563eb;
+    color: #2563eb;
+}
+
+.contact-info-edit {
+    display: grid;
+    grid-template-columns: 1fr 180px auto auto;
+    gap: 10px;
+}
+
+.contact-info-edit input {
+    height: 38px;
+    padding: 0 10px;
+
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+}
+
+.contact-info-empty {
+    margin: 0;
+
+    color: #64748b;
+    font-size: 14px;
+}
