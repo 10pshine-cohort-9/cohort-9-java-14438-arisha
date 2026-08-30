@@ -1053,8 +1053,10 @@ button {
 .pagination {
     display: flex;
     align-items: center;
-    gap: 12px;
+    justify-content: center;
 
+    width: 100%;
+    gap: 12px;
     margin-bottom: 24px;
 }
 
