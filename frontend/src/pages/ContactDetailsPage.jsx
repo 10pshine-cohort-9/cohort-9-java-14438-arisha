@@ -465,78 +465,135 @@ function ContactDetailsPage() {
     </div>
 </section>
 
-                    <h3>Phone Numbers</h3>
+<section className="contact-info-card">
+    <div className="contact-info-header">
+        <div>
+            <p className="contact-info-eyebrow">
+                PHONE
+            </p>
 
-                    <form onSubmit={handleAddPhone}>
+            <h3>Phone Numbers</h3>
+        </div>
+    </div>
+
+    <form
+        className="contact-info-form"
+        onSubmit={handleAddPhone}
+    >
+        <input
+            type="text"
+            placeholder="Phone number"
+            value={newPhoneNumber}
+            onChange={(event) =>
+                setNewPhoneNumber(event.target.value)
+            }
+            required
+        />
+
+        <input
+            type="text"
+            placeholder="Label"
+            value={newPhoneLabel}
+            onChange={(event) =>
+                setNewPhoneLabel(event.target.value)
+            }
+            required
+        />
+
+        <button
+            className="contact-info-add-button"
+            type="submit"
+        >
+            Add Phone
+        </button>
+    </form>
+
+    {phones.length === 0 && (
+        <p className="contact-info-empty">
+            No phone numbers added.
+        </p>
+    )}
+
+    <div className="contact-info-list">
+        {phones.map((phone) => (
+            <div
+                className="contact-info-item"
+                key={phone.id}
+            >
+                {editingPhoneId === phone.id ? (
+                    <div className="contact-info-edit">
                         <input
                             type="text"
-                            placeholder="Phone number"
-                            value={newPhoneNumber}
-                            onChange={(event) => setNewPhoneNumber(event.target.value)}
-                            required
+                            value={editPhoneNumber}
+                            onChange={(event) =>
+                                setEditPhoneNumber(event.target.value)
+                            }
                         />
 
                         <input
                             type="text"
-                            placeholder="Label"
-                            value={newPhoneLabel}
-                            onChange={(event) => setNewPhoneLabel(event.target.value)}
-                            required
+                            value={editPhoneLabel}
+                            onChange={(event) =>
+                                setEditPhoneLabel(event.target.value)
+                            }
                         />
 
-                        <button type="submit">Add Phone</button>
-                    </form>
+                        <button
+                            type="button"
+                            onClick={() =>
+                                handleSaveEditPhone(phone.id)
+                            }
+                        >
+                            Save
+                        </button>
 
-                    {phones.length === 0 && <p>No phone numbers added.</p>}
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setEditingPhoneId(null);
+                                setEditPhoneNumber("");
+                                setEditPhoneLabel("");
+                            }}
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                ) : (
+                    <div className="contact-info-row">
+                        <div>
+                            <span className="contact-info-label">
+                                {phone.label}
+                            </span>
 
-                    {phones.map((phone) => (
-                        <div key={phone.id}>
-                            {editingPhoneId === phone.id ? (
-                                <div>
-                                    <input
-                                        type="text"
-                                        value={editPhoneNumber}
-                                        onChange={(event) =>
-                                        setEditPhoneNumber(event.target.value)
-                                        }
-                                    />
+                            <p>{phone.phoneNumber}</p>
+                        </div>
 
-                                    <input
-                                        type="text"
-                                        value={editPhoneLabel}
-                                        onChange={(event) =>
-                                        setEditPhoneLabel(event.target.value)
-                                        }
-                                    />
+                        <div className="contact-info-actions">
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    handleStartEditPhone(phone)
+                                }
+                            >
+                                Edit
+                            </button>
 
-                                    <button type="button" onClick={() => handleSaveEditPhone(phone.id)}>
-                                        Save
-                                    </button>
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    handleDeletePhone(phone.id)
+                                }
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </div>
+        ))}
+    </div>
+</section>
 
-                                    <button type="button" onClick={() => {
-                                        setEditingPhoneId(null);
-                                        setEditPhoneNumber("");
-                                        setEditPhoneLabel("");
-                                    }}
-                                    >
-                                        Cancel
-                                    </button>
-                                </div>
-                            ) : (
-                                <p>
-                                    {phone.label}: {phone.phoneNumber}
-
-                                    <button type="button" onClick={() => handleStartEditPhone(phone)}>
-                                        Edit
-                                    </button>
-
-                                    <button type="button" onClick={() => handleDeletePhone(phone.id)}>
-                                        Delete
-                                    </button>
-                                </p>
-                                )}
-                            </div>
-                        ))} 
                 </div>
             )}
         </DashboardLayout>
