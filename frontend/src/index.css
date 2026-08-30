@@ -1679,3 +1679,52 @@ button {
     font-weight: 800;
     letter-spacing: 1px;
 }
+
+.contacts-directory {
+    width: 100%;
+    max-width: 1000px;
+    padding: 24px;
+
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+}
+
+.contacts-directory-header {
+    margin-bottom: 20px;
+}
+
+.contacts-directory-eyebrow {
+    margin: 0 0 6px;
+
+    color: #2563eb;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.contacts-directory-header h2 {
+    margin: 0;
+
+    color: #0f172a;
+    font-size: 22px;
+}
+
+.contacts-directory .contact-search-form {
+    max-width: none;
+    margin-bottom: 20px;
+}
+
+.contacts-directory .contacts-table-card {
+    max-width: none;
+    margin-bottom: 18px;
+
+    box-shadow: none;
+    border-radius: 10px;
+}
+
+.contacts-directory .pagination {
+    margin: 4px 0 0;
+}

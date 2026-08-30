@@ -220,6 +220,17 @@ function ContactsPage() {
             </button>
 
         </div>
+        <section className="contacts-directory">
+
+    <div className="contacts-directory-header">
+        <div>
+            <p className="contacts-directory-eyebrow">
+                YOUR CONTACTS
+            </p>
+
+            <h2>Contacts Directory</h2>
+        </div>
+    </div>
             <form className="contact-search-form" onSubmit={handleSearch}>
                 <input
                     className="contact-search-input"
@@ -409,6 +420,7 @@ function ContactsPage() {
         </button>
     </div>
 )}
+</section>
 </div>
         </DashboardLayout>
     );
