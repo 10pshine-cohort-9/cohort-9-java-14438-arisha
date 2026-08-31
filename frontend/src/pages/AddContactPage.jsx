@@ -24,6 +24,8 @@ function AddContactPage() {
             return;
         }
 
+        let createdContactId = null;
+
         try {
             const response = await fetch("/api/contacts", {
                 method: "POST",
@@ -50,6 +52,7 @@ function AddContactPage() {
 }
 
 const newContact = await response.json();
+createdContactId = newContact.id;
 
 if (emailAddress.trim() !== "") {
     const emailResponse = await fetch(
@@ -68,7 +71,11 @@ if (emailAddress.trim() !== "") {
     );
 
     if (!emailResponse.ok) {
-        setError("Contact created, but email could not be added");
+        navigate("/contacts/" + newContact.id, {
+            state: {
+                warning: "Contact created, but email could not be added.",
+            },
+        });
         return;
     }
 }
@@ -90,7 +97,11 @@ if (phoneNumber.trim() !== "") {
     );
 
     if (!phoneResponse.ok) {
-        setError("Contact created, but phone number could not be added");
+        navigate("/contacts/" + newContact.id, {
+            state: {
+                warning: "Contact created, but phone number could not be added.",
+            },
+        });
         return;
     }
 }
@@ -98,8 +109,17 @@ if (phoneNumber.trim() !== "") {
 setError("");
 navigate("/contacts");
         } catch {
-            setError("Unable to connect to the server");
-        }
+    if (createdContactId) {
+        navigate("/contacts/" + createdContactId, {
+            state: {
+                warning: "Contact created, but additional details could not be added.",
+            },
+        });
+        return;
+    }
+
+    setError("Unable to connect to the server");
+}
     }
 
     return (
@@ -125,9 +145,10 @@ navigate("/contacts");
         onSubmit={handleCreateContact}
     >
         <div className="add-contact-group">
-            <label>First Name</label>
+            <label htmlFor="firstName">First Name</label>
 
             <input
+                id="firstName"
                 type="text"
                 value={firstName}
                 onChange={(event) => setFirstName(event.target.value)
@@ -137,9 +158,10 @@ navigate("/contacts");
         </div>
 
         <div className="add-contact-group">
-            <label>Last Name</label>
+            <label htmlFor="lastName">Last Name</label>
 
             <input
+                id="lastName"
                 type="text"
                 value={lastName}
                 onChange={(event) => setLastName(event.target.value)
@@ -149,9 +171,10 @@ navigate("/contacts");
         </div>
 
         <div className="add-contact-group add-contact-title">
-            <label>Title</label>
+            <label htmlFor="title">Title</label>
 
             <input
+                id="title"
                 type="text"
                 value={title}
                 onChange={(event) => setTitle(event.target.value)
@@ -160,9 +183,10 @@ navigate("/contacts");
         </div>
 
         <div className="add-contact-group add-contact-email">
-    <label>Email Address</label>
+    <label htmlFor="emailAddress">Email Address</label>
 
     <input
+        id="emailAddress"
         type="email"
         value={emailAddress}
         onChange={(event) =>
@@ -172,9 +196,10 @@ navigate("/contacts");
 </div>
 
 <div className="add-contact-group">
-    <label>Email Label</label>
+    <label htmlFor="emailLabel">Email Label</label>
 
     <input
+        id="emailLabel"
         type="text"
         placeholder="e.g. Work, Personal"
         value={emailLabel}
@@ -185,9 +210,10 @@ navigate("/contacts");
 </div>
 
 <div className="add-contact-group">
-    <label>Phone Number</label>
+    <label htmlFor="phoneNumber">Phone Number</label>
 
     <input
+        id="phoneNumber"
         type="text"
         value={phoneNumber}
         onChange={(event) =>
@@ -197,9 +223,10 @@ navigate("/contacts");
 </div>
 
 <div className="add-contact-group">
-    <label>Phone Label</label>
+    <label htmlFor="phoneLabel">Phone Label</label>
 
     <input
+        id="phoneLabel"
         type="text"
         placeholder="e.g. Mobile, Work"
         value={phoneLabel}

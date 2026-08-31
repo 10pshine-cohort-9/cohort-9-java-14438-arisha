@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import DashboardLayout from "../components/DashboardLayout";
 
 function ContactDetailsPage() {
@@ -22,6 +22,7 @@ function ContactDetailsPage() {
 
     const { id } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         async function loadContact() {
@@ -62,10 +63,19 @@ function ContactDetailsPage() {
                     }
                 );
 
-                if (emailResponse.ok) {
-                    const emailData = await emailResponse.json();
-                    setEmails(emailData);
+                if (emailResponse.status === 401 || emailResponse.status === 403) {
+                    localStorage.removeItem("token");
+                    navigate("/");
+                    return;
                 }
+
+                if (!emailResponse.ok) {
+                    setError("Unable to load email addresses");
+                    return;
+                }
+
+                const emailData = await emailResponse.json();
+                setEmails(emailData);
 
                 const phoneResponse = await fetch(
                     "/api/contact-phones/contact/" + id,
@@ -76,10 +86,19 @@ function ContactDetailsPage() {
                     }
                 );
 
-                if (phoneResponse.ok) {
-                    const phoneData = await phoneResponse.json();
-                    setPhones(phoneData);
+                if (phoneResponse.status === 401 || phoneResponse.status === 403) {
+                    localStorage.removeItem("token");
+                    navigate("/");
+                    return;
                 }
+
+                if (!phoneResponse.ok) {
+                    setError("Unable to load phone numbers");
+                    return;
+                }
+
+                const phoneData = await phoneResponse.json();
+                setPhones(phoneData);
             } catch {
                 setError("Unable to connect to the server");
             }
@@ -116,7 +135,7 @@ function ContactDetailsPage() {
 
             const newEmail = await response.json();
 
-            setEmails([...emails, newEmail]);
+            setEmails((currentEmails) => [...currentEmails, newEmail]);
             setNewEmailAddress("");
             setNewEmailLabel("");
             setError("");
@@ -144,11 +163,7 @@ function ContactDetailsPage() {
                 return;
             }
 
-            const updatedEmails = emails.filter(
-                (email) => email.id !== emailId
-            );
-
-            setEmails(updatedEmails);
+            setEmails((currentEmails) => currentEmails.filter((email) => email.id !== emailId));
             setError("");
         } catch {
             setError("Unable to connect to the server");
@@ -187,11 +202,9 @@ function ContactDetailsPage() {
 
             const updatedEmail = await response.json();
 
-            const updatedEmails = emails.map((email) =>
-                email.id === emailId ? updatedEmail : email
+            setEmails((currentEmails) => currentEmails.map((email) =>
+                email.id === emailId ? updatedEmail : email)
             );
-
-            setEmails(updatedEmails);
             setEditingEmailId(null);
             setEditEmailAddress("");
             setEditEmailLabel("");
@@ -229,7 +242,7 @@ function ContactDetailsPage() {
 
             const newPhone = await response.json();
 
-            setPhones([...phones, newPhone]);
+            setPhones((currentPhones) => [...currentPhones, newPhone]);
 
             setNewPhoneNumber("");
             setNewPhoneLabel("");
@@ -258,9 +271,7 @@ function ContactDetailsPage() {
                 return;
             }
 
-            const updatedPhones = phones.filter((phone) => phone.id !== phoneId);
-
-            setPhones(updatedPhones);
+            setPhones((currentPhones) => currentPhones.filter((phone) => phone.id !== phoneId));
             setError("");
         } catch {
             setError("Unable to connect to the server");
@@ -299,11 +310,7 @@ function ContactDetailsPage() {
 
             const updatedPhone = await response.json();
 
-            const updatedPhones = phones.map((phone) =>
-                phone.id === phoneId ? updatedPhone : phone
-            );
-
-            setPhones(updatedPhones);
+            setPhones((currentPhones) => currentPhones.map((phone) => phone.id === phoneId ? updatedPhone : phone));
             setEditingPhoneId(null);
             setEditPhoneNumber("");
             setEditPhoneLabel("");
@@ -320,6 +327,12 @@ function ContactDetailsPage() {
             Back to Contacts
         </button>
         {error && <p>{error}</p>}
+
+        {location.state?.warning && (
+            <p className="form-message">
+                {location.state.warning}
+            </p>
+        )}
 
 
         {contact && (

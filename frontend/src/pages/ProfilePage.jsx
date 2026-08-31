@@ -115,6 +115,12 @@ function ProfilePage() {
             }),
         });
 
+        if (response.status === 401 || response.status === 403) {
+            localStorage.removeItem("token");
+            navigate("/");
+            return;
+        }
+
         if (!response.ok) {
             setPasswordMessage("Unable to change password");
             return;
@@ -190,8 +196,9 @@ function ProfilePage() {
             <form className="profile-edit-form"
             onSubmit={handleSaveProfile}>
                 <div className="profile-edit-group">
-                    <label>Full Name</label>
+                    <label htmlFor="editFullName">Full Name</label>
                     <input
+                    id="editFullName"
                         type="text"
                         value={editFullName}
                         onChange={(event) =>
@@ -201,8 +208,9 @@ function ProfilePage() {
                 </div>
 
                 <div className="profile-edit-group"> 
-                    <label>Email</label>
+                    <label htmlFor="editEmail">Email</label>
                     <input
+                    id="editEmail"
                         type="email"
                         value={editEmail}
                         onChange={(event) =>
@@ -212,8 +220,9 @@ function ProfilePage() {
                 </div>
 
                 <div className="profile-edit-group">
-                    <label>Phone Number</label>
+                    <label htmlFor="editPhone">Phone Number</label>
                     <input
+                    id="editPhone"
                         type="text"
                         value={editPhoneNumber}
                         onChange={(event) =>

@@ -78,6 +78,8 @@ function ContactsPage() {
             return;
         }
 
+        const controller = new AbortController();
+
         const timeoutId = setTimeout(async () => {
             const token = localStorage.getItem("token");
 
@@ -89,6 +91,7 @@ function ContactsPage() {
                         headers: {
                             Authorization: "Bearer " + token,
                         },
+                        signal: controller.signal,
                     }
                 );
 
@@ -107,12 +110,17 @@ function ContactsPage() {
 
                 setSuggestions(data.content);
                 setShowSuggestions(true);
-            } catch {
-                setSuggestions([]);
+            } catch (error) {
+                if (error.name !== "AbortError") {
+                    setSuggestions([]);
+                }
             }
         }, 300);
 
-        return () => clearTimeout(timeoutId);
+        return () => {
+            clearTimeout(timeoutId);
+            controller.abort();
+        };
     }, [searchTerm, navigate]);
 
        
@@ -137,6 +145,10 @@ function ContactsPage() {
             );
 
             setContacts(updatedContacts);
+
+            if (updatedContacts.length === 0 && currentPage > 0) {
+                setCurrentPage((page) => page - 1);
+            }
             setTotalContacts((value) => Math.max(0, value - 1));
             setError("");
         } catch {

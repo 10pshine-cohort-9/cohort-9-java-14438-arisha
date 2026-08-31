@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../components/DashboardLayout";
 
@@ -6,6 +6,7 @@ function ContactToolsPage() {
     const [selectedFile, setSelectedFile] = useState(null);
     const [importMessage, setImportMessage] = useState("");
     const [error, setError] = useState("");
+    const fileInputRef = useRef(null);
 
     const navigate = useNavigate();
 
@@ -82,6 +83,10 @@ function ContactToolsPage() {
 
             setImportMessage(message);
             setSelectedFile(null);
+
+            if (fileInputRef.current) {
+                fileInputRef.current.value = "";
+            }
         } catch {
             setImportMessage("Unable to connect to the server");
         }
@@ -120,6 +125,7 @@ function ContactToolsPage() {
         onSubmit={handleImportContacts}
     >
         <input
+        ref={fileInputRef}
             className="contact-file-input"
             type="file"
             accept=".csv"

@@ -13,7 +13,12 @@ function DashboardLayout({ children, title, subtitle }) {
     const contactToolsActive = location.pathname === "/contact-tools";
 
     function handleLogout() {
-        localStorage.removeItem("token");
+        try {
+            localStorage.removeItem("token");
+        } catch {
+        // Continue logout even if browser storage is unavailable.
+        }
+
         navigate("/");
     }
 
