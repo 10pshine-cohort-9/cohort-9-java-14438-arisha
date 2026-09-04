@@ -1,0 +1,267 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import DashboardLayout from "../components/DashboardLayout";
+
+function AddContactPage() {
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [title, setTitle] = useState("");
+    const [emailAddress, setEmailAddress] = useState("");
+    const [emailLabel, setEmailLabel] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [phoneLabel, setPhoneLabel] = useState("");
+    const [error, setError] = useState("");
+
+    const navigate = useNavigate();
+
+    async function handleCreateContact(event) {
+        event.preventDefault();
+
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/");
+            return;
+        }
+
+        let createdContactId = null;
+
+        try {
+            const response = await fetch("/api/contacts", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + token,
+                },
+                body: JSON.stringify({
+                    firstName: firstName,
+                    lastName: lastName,
+                    title: title,
+                }),
+            });
+
+            if (response.status === 401 || response.status === 403) {
+                localStorage.removeItem("token");
+                navigate("/");
+                return;
+            }
+
+            if (!response.ok) {
+    setError("Unable to create contact");
+    return;
+}
+
+const newContact = await response.json();
+createdContactId = newContact.id;
+
+if (emailAddress.trim() !== "") {
+    const emailResponse = await fetch(
+        "/api/contact-emails/contact/" + newContact.id,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
+            },
+            body: JSON.stringify({
+                emailAddress: emailAddress,
+                label: emailLabel,
+            }),
+        }
+    );
+
+    if (!emailResponse.ok) {
+        navigate("/contacts/" + newContact.id, {
+            state: {
+                warning: "Contact created, but email could not be added.",
+            },
+        });
+        return;
+    }
+}
+
+if (phoneNumber.trim() !== "") {
+    const phoneResponse = await fetch(
+        "/api/contact-phones/contact/" + newContact.id,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
+            },
+            body: JSON.stringify({
+                phoneNumber: phoneNumber,
+                label: phoneLabel,
+            }),
+        }
+    );
+
+    if (!phoneResponse.ok) {
+        navigate("/contacts/" + newContact.id, {
+            state: {
+                warning: "Contact created, but phone number could not be added.",
+            },
+        });
+        return;
+    }
+}
+
+setError("");
+navigate("/contacts");
+        } catch {
+    if (createdContactId) {
+        navigate("/contacts/" + createdContactId, {
+            state: {
+                warning: "Contact created, but additional details could not be added.",
+            },
+        });
+        return;
+    }
+
+    setError("Unable to connect to the server");
+}
+    }
+
+    return (
+        <DashboardLayout
+            title="Add Contact"
+            subtitle="Create a new contact for your address book."
+        >
+            <section className="add-contact-card">
+    <div className="add-contact-header">
+        <p className="add-contact-eyebrow">
+            NEW CONTACT
+        </p>
+
+        <h2>Contact Information</h2>
+
+        <p>
+            Enter the basic details for your new contact.
+        </p>
+    </div>
+
+    <form
+        className="add-contact-form"
+        onSubmit={handleCreateContact}
+    >
+        <div className="add-contact-group">
+            <label htmlFor="firstName">First Name</label>
+
+            <input
+                id="firstName"
+                type="text"
+                value={firstName}
+                onChange={(event) => setFirstName(event.target.value)
+                }
+                required
+            />
+        </div>
+
+        <div className="add-contact-group">
+            <label htmlFor="lastName">Last Name</label>
+
+            <input
+                id="lastName"
+                type="text"
+                value={lastName}
+                onChange={(event) => setLastName(event.target.value)
+                }
+                required
+            />
+        </div>
+
+        <div className="add-contact-group add-contact-title">
+            <label htmlFor="title">Title</label>
+
+            <input
+                id="title"
+                type="text"
+                value={title}
+                onChange={(event) => setTitle(event.target.value)
+                }
+            />
+        </div>
+
+        <div className="add-contact-group add-contact-email">
+    <label htmlFor="emailAddress">Email Address</label>
+
+    <input
+        id="emailAddress"
+        type="email"
+        value={emailAddress}
+        onChange={(event) =>
+            setEmailAddress(event.target.value)
+        }
+    />
+</div>
+
+<div className="add-contact-group">
+    <label htmlFor="emailLabel">Email Label</label>
+
+    <input
+        id="emailLabel"
+        type="text"
+        placeholder="e.g. Work, Personal"
+        value={emailLabel}
+        onChange={(event) =>
+            setEmailLabel(event.target.value)
+        }
+    />
+</div>
+
+<div className="add-contact-group">
+    <label htmlFor="phoneNumber">Phone Number</label>
+
+    <input
+        id="phoneNumber"
+        type="text"
+        value={phoneNumber}
+        onChange={(event) =>
+            setPhoneNumber(event.target.value)
+        }
+    />
+</div>
+
+<div className="add-contact-group">
+    <label htmlFor="phoneLabel">Phone Label</label>
+
+    <input
+        id="phoneLabel"
+        type="text"
+        placeholder="e.g. Mobile, Work"
+        value={phoneLabel}
+        onChange={(event) =>
+            setPhoneLabel(event.target.value)
+        }
+    />
+</div>
+
+        <div className="add-contact-actions">
+            <button
+                className="add-contact-button"
+                type="submit"
+            >
+                Add Contact
+            </button>
+
+            <button
+                className="add-contact-cancel-button"
+                type="button"
+                onClick={() => navigate("/contacts")}
+            >
+                Cancel
+            </button>
+        </div>
+    </form>
+
+    {error && (
+        <p className="add-contact-error">
+            {error}
+        </p>
+    )}
+</section>
+        </DashboardLayout>
+    );
+}
+
+export default AddContactPage;

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.contactmanagement.backend.dto.ChangePasswordRequest;
 import com.contactmanagement.backend.dto.LoginRequest;
 import com.contactmanagement.backend.dto.RegisterRequest;
+import com.contactmanagement.backend.dto.UpdateProfileRequest;
 import com.contactmanagement.backend.entity.User;
 import com.contactmanagement.backend.exception.InvalidCredentialsException;
 import com.contactmanagement.backend.repository.UserRepository;
@@ -99,5 +100,34 @@ public class AuthService {
         user.setPasswordHash(newEncodedPassword);
         userRepository.save(user);
         logger.info("Password changed successfully for user ID: {}", user.getId());
+    }
+
+    public User updateProfile(User user, UpdateProfileRequest request) {
+        String fullName = request.getFullName();
+        String email = request.getEmail();
+        String phoneNumber = request.getPhoneNumber();
+
+        if ((email == null || email.isBlank()) && (phoneNumber == null || phoneNumber.isBlank())) {
+            throw new IllegalArgumentException("Email or phone number is required");
+        }
+
+        if (email != null && !email.isBlank() && !email.equals(user.getEmail()) && userRepository.existsByEmail(email)) {
+            throw new IllegalArgumentException("Email is already registered");
+        }
+
+        if (phoneNumber != null && !phoneNumber.isBlank() && !phoneNumber.equals(user.getPhoneNumber()) 
+            && userRepository.existsByPhoneNumber(phoneNumber)) {
+
+            throw new IllegalArgumentException( "Phone number is already registered");
+        }
+
+        user.setFullName(fullName);
+        user.setEmail(email);
+        user.setPhoneNumber(phoneNumber);
+
+        User updatedUser = userRepository.save(user);
+
+        logger.info("Profile updated successfully for user ID: {}", updatedUser.getId());
+        return updatedUser;
     }
 }

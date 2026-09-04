@@ -1,0 +1,614 @@
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import DashboardLayout from "../components/DashboardLayout";
+
+function ContactDetailsPage() {
+    const [contact, setContact] = useState(null);
+    const [error, setError] = useState("");
+    const [emails, setEmails] = useState([]);
+    const [phones, setPhones] = useState([]);
+
+    const [newEmailAddress, setNewEmailAddress] = useState("");
+    const [newEmailLabel, setNewEmailLabel] = useState("");
+    const [editingEmailId, setEditingEmailId] = useState(null);
+    const [editEmailAddress, setEditEmailAddress] = useState("");
+    const [editEmailLabel, setEditEmailLabel] = useState("");
+
+    const [newPhoneNumber, setNewPhoneNumber] = useState("");
+    const [newPhoneLabel, setNewPhoneLabel] = useState("");
+    const [editingPhoneId, setEditingPhoneId] = useState(null);
+    const [editPhoneNumber, setEditPhoneNumber] = useState("");
+    const [editPhoneLabel, setEditPhoneLabel] = useState("");
+
+    const { id } = useParams();
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    useEffect(() => {
+        async function loadContact() {
+            const token = localStorage.getItem("token");
+
+            if (!token) {
+                navigate("/");
+                return;
+            }
+
+            try {
+                const response = await fetch("/api/contacts/" + id, {
+                    headers: {
+                        Authorization: "Bearer " + token,
+                    },
+                });
+
+                if (response.status === 401 || response.status === 403) {
+                    localStorage.removeItem("token");
+                    navigate("/");
+                    return;
+                }
+
+                if (!response.ok) {
+                    setError("Unable to load contact");
+                    return;
+                }
+
+                const data = await response.json();
+                setContact(data);
+
+                const emailResponse = await fetch(
+                    "/api/contact-emails/contact/" + id,
+                    {
+                        headers: {
+                            Authorization: "Bearer " + token,
+                        },
+                    }
+                );
+
+                if (emailResponse.status === 401 || emailResponse.status === 403) {
+                    localStorage.removeItem("token");
+                    navigate("/");
+                    return;
+                }
+
+                if (!emailResponse.ok) {
+                    setError("Unable to load email addresses");
+                    return;
+                }
+
+                const emailData = await emailResponse.json();
+                setEmails(emailData);
+
+                const phoneResponse = await fetch(
+                    "/api/contact-phones/contact/" + id,
+                    {
+                        headers: {
+                            Authorization: "Bearer " + token,
+                        },
+                    }
+                );
+
+                if (phoneResponse.status === 401 || phoneResponse.status === 403) {
+                    localStorage.removeItem("token");
+                    navigate("/");
+                    return;
+                }
+
+                if (!phoneResponse.ok) {
+                    setError("Unable to load phone numbers");
+                    return;
+                }
+
+                const phoneData = await phoneResponse.json();
+                setPhones(phoneData);
+            } catch {
+                setError("Unable to connect to the server");
+            }
+        }
+
+        loadContact();
+    }, [id, navigate]);
+
+    async function handleAddEmail(event) {
+        event.preventDefault();
+
+        const token = localStorage.getItem("token");
+
+        try {
+            const response = await fetch(
+                "/api/contact-emails/contact/" + id,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: "Bearer " + token,
+                    },
+                    body: JSON.stringify({
+                        emailAddress: newEmailAddress,
+                        label: newEmailLabel,
+                    }),
+                }
+            );
+
+            if (!response.ok) {
+                setError("Unable to add email address");
+                return;
+            }
+
+            const newEmail = await response.json();
+
+            setEmails((currentEmails) => [...currentEmails, newEmail]);
+            setNewEmailAddress("");
+            setNewEmailLabel("");
+            setError("");
+        } catch {
+            setError("Unable to connect to the server");
+        }
+    }
+
+    async function handleDeleteEmail(emailId) {
+        const token = localStorage.getItem("token");
+
+        try {
+            const response = await fetch(
+                "/api/contact-emails/" + emailId,
+                {
+                    method: "DELETE",
+                    headers: {
+                        Authorization: "Bearer " + token,
+                    },
+                }
+            );
+
+            if (!response.ok) {
+                setError("Unable to delete email address");
+                return;
+            }
+
+            setEmails((currentEmails) => currentEmails.filter((email) => email.id !== emailId));
+            setError("");
+        } catch {
+            setError("Unable to connect to the server");
+        }
+    }
+
+    function handleStartEditEmail(email) {
+        setEditingEmailId(email.id);
+        setEditEmailAddress(email.emailAddress);
+        setEditEmailLabel(email.label);
+    }
+
+    async function handleSaveEditEmail(emailId) {
+        const token = localStorage.getItem("token");
+
+        try {
+            const response = await fetch(
+                "/api/contact-emails/" + emailId,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: "Bearer " + token,
+                    },
+                    body: JSON.stringify({
+                        emailAddress: editEmailAddress,
+                        label: editEmailLabel,
+                    }),
+                }
+            );
+
+            if (!response.ok) {
+                setError("Unable to update email address");
+                return;
+            }
+
+            const updatedEmail = await response.json();
+
+            setEmails((currentEmails) => currentEmails.map((email) =>
+                email.id === emailId ? updatedEmail : email)
+            );
+            setEditingEmailId(null);
+            setEditEmailAddress("");
+            setEditEmailLabel("");
+            setError("");
+        } catch {
+            setError("Unable to connect to the server");
+        }
+    }
+
+    async function handleAddPhone(event) {
+        event.preventDefault();
+
+        const token = localStorage.getItem("token");
+
+        try {
+            const response = await fetch(
+                "/api/contact-phones/contact/" + id,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: "Bearer " + token,
+                    },
+                    body: JSON.stringify({
+                        phoneNumber: newPhoneNumber,
+                        label: newPhoneLabel,
+                    }),
+                }
+            );
+
+            if (!response.ok) {
+                setError("Unable to add phone number");
+                return;
+            }
+
+            const newPhone = await response.json();
+
+            setPhones((currentPhones) => [...currentPhones, newPhone]);
+
+            setNewPhoneNumber("");
+            setNewPhoneLabel("");
+            setError("");
+        } catch {
+            setError("Unable to connect to the server");
+        }
+    }
+
+    async function handleDeletePhone(phoneId) {
+        const token = localStorage.getItem("token");
+
+        try {
+            const response = await fetch(
+                "/api/contact-phones/" + phoneId,
+                {
+                    method: "DELETE",
+                    headers: {
+                        Authorization: "Bearer " + token,
+                    },
+                }
+            );
+
+            if (!response.ok) {
+                setError("Unable to delete phone number");
+                return;
+            }
+
+            setPhones((currentPhones) => currentPhones.filter((phone) => phone.id !== phoneId));
+            setError("");
+        } catch {
+            setError("Unable to connect to the server");
+        }
+    }
+
+    function handleStartEditPhone(phone) {
+        setEditingPhoneId(phone.id);
+        setEditPhoneNumber(phone.phoneNumber);
+        setEditPhoneLabel(phone.label);
+    }
+
+    async function handleSaveEditPhone(phoneId) {
+        const token = localStorage.getItem("token");
+
+        try {
+            const response = await fetch(
+                "/api/contact-phones/" + phoneId,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: "Bearer " + token,
+                    },
+                    body: JSON.stringify({
+                        phoneNumber: editPhoneNumber,
+                        label: editPhoneLabel,
+                    }),
+                }
+            );
+
+            if (!response.ok) {
+                setError("Unable to update phone number");
+                return;
+            }
+
+            const updatedPhone = await response.json();
+
+            setPhones((currentPhones) => currentPhones.map((phone) => phone.id === phoneId ? updatedPhone : phone));
+            setEditingPhoneId(null);
+            setEditPhoneNumber("");
+            setEditPhoneLabel("");
+            setError("");
+        } catch {
+            setError("Unable to connect to the server");
+        }
+    }
+
+    return (
+    <DashboardLayout title="Contact Details" subtitle="View and manage your contact information.">
+        
+        <button className="contact-back-button" type="button" onClick={() => navigate("/contacts")}>
+            Back to Contacts
+        </button>
+        {error && <p>{error}</p>}
+
+        {location.state?.warning && (
+            <p className="form-message">
+                {location.state.warning}
+            </p>
+        )}
+
+
+        {contact && (
+            <div className="contact-details-content">
+            <section className="contact-summary-card">
+            <div className="contact-summary-avatar">
+                {contact.firstName.charAt(0)}
+                {contact.lastName.charAt(0)}
+            </div>
+
+            <div className="contact-summary-text">
+                <p className="contact-summary-eyebrow">
+                    CONTACT
+                </p>
+
+                <h2>
+                    {contact.firstName} {contact.lastName}
+                </h2>
+
+                <p>
+                    {contact.title || "No title added"}
+                </p>
+            </div>
+        </section>
+
+
+
+        <section className="contact-info-card">
+        <div className="contact-info-header">
+            <div>
+                <p className="contact-info-eyebrow">
+                    EMAIL
+                </p>
+
+                <h3>Email Addresses</h3>
+            </div>
+        </div>
+
+        <form className="contact-info-form" onSubmit={handleAddEmail}>
+            <input type="email" placeholder="Email address" value={newEmailAddress}
+            onChange={(event) => setNewEmailAddress(event.target.value)}
+            required
+        />
+
+        <input
+            type="text"
+            placeholder="Label"
+            value={newEmailLabel}
+            onChange={(event) =>
+                setNewEmailLabel(event.target.value)
+            }
+            required
+        />
+
+        <button
+            className="contact-info-add-button"
+            type="submit"
+        >
+            Add Email
+        </button>
+    </form>
+
+    {emails.length === 0 && (
+        <p className="contact-info-empty">
+            No email addresses added.
+        </p>
+    )}
+
+    <div className="contact-info-list">
+        {emails.map((email) => (
+            <div className="contact-info-item"
+                key={email.id}
+            >
+                {editingEmailId === email.id ? (
+                    <div className="contact-info-edit">
+                        <input
+                            type="email"
+                            value={editEmailAddress}
+                            onChange={(event) =>
+                                setEditEmailAddress(event.target.value)
+                            }
+                        />
+
+                        <input
+                            type="text"
+                            value={editEmailLabel}
+                            onChange={(event) =>
+                                setEditEmailLabel(event.target.value)
+                            }
+                        />
+
+                        <button
+                            type="button"
+                            onClick={() =>
+                                handleSaveEditEmail(email.id)
+                            }
+                        >
+                            Save
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setEditingEmailId(null);
+                                setEditEmailAddress("");
+                                setEditEmailLabel("");
+                            }}
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                ) : (
+                    <div className="contact-info-row">
+                        <div>
+                            <span className="contact-info-label">
+                                {email.label}
+                            </span>
+
+                            <p>{email.emailAddress}</p>
+                        </div>
+
+                        <div className="contact-info-actions">
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    handleStartEditEmail(email)
+                                }
+                            >
+                                Edit
+                            </button>
+
+                            <button
+                            className="contact-info-delete-button"
+                            type="button"
+                            onClick={() => handleDeleteEmail(email.id)}>
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </div>
+        ))}
+    </div>
+</section>
+
+<section className="contact-info-card">
+    <div className="contact-info-header">
+        <div>
+            <p className="contact-info-eyebrow">
+                PHONE
+            </p>
+
+            <h3>Phone Numbers</h3>
+        </div>
+    </div>
+
+    <form
+        className="contact-info-form"
+        onSubmit={handleAddPhone}
+    >
+        <input
+            type="text"
+            placeholder="Phone number"
+            value={newPhoneNumber}
+            onChange={(event) =>
+                setNewPhoneNumber(event.target.value)
+            }
+            required
+        />
+
+        <input
+            type="text"
+            placeholder="Label"
+            value={newPhoneLabel}
+            onChange={(event) =>
+                setNewPhoneLabel(event.target.value)
+            }
+            required
+        />
+
+        <button
+            className="contact-info-add-button"
+            type="submit"
+        >
+            Add Phone
+        </button>
+    </form>
+
+    {phones.length === 0 && (
+        <p className="contact-info-empty">
+            No phone numbers added.
+        </p>
+    )}
+
+    <div className="contact-info-list">
+        {phones.map((phone) => (
+            <div
+                className="contact-info-item"
+                key={phone.id}
+            >
+                {editingPhoneId === phone.id ? (
+                    <div className="contact-info-edit">
+                        <input
+                            type="text"
+                            value={editPhoneNumber}
+                            onChange={(event) =>
+                                setEditPhoneNumber(event.target.value)
+                            }
+                        />
+
+                        <input
+                            type="text"
+                            value={editPhoneLabel}
+                            onChange={(event) =>
+                                setEditPhoneLabel(event.target.value)
+                            }
+                        />
+
+                        <button
+                            type="button"
+                            onClick={() =>
+                                handleSaveEditPhone(phone.id)
+                            }
+                        >
+                            Save
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setEditingPhoneId(null);
+                                setEditPhoneNumber("");
+                                setEditPhoneLabel("");
+                            }}
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                ) : (
+                    <div className="contact-info-row">
+                        <div>
+                            <span className="contact-info-label">
+                                {phone.label}
+                            </span>
+
+                            <p>{phone.phoneNumber}</p>
+                        </div>
+
+                        <div className="contact-info-actions">
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    handleStartEditPhone(phone)
+                                }
+                            >
+                                Edit
+                            </button>
+
+                            <button
+                            className="contact-info-delete-button"
+                            type="button"
+                            onClick={() => handleDeletePhone(phone.id)}>
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </div>
+        ))}
+    </div>
+</section>
+
+                </div>
+            )}
+        </DashboardLayout>
+    );
+}
+
+export default ContactDetailsPage;
